@@ -1,4 +1,4 @@
-import { ProductDataProp } from "../../Interfaces";
+import { ProductDataProp } from "../../helpers/Interfaces";
 
 interface Props {
   products: ProductDataProp[] | null;

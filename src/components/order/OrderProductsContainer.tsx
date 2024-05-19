@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { CartProp } from "../../Interfaces";
+import { CartProp } from "../../helpers/Interfaces";
 import OrderProductItem from "./OrderProductItem";
 
 interface Props {

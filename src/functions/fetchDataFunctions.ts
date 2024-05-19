@@ -1,6 +1,9 @@
 import axios from "axios";
-import { BASE_API_URL } from "../constants";
-import { ProductCategoryDataProp, ProductDataProp } from "../Interfaces";
+import { BASE_API_URL } from "../helpers/constants";
+import {
+  ProductCategoryDataProp,
+  ProductDataProp,
+} from "../helpers/Interfaces";
 
 export async function fetchProductCategoryData() {
   const response = await axios.get<ProductCategoryDataProp[]>(

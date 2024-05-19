@@ -1,4 +1,4 @@
-import { CartLineProp } from "../../Interfaces";
+import { CartLineProp } from "../../helpers/Interfaces";
 
 interface Props {
   cartLine: CartLineProp;

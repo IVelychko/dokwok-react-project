@@ -1,4 +1,4 @@
-import { ProductDataProp } from "../../Interfaces";
+import { ProductDataProp } from "../../helpers/Interfaces";
 import { useLoaderData } from "react-router-dom";
 import { addItemToCart } from "../../functions/cartFunctions";
 import { CartStateType, useCart } from "../../hooks/hooks";

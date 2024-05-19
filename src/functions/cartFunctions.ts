@@ -1,6 +1,6 @@
 import axios from "axios";
-import { BASE_API_URL } from "../constants";
-import { CartProp } from "../Interfaces";
+import { BASE_API_URL } from "../helpers/constants";
+import { CartProp } from "../helpers/Interfaces";
 
 export async function fetchCart(): Promise<CartProp> {
   const response = await axios.get<CartProp>(`${BASE_API_URL}/cart`, {

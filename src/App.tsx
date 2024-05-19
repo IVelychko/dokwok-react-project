@@ -1,5 +1,5 @@
 import Menu from "./components/menu/Menu";
-import { ProductCategoryDataProp } from "./Interfaces";
+import { ProductCategoryDataProp } from "./helpers/Interfaces";
 import {
   RouteObject,
   RouterProvider,

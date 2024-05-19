@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { CartProp } from "../Interfaces";
+import { CartProp } from "../helpers/Interfaces";
 import { useEffect, useState } from "react";
 
 interface Props {

@@ -1,5 +1,5 @@
 import { useOutletContext } from "react-router-dom";
-import { CartProp } from "../Interfaces";
+import { CartProp } from "../helpers/Interfaces";
 
 export type CartStateType = {
   cartProp: CartProp;
