@@ -22,3 +22,24 @@ export interface CartLineProp {
   quantity: number;
   totalLinePrice: number;
 }
+
+export interface LoginUserProp {
+  userName: string;
+  password: string;
+}
+
+export interface RegisterUserProp {
+  firstName: string;
+  userName: string;
+  email: string;
+  phoneNumber: string;
+  password: string;
+}
+
+export interface AuthUserProp {
+  firstName: string;
+  userName: string;
+  email: string;
+  phoneNumber: string;
+  token: string;
+}

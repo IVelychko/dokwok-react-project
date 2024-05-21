@@ -1,5 +1,5 @@
 import Menu from "./components/menu/Menu";
-import { ProductCategoryDataProp } from "./helpers/Interfaces";
+import { AuthUserProp, ProductCategoryDataProp } from "./helpers/Interfaces";
 import {
   RouteObject,
   RouterProvider,
@@ -14,6 +14,9 @@ import Cart from "./components/cart/Cart";
 import OrderForm from "./components/order/OrderForm";
 import Login from "./components/authorization/Login";
 import Register from "./components/authorization/Register";
+import PersonalCabinet from "./components/personal_cabinet/PersonalCabinet";
+import { createContext, useMemo, useState } from "react";
+import { AuthUserStateType } from "./hooks/hooks";
 
 const getRoutes = (productCategories: ProductCategoryDataProp[]) => {
   const childrenRoutes: RouteObject[] = [];
@@ -38,6 +41,10 @@ const getRoutes = (productCategories: ProductCategoryDataProp[]) => {
   childrenRoutes.push({
     path: "/register",
     element: <Register />,
+  });
+  childrenRoutes.push({
+    path: "/personal-cabinet",
+    element: <PersonalCabinet />,
   });
   productCategories.forEach((category) => {
     childrenRoutes.push({
@@ -67,6 +74,28 @@ try {
 
 const router = createBrowserRouter(routes);
 
+export const AuthContext = createContext<AuthUserStateType | null>(null);
+
 export default function App() {
-  return <RouterProvider router={router} />;
+  const [authUser, setAuthUser] = useState<AuthUserProp>({
+    firstName: "",
+    userName: "",
+    email: "",
+    phoneNumber: "",
+    token: "",
+  });
+
+  const contextValue = useMemo<AuthUserStateType>(
+    () => ({
+      authUser,
+      setAuthUser,
+    }),
+    [authUser]
+  );
+
+  return (
+    <AuthContext.Provider value={contextValue}>
+      <RouterProvider router={router} />
+    </AuthContext.Provider>
+  );
 }

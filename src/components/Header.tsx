@@ -29,7 +29,11 @@ export default function Header({ cartProp }: Readonly<Props>) {
         <Link to="roll">Роли</Link>
         <Link to="cold-beverage">Прохолодні напої</Link>
       </div>
-      <Link className="account-icon" to="/login" title="До вашого акаунту">
+      <Link
+        className="account-icon"
+        to="/personal-cabinet"
+        title="До вашого акаунту"
+      >
         <img
           className="account-icon-img"
           alt="account"
