@@ -1,7 +1,7 @@
 import { ProductDataProp } from "../../helpers/Interfaces";
 import { useLoaderData } from "react-router-dom";
 import { addItemToCart } from "../../functions/cartFunctions";
-import { CartStateType, useCart } from "../../hooks/hooks";
+import { ContextStateType, useMyContext } from "../../hooks/hooks";
 import GridItemContainer from "./GridItemContainer";
 
 interface Props {
@@ -10,11 +10,11 @@ interface Props {
 
 export default function Menu({ heading }: Readonly<Props>) {
   const productData: ProductDataProp[] = useLoaderData() as ProductDataProp[];
-  const cartState: CartStateType = useCart();
+  const contextState: ContextStateType = useMyContext();
   const handleAddToCart = (productId: number, quantity: number) => {
     addItemToCart(productId, quantity)
       .then((cart) => {
-        cartState.setCartProp(cart);
+        contextState.setCartProp(cart);
         console.log("Item was added to the cart.");
       })
       .catch((error) => console.error(error));

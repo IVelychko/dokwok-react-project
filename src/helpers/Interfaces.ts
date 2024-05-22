@@ -37,9 +37,9 @@ export interface RegisterUserProp {
 }
 
 export interface AuthUserProp {
+  id: string;
   firstName: string;
   userName: string;
   email: string;
   phoneNumber: string;
-  token: string;
 }

@@ -1,4 +1,5 @@
 @import "./authorization.css";
+@import "./personal-cabinet.css";
 /* normal size calculation with border and padding */
 * {
   box-sizing: border-box;

@@ -1,23 +1,28 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LoginUserProp } from "../../helpers/Interfaces";
-import { AuthUserStateType, useAuth } from "../../hooks/hooks";
+import { ContextStateType, useMyContext } from "../../hooks/hooks";
 import { login } from "../../functions/authFunctions";
+import { fetchUserDataById } from "../../functions/userFunctions";
 
 export default function Login() {
   const [formData, setFormData] = useState<LoginUserProp>({
     userName: "",
     password: "",
   });
-  const authUserState: AuthUserStateType | null = useAuth();
+  const contextState: ContextStateType = useMyContext();
   const navigate = useNavigate();
 
   const handleLoginClick = () => {
     login(formData)
-      .then((user) => {
-        authUserState?.setAuthUser(user);
-        console.log(`User ${user.userName} has just logged in.`);
-        navigate("/personal-cabinet", { replace: true });
+      .then(() => {
+        fetchUserDataById(null)
+          .then((user) => {
+            contextState.setAuthUserProp(user);
+            console.log(`User ${user.userName} has just logged in.`);
+            navigate("/account/profile", { replace: true });
+          })
+          .catch((error) => console.error(error));
       })
       .catch((error) => console.error(error));
   };

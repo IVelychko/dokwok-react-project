@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
-import { CartStateType, useCart } from "../../hooks/hooks";
+import { ContextStateType, useMyContext } from "../../hooks/hooks";
 import CartContainer from "./CartContainer";
 
 export default function Cart() {
-  const cartState: CartStateType = useCart();
-  const cart = cartState.cartProp;
-  const setCart = cartState.setCartProp;
+  const contextState: ContextStateType = useMyContext();
+  const cart = contextState.cartProp;
+  const setCart = contextState.setCartProp;
 
   if (cart === null || cart.lines.length < 1) {
     return (

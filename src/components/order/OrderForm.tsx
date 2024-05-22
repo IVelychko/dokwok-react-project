@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CartStateType, useCart } from "../../hooks/hooks";
+import { ContextStateType, useMyContext } from "../../hooks/hooks";
 import { Link } from "react-router-dom";
 import OrderProductsContainer from "./OrderProductsContainer";
 
@@ -10,8 +10,8 @@ export default function OrderForm() {
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [paymentType, setPaymentType] = useState("");
 
-  const cartState: CartStateType = useCart();
-  const cart = cartState.cartProp;
+  const contextState: ContextStateType = useMyContext();
+  const cart = contextState.cartProp;
 
   return (
     <div className="main">

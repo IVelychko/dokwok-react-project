@@ -31,7 +31,7 @@ export default function Header({ cartProp }: Readonly<Props>) {
       </div>
       <Link
         className="account-icon"
-        to="/personal-cabinet"
+        to="/account/profile"
         title="До вашого акаунту"
       >
         <img
