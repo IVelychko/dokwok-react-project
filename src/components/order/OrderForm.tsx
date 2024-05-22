@@ -14,7 +14,7 @@ export default function OrderForm() {
   const cart = contextState.cartProp;
 
   return (
-    <div className="main">
+    <main>
       <div className="order-wrapper">
         <div className="order-form-wrapper">
           <div className="manage-order">
@@ -28,12 +28,12 @@ export default function OrderForm() {
             >
               Контактна інформація
             </div>
-            <form id="form1" encType="multipart/form-data">
-              <div className="form-input-block">
-                <div className="form-input-block-element">
+            <form encType="multipart/form-data">
+              <div className="order-form-input-block">
+                <div className="order-form-input-block-element">
                   <label htmlFor="customer-name">Ім'я</label>
                 </div>
-                <div className="form-input-block-element">
+                <div className="order-form-input-block-element">
                   <input
                     type="text"
                     id="customer-name"
@@ -47,11 +47,11 @@ export default function OrderForm() {
                   Введіть ваше ім’я
                 </div>
               </div>
-              <div className="form-input-block">
-                <div className="form-input-block-element">
+              <div className="order-form-input-block">
+                <div className="order-form-input-block-element">
                   <label htmlFor="customer-phone">Телефон</label>
                 </div>
-                <div className="form-input-block-element">
+                <div className="order-form-input-block-element">
                   <input
                     type="text"
                     id="customer-phone"
@@ -65,11 +65,11 @@ export default function OrderForm() {
                   Введіть ваш номер телефону
                 </div>
               </div>
-              <div className="form-input-block">
-                <div className="form-input-block-element">
+              <div className="order-form-input-block">
+                <div className="order-form-input-block-element">
                   <label htmlFor="customer-email">Email</label>
                 </div>
-                <div className="form-input-block-element">
+                <div className="order-form-input-block-element">
                   <input
                     type="text"
                     id="customer-email"
@@ -83,13 +83,13 @@ export default function OrderForm() {
                   Введіть правильний email
                 </div>
               </div>
-              <div className="form-input-block">
-                <div className="form-input-block-element">
+              <div className="order-form-input-block">
+                <div className="order-form-input-block-element">
                   <label htmlFor="customer-delivery-address">
                     Адреса доставки
                   </label>
                 </div>
-                <div className="form-input-block-element">
+                <div className="order-form-input-block-element">
                   <input
                     type="text"
                     id="customer-delivery-address"
@@ -103,11 +103,11 @@ export default function OrderForm() {
                   Введіть адресу доставки
                 </div>
               </div>
-              <div className="form-input-block">
-                <div className="form-input-block-element">
+              <div className="order-form-input-block">
+                <div className="order-form-input-block-element">
                   <label htmlFor="payment-type">Тип оплати</label>
                 </div>
-                <div className="form-input-block-element">
+                <div className="order-form-input-block-element">
                   <div id="payment-type">
                     <input
                       type="radio"
@@ -165,6 +165,6 @@ export default function OrderForm() {
           </Link>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

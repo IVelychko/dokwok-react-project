@@ -1,6 +1,6 @@
 export default function Register() {
   return (
-    <div className="main">
+    <main>
       <div className="auth-heading">Реєстрація користувача</div>
       <div className="auth-form-wrapper">
         <form className="auth-form">
@@ -87,6 +87,6 @@ export default function Register() {
         </form>
         <button className="auth-button">Зареєструватись</button>
       </div>
-    </div>
+    </main>
   );
 }

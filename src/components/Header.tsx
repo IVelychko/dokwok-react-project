@@ -17,18 +17,18 @@ export default function Header({ cartProp }: Readonly<Props>) {
   }, [cartProp.lines]);
 
   return (
-    <div className="header">
+    <header>
       <div className="header-logo">
         <Link to="/" title="На головну">
           <img alt="logo" src="/src/assets/header/header-wok-logo.png" />
         </Link>
       </div>
-      <div className="nav-list">
+      <nav>
         <Link to="food-set">Сети</Link>
         <Link to="noodles">Локшина</Link>
         <Link to="roll">Роли</Link>
         <Link to="cold-beverage">Прохолодні напої</Link>
-      </div>
+      </nav>
       <Link
         className="account-icon"
         to="/account/profile"
@@ -61,6 +61,6 @@ export default function Header({ cartProp }: Readonly<Props>) {
           <Link to="cart">Кошик</Link>
         </div>
       </label>
-    </div>
+    </header>
   );
 }

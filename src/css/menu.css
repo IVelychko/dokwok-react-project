@@ -1,0 +1,130 @@
+/* grid container */
+.grid-container {
+  display: grid; /* determines block as grid container */
+  grid-template-columns: 300px; /* sets quantity and width of grid columns. For example, if you need 3 columns in grid container - grid-template-columns: auto auto auto */
+  grid-auto-rows: 480px; /* sets height of grid rows */
+
+  row-gap: 12px;
+  column-gap: 12px;
+
+  padding-left: 3%;
+  padding-right: 3%;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  justify-content: center;
+  background: white;
+}
+/* items in grid container */
+.grid-item {
+  padding: 14px;
+  background: white;
+  border-radius: 17px;
+}
+/* content block in grid item */
+.item-content {
+  height: 90%;
+  background: white;
+}
+/* block for image in item content  */
+.image-block {
+  height: 200px;
+}
+/* 100% size for image to fit image block */
+.image-block img {
+  width: 100%;
+  height: 100%;
+}
+/* title of item in item-content */
+.item-title {
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 25px;
+  letter-spacing: 0.035em;
+  color: #000000;
+  padding-top: 11px;
+  padding-bottom: 7px;
+}
+/* description of item in item-content */
+.item-description {
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 400px;
+  font-size: 16px;
+  color: gray;
+}
+/* block with buy button and price block */
+.buy {
+  height: 10%;
+  display: flex;
+  background: white;
+  padding-top: 5px;
+  padding-bottom: 0;
+}
+/* block for price text in buy block */
+.price {
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 24px;
+  color: black;
+  margin-right: 0;
+  margin-bottom: 0;
+  margin-top: auto;
+  margin-left: auto;
+}
+.button-to-cart {
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  color: #ff641a;
+  background-color: white;
+  border: none;
+  padding: 10px;
+  margin-right: auto;
+  margin-bottom: 0;
+  margin-top: auto;
+  margin-left: 0;
+}
+/* hover event for grid item */
+.grid-item:hover {
+  -moz-box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
+  -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
+  transition: 0.1s;
+}
+.grid-item:hover .item-description {
+  color: black;
+  transition: 0.1s;
+}
+.button-to-cart:hover {
+  background: #ff641a;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+/* media rule for screens wider than 660px */
+@media only screen and (min-width: 660px) {
+  .grid-container {
+    grid-template-columns: 320px 320px;
+  }
+}
+/* media rule for screens wider than 1010px */
+@media only screen and (min-width: 1010px) {
+  .grid-container {
+    grid-template-columns: 320px 320px 320px;
+  }
+}
+/* media rule for screens wider than 1350px */
+@media only screen and (min-width: 1350px) {
+  .grid-container {
+    grid-template-columns: 320px 320px 320px 320px;
+  }
+}
+/* media rule for screens wider than 1670px */
+@media only screen and (min-width: 1670px) {
+  .grid-container {
+    grid-template-columns: 320px 320px 320px 320px 320px;
+  }
+}

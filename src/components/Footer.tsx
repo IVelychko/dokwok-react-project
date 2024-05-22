@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <div className="footer">
+    <footer>
       <div className="footer-logo">
         <Link to="/" title="На головну">
           <img alt="logo" src="/src/assets/header/header-wok-logo.png" />
@@ -26,6 +26,6 @@ export default function Footer() {
           <img alt="partners" src="/src/assets/footer/Partners.png" />
         </div>
       </div>
-    </div>
+    </footer>
   );
 }

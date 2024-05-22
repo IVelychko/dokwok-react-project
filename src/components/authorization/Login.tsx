@@ -28,7 +28,7 @@ export default function Login() {
   };
 
   return (
-    <div className="main">
+    <main>
       <div className="auth-heading">Вхід в особистий кабінет</div>
       <div className="auth-form-wrapper">
         <form className="auth-form">
@@ -93,6 +93,6 @@ export default function Login() {
           Зареєструйтесь
         </Link>
       </div>
-    </div>
+    </main>
   );
 }

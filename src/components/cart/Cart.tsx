@@ -9,7 +9,7 @@ export default function Cart() {
 
   if (cart === null || cart.lines.length < 1) {
     return (
-      <div className="main">
+      <main>
         <div className="shopping-wrapper">
           <div
             style={{
@@ -26,12 +26,12 @@ export default function Cart() {
             На головну
           </Link>
         </div>
-      </div>
+      </main>
     );
   }
 
   return (
-    <div className="main">
+    <main>
       <div className="shopping-wrapper">
         <h3
           style={{
@@ -60,6 +60,6 @@ export default function Cart() {
           Оформити замовлення
         </Link>
       </div>
-    </div>
+    </main>
   );
 }

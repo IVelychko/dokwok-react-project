@@ -33,7 +33,7 @@ export default function PersonalCabinet({ contentType }: Props) {
     content = <OrderHistory />;
   }
   return (
-    <div className="main">
+    <main>
       <div className="account-wrapper">
         <div className="account-side-bar">
           <nav>
@@ -48,6 +48,6 @@ export default function PersonalCabinet({ contentType }: Props) {
         </div>
         <div className="account-content">{content}</div>
       </div>
-    </div>
+    </main>
   );
 }

@@ -26,9 +26,9 @@ export default function Menu({ heading }: Readonly<Props>) {
   }
 
   return (
-    <div className="main">
+    <main>
       {contentHeading ? <div className="heading">{heading}</div> : null}
       <GridItemContainer products={productData} onAddToCart={handleAddToCart} />
-    </div>
+    </main>
   );
 }
