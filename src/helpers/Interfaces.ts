@@ -23,6 +23,35 @@ export interface CartLineProp {
   totalLinePrice: number;
 }
 
+export interface OrderFormProp {
+  customerName: string;
+  phoneNumber: string;
+  email: string;
+  deliveryAddress: string;
+  paymentType: string;
+  userId: string | null;
+}
+
+export interface OrderLineProp {
+  quantity: number;
+  totalLinePrice: number;
+  product: ProductDataProp;
+}
+
+export interface OrderProp {
+  id: number;
+  customerName: string;
+  phoneNumber: string;
+  email: string;
+  deliveryAddress: string;
+  paymentType: string;
+  totalOrderPrice: number;
+  CreationDate: string;
+  isCheckedOut: boolean;
+  userId: string | null;
+  orderLines: OrderLineProp[];
+}
+
 export interface LoginUserProp {
   userName: string;
   password: string;

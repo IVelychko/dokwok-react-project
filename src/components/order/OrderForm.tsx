@@ -2,6 +2,8 @@ import { useState } from "react";
 import { ContextStateType, useMyContext } from "../../hooks/hooks";
 import { Link } from "react-router-dom";
 import OrderProductsContainer from "./OrderProductsContainer";
+import { addOrder } from "../../functions/orderFunctions";
+import { OrderProp } from "../../helpers/Interfaces";
 
 export default function OrderForm() {
   const [customerName, setCustomerName] = useState("");
@@ -9,9 +11,57 @@ export default function OrderForm() {
   const [customerEmail, setCustomerEmail] = useState("");
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [paymentType, setPaymentType] = useState("");
+  const [orderResult, setOrderResult] = useState<string | null>(null);
+  const [order, setOrder] = useState<OrderProp | null>(null);
 
   const contextState: ContextStateType = useMyContext();
   const cart = contextState.cartProp;
+  const user = contextState.authUserProp;
+
+  const handleCreateOrderClick = () => {
+    addOrder({
+      customerName: customerName,
+      phoneNumber: customerPhone,
+      email: customerEmail,
+      deliveryAddress: deliveryAddress,
+      paymentType: "cash",
+      userId: user.id !== "" ? user.id : null,
+    })
+      .then((order) => {
+        console.log(`New order was created: ${order.totalOrderPrice}`);
+        setOrderResult("successful");
+        setOrder(order);
+      })
+      .catch((error) => {
+        console.error(error);
+        setOrderResult("unsuccessful");
+      });
+  };
+
+  if (orderResult !== null) {
+    return (
+      <main>
+        <div className="order-wrapper">
+          <div
+            style={{
+              textAlign: "center",
+              fontSize: 30,
+              fontFamily: "Montserrat",
+              fontWeight: 500,
+              marginTop: 100,
+            }}
+          >
+            {orderResult === "successful"
+              ? `Замовлення №${order?.id} було створено успішно`
+              : "Під час створення замовлення виникла помилка. Будь ласка повторіть спробу пізніше"}
+          </div>
+          <Link to={"/"} style={{ marginTop: 20 }} className="go-home-button">
+            На головну
+          </Link>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main>
@@ -156,13 +206,13 @@ export default function OrderForm() {
               <div style={{ justifySelf: "right" }}>&nbsp;грн</div>
             </div>
           </div>
-          <Link
-            to={"/order"}
+          <button
+            onClick={handleCreateOrderClick}
             style={{ marginTop: 20, marginBottom: 20 }}
             className="regular-button"
           >
             Створити замовлення
-          </Link>
+          </button>
         </div>
       </div>
     </main>

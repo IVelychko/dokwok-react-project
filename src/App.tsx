@@ -1,5 +1,5 @@
 import Menu from "./components/menu/Menu";
-import { ProductCategoryDataProp } from "./helpers/Interfaces";
+import { ProductCategoryDataProp, ProductDataProp } from "./helpers/Interfaces";
 import {
   RouteObject,
   RouterProvider,
@@ -14,39 +14,58 @@ import Cart from "./components/cart/Cart";
 import OrderForm from "./components/order/OrderForm";
 import Login from "./components/authorization/Login";
 import Register from "./components/authorization/Register";
-import PersonalCabinet from "./components/personal_cabinet/PersonalCabinet";
+import AccountLayout from "./components/account/AccountLayout";
+import Profile from "./components/account/Profile";
+import OrderHistory from "./components/account/OrderHistory";
+import OrderResult from "./components/order/OrderResult";
 
 const getRoutes = (productCategories: ProductCategoryDataProp[]) => {
   const childrenRoutes: RouteObject[] = [];
 
   childrenRoutes.push({
+    path: "account",
+    element: <AccountLayout />,
+    children: [
+      {
+        path: "profile",
+        element: <Profile />,
+      },
+      {
+        path: "orders",
+        element: <OrderHistory />,
+      },
+    ],
+  });
+
+  childrenRoutes.push({
     index: true,
     element: <Menu heading="Всі пропозиції" />,
-    loader: async () => await fetchProductData(null),
+    loader: async () => {
+      try {
+        const data = await fetchProductData(null);
+        return data;
+      } catch (error) {
+        console.error(error);
+        const emptyArray: ProductDataProp[] = [];
+        return emptyArray;
+      }
+    },
   });
   childrenRoutes.push({
-    path: "/cart",
+    path: "cart",
     element: <Cart />,
   });
   childrenRoutes.push({
-    path: "/order",
+    path: "order",
     element: <OrderForm />,
   });
   childrenRoutes.push({
-    path: "/login",
+    path: "login",
     element: <Login />,
   });
   childrenRoutes.push({
-    path: "/register",
+    path: "register",
     element: <Register />,
-  });
-  childrenRoutes.push({
-    path: "/account/profile",
-    element: <PersonalCabinet contentType="Профіль" />,
-  });
-  childrenRoutes.push({
-    path: "/account/orders",
-    element: <PersonalCabinet contentType="Історія замовлень" />,
   });
   productCategories.forEach((category) => {
     childrenRoutes.push({
