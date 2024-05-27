@@ -1,35 +1,29 @@
 import Header from "./Header";
 import Footer from "./Footer";
-import { Outlet } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { AuthUserProp, CartProp } from "../helpers/Interfaces";
+import { Outlet, useLoaderData } from "react-router-dom";
+import { useCallback, useState } from "react";
+import { AuthUserProp, CartProp, RootLoaderData } from "../helpers/Interfaces";
 import { ContextStateType } from "../hooks/hooks";
-import { fetchCart } from "../functions/cartFunctions";
-import { fetchUserDataById } from "../functions/userFunctions";
 
 export default function RootLayout() {
-  const [cartProp, setCartProp] = useState<CartProp>({
-    lines: [],
-    totalCartPrice: 0,
-  });
-  const [authUserProp, setAuthUserProp] = useState<AuthUserProp>({
-    id: "",
-    firstName: "",
-    userName: "",
-    email: "",
-    phoneNumber: "",
-  });
+  const rootLoaderData: RootLoaderData = useLoaderData() as RootLoaderData;
+  const [cartProp, setCartProp] = useState<CartProp>(rootLoaderData.cart);
+  const [authUserProp, setAuthUserProp] = useState<AuthUserProp>(
+    rootLoaderData.user ?? {
+      id: "",
+      firstName: "",
+      userName: "",
+      email: "",
+      phoneNumber: "",
+    }
+  );
 
-  useEffect(() => {
-    fetchCart()
-      .then((cart) => setCartProp(cart))
-      .catch((err) => console.error(err));
-    fetchUserDataById(null)
-      .then((user) => {
-        setAuthUserProp(user);
-        console.log("User was set in RootLayout.");
-      })
-      .catch((error) => console.error(error));
+  const handleCartChange = useCallback((cart: CartProp) => {
+    setCartProp(cart);
+  }, []);
+
+  const handleUserChange = useCallback((user: AuthUserProp) => {
+    setAuthUserProp(user);
   }, []);
 
   return (
@@ -39,9 +33,9 @@ export default function RootLayout() {
         context={
           {
             cartProp,
-            setCartProp,
+            setCartProp: handleCartChange,
             authUserProp,
-            setAuthUserProp,
+            setAuthUserProp: handleUserChange,
           } satisfies ContextStateType
         }
       />

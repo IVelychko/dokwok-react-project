@@ -38,14 +38,33 @@
   border: none;
   cursor: pointer;
 }
-.account-profile {
+.account-profile,
+.account-orders {
   padding: 14px;
 }
-.profile-heading {
+.account-heading {
   font-size: 28px;
   font-family: "Montserrat", Arial, Helvetica, sans-serif;
   font-style: normal;
   font-weight: 700;
+}
+.acc-order-heading {
+  display: flex;
+  margin-bottom: 14px;
+}
+.acc-order-number {
+  font-size: 20px;
+  font-family: "Montserrat", Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+}
+.acc-order-status {
+  font-size: 20px;
+  font-family: "Montserrat", Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  margin-left: auto;
+  margin-right: 0;
 }
 .profile-content {
   padding-top: 12px;
@@ -89,4 +108,134 @@
 .profile-change-button img {
   width: 20px;
   height: 20px;
+}
+.acc-orders-content {
+  padding-top: 15px;
+}
+.acc-order {
+  padding-top: 15px;
+  align-items: center;
+  border-top: 1px solid #e4e4e4;
+}
+.acc-order-details {
+  padding-bottom: 15px;
+}
+.acc-order-content {
+  display: flex;
+  align-items: center;
+  background: white;
+  height: 100%;
+  width: 100%;
+}
+.acc-order-product-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+.acc-order-product-item-content-img {
+  height: 80px;
+  min-width: 120px;
+  max-width: 120px;
+}
+.acc-order-product-item-content-img img {
+  width: 100%;
+}
+.acc-order-product-item-content-title {
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+}
+.acc-order-product-item-content-title-name {
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: 0.035em;
+  color: #000000;
+  margin-bottom: 15px;
+}
+.acc-order-product-item-content-title-weight {
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  color: #a6a6a6;
+}
+.acc-order-product-money {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+.acc-order-product-quantity {
+  text-align: center;
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-size: 15px;
+  color: black;
+  margin-left: 0;
+  margin-right: auto;
+}
+.acc-order-product-price {
+  display: flex;
+  text-align: right;
+  width: 140px;
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 22px;
+  color: black;
+  justify-content: right;
+  margin-right: 0;
+}
+.acc-order-product-price-currency {
+  margin-left: 7px;
+}
+.acc-order-info {
+  display: flex;
+}
+.acc-order-address {
+  margin-right: 0;
+  margin-left: auto;
+}
+.acc-order-recipient,
+.acc-order-address {
+  margin-top: 10px;
+}
+.acc-order-recipient-heading,
+.acc-order-address-heading,
+.acc-order-price-heading {
+  font-family: "Montserrat", Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: gray;
+}
+.acc-order-recipient-info,
+.acc-order-address-info {
+  margin-top: 5px;
+}
+.recipient-detail {
+  padding-top: 1px;
+  font-size: 16px;
+}
+.acc-order-price {
+  text-align: right;
+  margin-top: 10px;
+  margin-right: 0;
+  margin-left: auto;
+}
+.acc-order-price-info {
+  justify-content: right;
+  display: flex;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 17px;
+  margin-top: 5px;
+}
+.acc-order-price-info-number {
+  display: flex;
+  width: 107px;
+  justify-content: right;
 }

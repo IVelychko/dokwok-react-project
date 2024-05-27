@@ -47,7 +47,7 @@ export interface OrderProp {
   paymentType: string;
   totalOrderPrice: number;
   CreationDate: string;
-  isCheckedOut: boolean;
+  status: string;
   userId: string | null;
   orderLines: OrderLineProp[];
 }
@@ -71,4 +71,9 @@ export interface AuthUserProp {
   userName: string;
   email: string;
   phoneNumber: string;
+}
+
+export interface RootLoaderData {
+  cart: CartProp;
+  user: AuthUserProp | null;
 }

@@ -6,7 +6,7 @@ export default function Profile() {
 
   return (
     <div className="account-profile">
-      <div className="profile-heading">Профіль</div>
+      <div className="account-heading">Профіль</div>
       <div className="profile-content">
         <div className="profile-line">
           <img src="/src/assets/profile/user.png" alt="profile" />

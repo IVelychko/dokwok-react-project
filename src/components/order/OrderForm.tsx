@@ -6,17 +6,17 @@ import { addOrder } from "../../functions/orderFunctions";
 import { OrderProp } from "../../helpers/Interfaces";
 
 export default function OrderForm() {
-  const [customerName, setCustomerName] = useState("");
-  const [customerPhone, setCustomerPhone] = useState("");
-  const [customerEmail, setCustomerEmail] = useState("");
+  const contextState: ContextStateType = useMyContext();
+  const cart = contextState.cartProp;
+  const user = contextState.authUserProp;
+
+  const [customerName, setCustomerName] = useState(user.firstName);
+  const [customerPhone, setCustomerPhone] = useState(user.phoneNumber);
+  const [customerEmail, setCustomerEmail] = useState(user.email);
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [paymentType, setPaymentType] = useState("");
   const [orderResult, setOrderResult] = useState<string | null>(null);
   const [order, setOrder] = useState<OrderProp | null>(null);
-
-  const contextState: ContextStateType = useMyContext();
-  const cart = contextState.cartProp;
-  const user = contextState.authUserProp;
 
   const handleCreateOrderClick = () => {
     addOrder({
@@ -24,13 +24,14 @@ export default function OrderForm() {
       phoneNumber: customerPhone,
       email: customerEmail,
       deliveryAddress: deliveryAddress,
-      paymentType: "cash",
+      paymentType: paymentType,
       userId: user.id !== "" ? user.id : null,
     })
       .then((order) => {
         console.log(`New order was created: ${order.totalOrderPrice}`);
         setOrderResult("successful");
         setOrder(order);
+        contextState.setCartProp({ totalCartPrice: 0, lines: [] });
       })
       .catch((error) => {
         console.error(error);
@@ -39,9 +40,11 @@ export default function OrderForm() {
   };
 
   if (orderResult !== null) {
+    const result = orderResult;
+    const resultOrder = order;
     return (
       <main>
-        <div className="order-wrapper">
+        <div className="order-result-wrapper">
           <div
             style={{
               textAlign: "center",
@@ -51,8 +54,8 @@ export default function OrderForm() {
               marginTop: 100,
             }}
           >
-            {orderResult === "successful"
-              ? `Замовлення №${order?.id} було створено успішно`
+            {result === "successful"
+              ? `Замовлення №${resultOrder?.id} було створено успішно`
               : "Під час створення замовлення виникла помилка. Будь ласка повторіть спробу пізніше"}
           </div>
           <Link to={"/"} style={{ marginTop: 20 }} className="go-home-button">

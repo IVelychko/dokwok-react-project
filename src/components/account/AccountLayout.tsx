@@ -1,27 +1,32 @@
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLoaderData, useNavigate } from "react-router-dom";
 import { ContextStateType, useMyContext } from "../../hooks/hooks";
-import { isLoggedIn, logOut } from "../../functions/authFunctions";
+import { logOut } from "../../functions/authFunctions";
+import { AuthUserProp } from "../../helpers/Interfaces";
 import { useEffect } from "react";
 
 export default function AccountLayout() {
+  const user: AuthUserProp = useLoaderData() as AuthUserProp;
   const contextState: ContextStateType = useMyContext();
+  const handleUserChange = contextState.setAuthUserProp;
   const navigate = useNavigate();
 
   useEffect(() => {
-    isLoggedIn()
-      .then((user) => {
-        contextState.setAuthUserProp(user);
-        console.log("User is logged in, user data is retrieved.");
-      })
-      .catch((error) => {
-        console.error(error);
-        navigate("/login");
-      });
-  }, []);
+    handleUserChange(user);
+    console.log("AccountLayout effect");
+  }, [handleUserChange, user]);
 
   const handleLogOutClick = () => {
     logOut()
-      .then(() => navigate("/"))
+      .then(() => {
+        handleUserChange({
+          id: "",
+          firstName: "",
+          userName: "",
+          email: "",
+          phoneNumber: "",
+        });
+        navigate("/");
+      })
       .catch((error) => console.error(error));
   };
 

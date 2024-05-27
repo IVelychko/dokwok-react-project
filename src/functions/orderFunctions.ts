@@ -15,3 +15,16 @@ export async function addOrder(orderForm: OrderFormProp) {
   }
   return response.data;
 }
+
+export async function fetchUserOrders(userId: string) {
+  const response = await axios.get<OrderProp[]>(
+    `${BASE_API_URL}/orders?userId=${userId}`,
+    {
+      withCredentials: true,
+    }
+  );
+  if (response.status !== 200) {
+    throw new Error("There was an error in getting the orders of the user.");
+  }
+  return response.data;
+}
