@@ -1,0 +1,30 @@
+@import "/node_modules/bootstrap/scss/functions";
+
+@import "/node_modules/bootstrap/scss/variables";
+
+$my-form-color: #e2520d;
+
+$input-focus-border-color: $my-form-color;
+
+$input-focus-box-shadow: 0 0 0 .25rem rgba($my-form-color, .25);
+
+
+$form-check-input-focus-border: $my-form-color;
+$form-check-input-checked-color: $my-form-color;
+$form-check-input-checked-bg-color: $my-form-color;
+$form-check-input-checked-border-color: $my-form-color;
+$form-check-input-focus-box-shadow: 0 0 0 .25rem rgba($my-form-color, .25);
+
+@import "/node_modules/bootstrap/scss/variables-dark";
+
+@import "/node_modules/bootstrap/scss/maps";
+@import "/node_modules/bootstrap/scss/mixins";
+@import "/node_modules/bootstrap/scss/root";
+@import "/node_modules/bootstrap/scss/bootstrap-utilities.scss";
+@import "/node_modules/bootstrap/scss/containers";
+@import "/node_modules/bootstrap/scss/grid";
+@import "/node_modules/bootstrap/scss/navbar";
+@import "/node_modules/bootstrap/scss/buttons";
+@import "/node_modules/bootstrap/scss/tables";
+@import "/node_modules/bootstrap/scss/forms";
+

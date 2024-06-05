@@ -7,8 +7,27 @@ export interface ProductDataProp {
   categoryName: string;
 }
 
+export interface ProductPostData {
+  name: string;
+  price: number;
+  description: string;
+  categoryId: number;
+}
+
+export interface ProductPutData {
+  id: number;
+  name: string;
+  price: number;
+  description: string;
+  categoryId: number;
+}
+
 export interface ProductCategoryDataProp {
   id: number;
+  name: string;
+}
+
+export interface ProductCategoryPostData {
   name: string;
 }
 
@@ -33,9 +52,25 @@ export interface OrderFormProp {
 }
 
 export interface OrderLineProp {
+  id: number;
+  orderId: number;
+  productId: number;
   quantity: number;
   totalLinePrice: number;
   product: ProductDataProp;
+}
+
+export interface OrderLinePostProp {
+  orderId: number;
+  productId: number;
+  quantity: number;
+}
+
+export interface OrderLinePutProp {
+  id: number;
+  orderId: number;
+  productId: number;
+  quantity: number;
 }
 
 export interface OrderProp {
@@ -46,10 +81,23 @@ export interface OrderProp {
   deliveryAddress: string;
   paymentType: string;
   totalOrderPrice: number;
-  CreationDate: string;
+  creationDate: string;
   status: string;
   userId: string | null;
   orderLines: OrderLineProp[];
+}
+
+export interface OrderPutProp {
+  id: number;
+  customerName: string;
+  phoneNumber: string;
+  email: string;
+  deliveryAddress: string;
+  paymentType: string;
+  totalOrderPrice: number;
+  creationDate: string;
+  status: string;
+  userId: string | null;
 }
 
 export interface LoginUserProp {

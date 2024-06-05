@@ -5,6 +5,7 @@
 @import "./menu.css";
 @import "./cart.css";
 @import "./order.css";
+@import "./admin.css";
 
 /* normal size calculation with border and padding */
 * {
@@ -41,9 +42,10 @@ main .heading {
   font-weight: 700;
   color: #000000;
 }
-input[type="text"] {
+input[type="text"],
+input[type="password"] {
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
   width: 100%;
-  padding: 12px;
   border: 1px solid #ccc;
   border-radius: 4px;
   resize: vertical;
@@ -59,10 +61,6 @@ input[type="submit"] {
   cursor: pointer;
   float: right;
   font-size: 17px;
-}
-label {
-  padding: 12px 12px 12px 0;
-  display: inline-block;
 }
 .error-input {
   display: none;

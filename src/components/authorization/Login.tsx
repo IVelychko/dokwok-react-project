@@ -32,12 +32,13 @@ export default function Login() {
       <div className="auth-heading">Вхід в особистий кабінет</div>
       <div className="auth-form-wrapper">
         <form className="auth-form">
-          <div className="auth-form-input-block">
+          <div className="auth-form-input-block form-group">
             <div className="auth-form-input-block-element">
               <label htmlFor="user-login">Логін</label>
             </div>
             <div className="form-input-block-element">
               <input
+                className="form-control"
                 type="text"
                 id="user-login"
                 name="user_login"
@@ -54,13 +55,14 @@ export default function Login() {
               Введіть ваш логін
             </div>
           </div>
-          <div className="auth-form-input-block">
+          <div className="auth-form-input-block form-group">
             <div className="auth-form-input-block-element">
               <label htmlFor="user-password">Пароль</label>
             </div>
             <div className="form-input-block-element">
               <input
-                type="text"
+                className="form-control"
+                type="password"
                 id="user-password"
                 name="user_password"
                 placeholder="Ваш пароль"

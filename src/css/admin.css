@@ -1,0 +1,27 @@
+table {
+  caption-side: bottom;
+  border-collapse: collapse;
+}
+tbody,
+td,
+tfoot,
+th,
+thead,
+tr {
+  border-color: inherit;
+  border-style: solid;
+  border-width: 0;
+}
+th {
+  text-align: left;
+}
+.admin-products-button {
+  margin-right: 5px;
+}
+.editor-header {
+  font-size: calc(1.3rem + 0.6vw);
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}

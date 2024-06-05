@@ -35,12 +35,13 @@ export default function Register() {
       <div className="auth-heading">Реєстрація користувача</div>
       <div className="auth-form-wrapper">
         <form className="auth-form">
-          <div className="auth-form-input-block">
+          <div className="auth-form-input-block form-group">
             <div className="auth-form-input-block-element">
               <label htmlFor="user-login">Логін</label>
             </div>
             <div className="form-input-block-element">
               <input
+                className="form-control"
                 type="text"
                 id="user-login"
                 name="user_login"
@@ -57,13 +58,14 @@ export default function Register() {
               Введіть ваш логін
             </div>
           </div>
-          <div className="auth-form-input-block">
+          <div className="auth-form-input-block form-group">
             <div className="auth-form-input-block-element">
               <label htmlFor="user-password">Пароль</label>
             </div>
             <div className="form-input-block-element">
               <input
-                type="text"
+                className="form-control"
+                type="password"
                 id="user-password"
                 name="user_password"
                 placeholder="Ваш пароль"
@@ -79,12 +81,13 @@ export default function Register() {
               Введіть ваш пароль
             </div>
           </div>
-          <div className="auth-form-input-block">
+          <div className="auth-form-input-block form-group">
             <div className="auth-form-input-block-element">
               <label htmlFor="user-fname">Ім'я</label>
             </div>
             <div className="form-input-block-element">
               <input
+                className="form-control"
                 type="text"
                 id="user-fname"
                 name="user_fname"
@@ -101,12 +104,13 @@ export default function Register() {
               Введіть ваше ім'я
             </div>
           </div>
-          <div className="auth-form-input-block">
+          <div className="auth-form-input-block form-group">
             <div className="auth-form-input-block-element">
               <label htmlFor="user-phone">Номер телефону</label>
             </div>
             <div className="form-input-block-element">
               <input
+                className="form-control"
                 type="text"
                 id="user-phone"
                 name="user_phone"
@@ -123,12 +127,13 @@ export default function Register() {
               Введіть ваш номер телефону
             </div>
           </div>
-          <div className="auth-form-input-block">
+          <div className="auth-form-input-block form-group">
             <div className="auth-form-input-block-element">
               <label htmlFor="user-email">Електронна пошта</label>
             </div>
             <div className="form-input-block-element">
               <input
+                className="form-control"
                 type="text"
                 id="user-email"
                 name="user_email"

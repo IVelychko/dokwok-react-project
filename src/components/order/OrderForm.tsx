@@ -82,12 +82,13 @@ export default function OrderForm() {
               Контактна інформація
             </div>
             <form encType="multipart/form-data">
-              <div className="order-form-input-block">
+              <div className="order-form-input-block form-group">
                 <div className="order-form-input-block-element">
                   <label htmlFor="customer-name">Ім'я</label>
                 </div>
                 <div className="order-form-input-block-element">
                   <input
+                    className="form-control"
                     type="text"
                     id="customer-name"
                     name="customer_name"
@@ -100,12 +101,13 @@ export default function OrderForm() {
                   Введіть ваше ім’я
                 </div>
               </div>
-              <div className="order-form-input-block">
+              <div className="order-form-input-block form-group">
                 <div className="order-form-input-block-element">
                   <label htmlFor="customer-phone">Телефон</label>
                 </div>
                 <div className="order-form-input-block-element">
                   <input
+                    className="form-control"
                     type="text"
                     id="customer-phone"
                     name="customer_phone"
@@ -118,12 +120,13 @@ export default function OrderForm() {
                   Введіть ваш номер телефону
                 </div>
               </div>
-              <div className="order-form-input-block">
+              <div className="order-form-input-block form-group">
                 <div className="order-form-input-block-element">
                   <label htmlFor="customer-email">Email</label>
                 </div>
                 <div className="order-form-input-block-element">
                   <input
+                    className="form-control"
                     type="text"
                     id="customer-email"
                     name="customer_email"
@@ -136,7 +139,7 @@ export default function OrderForm() {
                   Введіть правильний email
                 </div>
               </div>
-              <div className="order-form-input-block">
+              <div className="order-form-input-block form-group">
                 <div className="order-form-input-block-element">
                   <label htmlFor="customer-delivery-address">
                     Адреса доставки
@@ -144,6 +147,7 @@ export default function OrderForm() {
                 </div>
                 <div className="order-form-input-block-element">
                   <input
+                    className="form-control"
                     type="text"
                     id="customer-delivery-address"
                     name="customer_delivery_address"
@@ -163,6 +167,7 @@ export default function OrderForm() {
                 <div className="order-form-input-block-element">
                   <div id="payment-type">
                     <input
+                      className="form-check-input"
                       type="radio"
                       name="payment_type"
                       onClick={() => setPaymentType("cash")}
@@ -170,6 +175,7 @@ export default function OrderForm() {
                     Готівкою
                     <br />
                     <input
+                      className="form-check-input"
                       type="radio"
                       name="payment_type"
                       onClick={() => setPaymentType("card")}
