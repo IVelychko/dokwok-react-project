@@ -5,7 +5,7 @@ export default function Footer() {
     <footer>
       <div className="footer-logo">
         <Link to="/" title="На головну">
-          <img alt="logo" src="/src/assets/header/header-wok-logo.png" />
+          <img alt="logo" src="/src/assets/header/dokwok-logo.png" />
         </Link>
         <div>@ 2024 DOKWOK</div>
       </div>

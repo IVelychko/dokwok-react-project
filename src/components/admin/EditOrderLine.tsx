@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { updateOrderLine } from "../../functions/orderFunctions";
-import { OrderLineProp } from "../../helpers/Interfaces";
+import { ErrorInputProp, OrderLineProp } from "../../helpers/Interfaces";
+import {
+  validateProductIdEdit,
+  validateQuantity,
+} from "../../validation/orderLineValidation";
 
 export default function EditOrderLine() {
   const loadedOrderLine: OrderLineProp = useLoaderData() as OrderLineProp;
@@ -11,13 +15,47 @@ export default function EditOrderLine() {
   const [quantity, setQuantity] = useState<string>(
     loadedOrderLine.quantity.toString()
   );
+  const [formErrorInput, setFormErrorInput] = useState<ErrorInputProp>({
+    styles: { visibility: "hidden", marginTop: 0 },
+    message: "Incorrect data",
+  });
+  const [productIdErrorInput, setProductIdErrorInput] =
+    useState<ErrorInputProp>({
+      styles: { display: "none" },
+      message: "Enter a correct product ID",
+    });
+  const [quantityErrorInput, setQuantityErrorInput] = useState<ErrorInputProp>({
+    styles: { display: "none" },
+    message: "Enter a correct quantity",
+  });
   const navigate = useNavigate();
 
-  const validateFormData = () => {
-    if (isNaN(parseInt(productId)) || isNaN(parseInt(quantity))) {
-      return false;
+  const validateFormData = async () => {
+    setFormErrorInput((prevData) => ({
+      ...prevData,
+      styles: { visibility: "hidden", marginTop: 0 },
+    }));
+    const validationResults: boolean[] = [];
+    validationResults.push(
+      await validateProductIdEdit(
+        loadedOrderLine.orderId,
+        loadedOrderLine.productId,
+        productId,
+        productIdErrorInput,
+        setProductIdErrorInput
+      )
+    );
+    validationResults.push(
+      validateQuantity(quantity, quantityErrorInput, setQuantityErrorInput)
+    );
+    let isValid = true;
+    for (const result of validationResults) {
+      if (!result) {
+        isValid = false;
+        break;
+      }
     }
-    return true;
+    return isValid;
   };
 
   const handleEditClick = () => {
@@ -28,8 +66,15 @@ export default function EditOrderLine() {
       quantity: parseInt(quantity),
     })
       .then((updatedOrderLine) => {
-        console.log(`Order line was updated with ID: ${updatedOrderLine.id}`);
-        navigate(`/admin/orders/details/${loadedOrderLine.orderId}`);
+        if (updatedOrderLine !== null) {
+          console.log(`Order line was updated with ID: ${updatedOrderLine.id}`);
+          navigate(`/admin/orders/details/${loadedOrderLine.orderId}`);
+        } else {
+          setFormErrorInput((prevData) => ({
+            ...prevData,
+            styles: { visibility: "visible", marginTop: 0 },
+          }));
+        }
       })
       .catch((error) => console.error(error));
   };
@@ -38,8 +83,14 @@ export default function EditOrderLine() {
       <div className="bg-warning text-white text-center p-1 editor-header">
         Edit an Order line
       </div>
+      <div style={formErrorInput.styles} className="form-error-input">
+        {formErrorInput.message}
+      </div>
       <form>
-        <div className="form-group">
+        <div
+          style={{ marginTop: 0 }}
+          className="form-group admin-form-input-block"
+        >
           <label htmlFor="orderline-id">ID</label>
           <input
             id="orderline-id"
@@ -48,7 +99,7 @@ export default function EditOrderLine() {
             disabled
           />
         </div>
-        <div className="form-group">
+        <div className="form-group admin-form-input-block">
           <label htmlFor="orderline-productid">Product ID</label>
           <input
             type="number"
@@ -60,7 +111,10 @@ export default function EditOrderLine() {
             }}
           />
         </div>
-        <div className="form-group">
+        <div style={productIdErrorInput.styles} className="error-input">
+          {productIdErrorInput.message}
+        </div>
+        <div className="form-group admin-form-input-block">
           <label htmlFor="orderline-quantity">Quantity</label>
           <input
             type="number"
@@ -72,7 +126,10 @@ export default function EditOrderLine() {
             }}
           />
         </div>
-        <div className="form-group">
+        <div style={quantityErrorInput.styles} className="error-input">
+          {quantityErrorInput.message}
+        </div>
+        <div className="form-group admin-form-input-block">
           <label htmlFor="orderline-price">Total line price</label>
           <input
             id="orderline-price"
@@ -86,12 +143,16 @@ export default function EditOrderLine() {
             type="button"
             className="btn btn-primary admin-products-button"
             onClick={() => {
-              if (validateFormData()) {
-                console.log("The data is valid.");
-                handleEditClick();
-              } else {
-                console.log("The data is not valid.");
-              }
+              validateFormData()
+                .then((result) => {
+                  if (result) {
+                    console.log("The data is valid.");
+                    handleEditClick();
+                  } else {
+                    console.log("The data is not valid.");
+                  }
+                })
+                .catch((error) => console.error(error));
             }}
           >
             Save

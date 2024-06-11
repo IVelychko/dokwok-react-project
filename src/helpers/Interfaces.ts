@@ -2,6 +2,8 @@ export interface ProductDataProp {
   id: number;
   name: string;
   price: number;
+  weight: number;
+  measurementUnit: string;
   description: string;
   categoryId: number;
   categoryName: string;
@@ -10,6 +12,8 @@ export interface ProductDataProp {
 export interface ProductPostData {
   name: string;
   price: number;
+  weight: number;
+  measurementUnit: string;
   description: string;
   categoryId: number;
 }
@@ -18,6 +22,8 @@ export interface ProductPutData {
   id: number;
   name: string;
   price: number;
+  weight: number;
+  measurementUnit: string;
   description: string;
   categoryId: number;
 }
@@ -121,7 +127,27 @@ export interface AuthUserProp {
   phoneNumber: string;
 }
 
+export interface UserPasswordChangeProp {
+  userId: string;
+  oldPassword: string;
+  newPassword: string;
+}
+
+export interface UserPasswordChangeAsAdminProp {
+  userId: string;
+  newPassword: string;
+}
+
 export interface RootLoaderData {
   cart: CartProp;
   user: AuthUserProp | null;
+}
+
+export interface ErrorInputProp {
+  styles: React.CSSProperties;
+  message: string;
+}
+
+export interface CheckIfTaken {
+  isTaken: boolean;
 }

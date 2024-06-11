@@ -1,5 +1,13 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
+import { logOut } from "../../functions/authFunctions";
 export default function AdminLayout() {
+  const navigate = useNavigate();
+  const handleLogOutClick = () => {
+    logOut()
+      .then(() => navigate("/admin/login"))
+      .catch((error) => console.error(error));
+  };
+
   return (
     <div className="flex-wrapper">
       <div className="bg-info text-white p-2">
@@ -9,9 +17,12 @@ export default function AdminLayout() {
               <span className="navbar-brand ml-2">DokWok Administration</span>
             </div>
             <div className="col-2 text-right">
-              <a className="btn btn-sm btn-primary" href="/account/logout">
+              <button
+                className="btn btn-sm btn-primary"
+                onClick={handleLogOutClick}
+              >
                 Log Out
-              </a>
+              </button>
             </div>
           </div>
         </div>

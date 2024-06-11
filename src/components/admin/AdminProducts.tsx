@@ -30,6 +30,8 @@ export default function AdminProducts() {
         <td>{product.name}</td>
         <td>{product.categoryName}</td>
         <td>{product.price}</td>
+        <td>{product.weight}</td>
+        <td>{product.measurementUnit}</td>
         <td>
           <Link
             to={`/admin/products/details/${product.id}`}
@@ -62,6 +64,8 @@ export default function AdminProducts() {
             <th>Name</th>
             <th>Category</th>
             <th>Price</th>
+            <th>Weight</th>
+            <th>Measurement unit</th>
             <td></td>
           </tr>
         </thead>

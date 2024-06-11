@@ -21,7 +21,9 @@ export default function OrderProductItem({ cartLine }: Readonly<Props>) {
             <div className="order-products-item-content-title-name">
               {product.name}
             </div>
-            <div className="order-products-item-content-title-weight">0</div>
+            <div className="order-products-item-content-title-weight">
+              {product.weight} {product.measurementUnit}
+            </div>
           </div>
         </div>
         <div className="order-products-money">

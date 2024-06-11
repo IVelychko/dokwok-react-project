@@ -11,8 +11,11 @@ interface Props {
   orderQuantity: number;
 }
 
-export default function OrderHistoryItem({ userOrder, orderQuantity }: Props) {
-  const defaultExpanded = orderQuantity === 1 ? true : false;
+export default function OrderHistoryItem({
+  userOrder,
+  orderQuantity,
+}: Readonly<Props>) {
+  const defaultExpanded = orderQuantity === 1;
   const [expanded, setExpanded] = useState<boolean>(defaultExpanded);
   const orderLines: ReactNode[] = [];
   userOrder.orderLines.forEach((line) => {
@@ -29,7 +32,9 @@ export default function OrderHistoryItem({ userOrder, orderQuantity }: Props) {
             <div className="acc-order-product-item-content-title-name">
               {line.product.name}
             </div>
-            <div className="acc-order-product-item-content-title-weight">0</div>
+            <div className="acc-order-product-item-content-title-weight">
+              {line.product.weight} {line.product.measurementUnit}
+            </div>
           </div>
         </div>
         <div className="acc-order-product-money">

@@ -1,5 +1,9 @@
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
-import { OrderProp, OrderPutProp } from "../../helpers/Interfaces";
+import {
+  ErrorInputProp,
+  OrderProp,
+  OrderPutProp,
+} from "../../helpers/Interfaces";
 import { useState } from "react";
 import { updateOrder } from "../../functions/orderFunctions";
 import {
@@ -7,6 +11,13 @@ import {
   CANCELLED_ORDER_STATUS,
   COMPLETED_ORDER_STATUS,
 } from "../../helpers/constants";
+import {
+  validateDeliveryAddress,
+  validateEmail,
+  validateFirstName,
+  validatePhoneNumber,
+  validateUserId,
+} from "../../validation/orderAdminValidation";
 
 export default function EditOrder() {
   const loadedOrder: OrderProp = useLoaderData() as OrderProp;
@@ -24,32 +35,99 @@ export default function EditOrder() {
   });
   const navigate = useNavigate();
 
-  const validateFormData = () => {
-    if (
-      formData.customerName === "" ||
-      formData.customerName === null ||
-      formData.status === "" ||
-      formData.status === null ||
-      formData.deliveryAddress === "" ||
-      formData.deliveryAddress === null ||
-      formData.email === "" ||
-      formData.email === null ||
-      formData.paymentType === "" ||
-      formData.paymentType === null ||
-      formData.phoneNumber === "" ||
-      formData.phoneNumber === null
-    ) {
-      return false;
+  const [formErrorInput, setFormErrorInput] = useState<ErrorInputProp>({
+    styles: { visibility: "hidden", marginTop: 0 },
+    message: "Incorrect data",
+  });
+  const [firstNameErrorInput, setFirstNameErrorInput] =
+    useState<ErrorInputProp>({
+      styles: { display: "none" },
+      message: "Enter a correct first name",
+    });
+  const [phoneErrorInput, setPhoneErrorInput] = useState<ErrorInputProp>({
+    styles: { display: "none" },
+    message: "Enter a correct phone number",
+  });
+  const [emailErrorInput, setEmailErrorInput] = useState<ErrorInputProp>({
+    styles: { display: "none" },
+    message: "Enter a correct email",
+  });
+  const [addressErrorInput, setAddressErrorInput] = useState<ErrorInputProp>({
+    styles: { display: "none" },
+    message: "Enter a correct delivery address",
+  });
+  const [userIdErrorInput, setUserIdErrorInput] = useState<ErrorInputProp>({
+    styles: { display: "none" },
+    message: "Enter a correct user ID",
+  });
+
+  const validateFormData = async () => {
+    setFormErrorInput((prevData) => ({
+      ...prevData,
+      styles: { visibility: "hidden", marginTop: 0 },
+    }));
+    const validationResults: boolean[] = [];
+    validationResults.push(
+      validateFirstName(
+        formData.customerName,
+        firstNameErrorInput,
+        setFirstNameErrorInput
+      )
+    );
+    validationResults.push(
+      validatePhoneNumber(
+        formData.phoneNumber,
+        phoneErrorInput,
+        setPhoneErrorInput
+      )
+    );
+    validationResults.push(
+      validateEmail(formData.email, emailErrorInput, setEmailErrorInput)
+    );
+    validationResults.push(
+      validateDeliveryAddress(
+        formData.deliveryAddress,
+        addressErrorInput,
+        setAddressErrorInput
+      )
+    );
+    if (formData.userId !== null && formData.userId !== "") {
+      validationResults.push(
+        await validateUserId(
+          formData.userId,
+          userIdErrorInput,
+          setUserIdErrorInput
+        )
+      );
+    } else {
+      setUserIdErrorInput((prevData) => ({
+        ...prevData,
+        styles: { display: "none" },
+      }));
     }
-    return true;
+    let isValid = true;
+    for (const result of validationResults) {
+      if (!result) {
+        isValid = false;
+        break;
+      }
+    }
+    return isValid;
   };
 
   const handleEditClick = () => {
     formData.userId = formData.userId === "" ? null : formData.userId;
     updateOrder(formData)
       .then((updatedOrder) => {
-        console.log(`Order with ID: ${updatedOrder.id} was updated`);
-        navigate("/admin/orders");
+        if (updatedOrder !== null) {
+          console.log(`Order with ID: ${updatedOrder.id} was updated`);
+          navigate("/admin/orders");
+        } else {
+          setFormErrorInput((prevData) => ({
+            ...prevData,
+            styles: { visibility: "visible", marginTop: 0 },
+          }));
+        }
       })
       .catch((error) => console.error(error));
   };
@@ -62,8 +140,14 @@ export default function EditOrder() {
       <div className="bg-warning text-white text-center p-1 editor-header">
         Edit an Order
       </div>
+      <div style={formErrorInput.styles} className="auth-form-error-input">
+        {formErrorInput.message}
+      </div>
       <form>
-        <div className="form-group">
+        <div
+          style={{ marginTop: 0 }}
+          className="form-group admin-form-input-block"
+        >
           <label htmlFor="order-id">ID</label>
           <input
             id="order-id"
@@ -72,7 +156,7 @@ export default function EditOrder() {
             disabled
           />
         </div>
-        <div className="form-group">
+        <div className="form-group admin-form-input-block">
           <label htmlFor="order-creation-date">Creation date</label>
           <input
             id="order-creation-date"
@@ -81,7 +165,7 @@ export default function EditOrder() {
             disabled
           />
         </div>
-        <div className="form-group">
+        <div className="form-group admin-form-input-block">
           <label htmlFor="order-name">Customer name</label>
           <input
             id="order-name"
@@ -95,7 +179,10 @@ export default function EditOrder() {
             }}
           />
         </div>
-        <div className="form-group">
+        <div style={firstNameErrorInput.styles} className="error-input">
+          {firstNameErrorInput.message}
+        </div>
+        <div className="form-group admin-form-input-block">
           <label htmlFor="order-address">Delivery address</label>
           <input
             id="order-address"
@@ -109,7 +196,10 @@ export default function EditOrder() {
             }}
           />
         </div>
-        <div className="form-group">
+        <div style={addressErrorInput.styles} className="error-input">
+          {addressErrorInput.message}
+        </div>
+        <div className="form-group admin-form-input-block">
           <label htmlFor="order-email">Email</label>
           <input
             id="order-email"
@@ -123,7 +213,10 @@ export default function EditOrder() {
             }}
           />
         </div>
-        <div className="form-group">
+        <div style={emailErrorInput.styles} className="error-input">
+          {emailErrorInput.message}
+        </div>
+        <div className="form-group admin-form-input-block">
           <label htmlFor="order-payment">Payment type</label>
           <select
             id="order-payment"
@@ -140,7 +233,7 @@ export default function EditOrder() {
             <option>card</option>
           </select>
         </div>
-        <div className="form-group">
+        <div className="form-group admin-form-input-block">
           <label htmlFor="order-phone">Phone number</label>
           <input
             id="order-phone"
@@ -154,7 +247,10 @@ export default function EditOrder() {
             }}
           />
         </div>
-        <div className="form-group">
+        <div style={phoneErrorInput.styles} className="error-input">
+          {phoneErrorInput.message}
+        </div>
+        <div className="form-group admin-form-input-block">
           <label htmlFor="order-status">Status</label>
           <select
             id="order-status"
@@ -172,7 +268,7 @@ export default function EditOrder() {
             <option>{CANCELLED_ORDER_STATUS}</option>
           </select>
         </div>
-        <div className="form-group">
+        <div className="form-group admin-form-input-block">
           <label htmlFor="order-price">Order price</label>
           <input
             id="order-price"
@@ -181,7 +277,7 @@ export default function EditOrder() {
             disabled
           />
         </div>
-        <div className="form-group">
+        <div className="form-group admin-form-input-block">
           <label htmlFor="order-userid">User ID</label>
           <input
             id="order-userid"
@@ -195,17 +291,24 @@ export default function EditOrder() {
             }}
           />
         </div>
+        <div style={userIdErrorInput.styles} className="error-input">
+          {userIdErrorInput.message}
+        </div>
         <div className="mt-2">
           <button
             type="button"
             className="btn btn-primary admin-products-button"
             onClick={() => {
-              if (validateFormData()) {
-                console.log("The data is valid");
-                handleEditClick();
-              } else {
-                console.log("The data is not valid");
-              }
+              validateFormData()
+                .then((result) => {
+                  if (result) {
+                    console.log("The data is valid.");
+                    handleEditClick();
+                  } else {
+                    console.log("The data is not valid.");
+                  }
+                })
+                .catch((error) => console.error(error));
             }}
           >
             Save

@@ -1,8 +1,14 @@
+import { useNavigate } from "react-router-dom";
 import { ContextStateType, useMyContext } from "../../hooks/hooks";
 
 export default function Profile() {
   const contextState: ContextStateType = useMyContext();
   const authUser = contextState.authUserProp;
+  const navigate = useNavigate();
+
+  const handleEditClick = () => {
+    navigate("/account/profile/edit");
+  };
 
   return (
     <div className="account-profile">
@@ -16,9 +22,6 @@ export default function Profile() {
                 <div className="profile-line-name">Логін</div>
                 <div className="profile-line-value">{authUser.userName}</div>
               </div>
-              <button className="profile-change-button">
-                <img src="/src/assets/profile/pencil.png" alt="change" />
-              </button>
             </div>
             <div style={{ marginTop: 15 }} className="profile-line-info-item">
               <div className="name-value-pair">
@@ -50,6 +53,15 @@ export default function Profile() {
             </div>
           </div>
         </div>
+      </div>
+      <div>
+        <button
+          onClick={handleEditClick}
+          style={{ marginTop: 15 }}
+          className="regular-button"
+        >
+          Змінити особисті дані
+        </button>
       </div>
     </div>
   );

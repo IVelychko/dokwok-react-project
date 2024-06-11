@@ -11,6 +11,10 @@ header {
 /* logo image in header */
 .header-logo {
   padding-bottom: 5px;
+  padding-top: 5px;
+}
+.header-logo img {
+  width: 180px;
 }
 /* block for navigation items */
 header nav {

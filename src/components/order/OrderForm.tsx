@@ -3,7 +3,14 @@ import { ContextStateType, useMyContext } from "../../hooks/hooks";
 import { Link } from "react-router-dom";
 import OrderProductsContainer from "./OrderProductsContainer";
 import { addOrder } from "../../functions/orderFunctions";
-import { OrderProp } from "../../helpers/Interfaces";
+import { ErrorInputProp, OrderProp } from "../../helpers/Interfaces";
+import {
+  validateDeliveryAddress,
+  validateEmail,
+  validateFirstName,
+  validatePaymentType,
+  validatePhoneNumber,
+} from "../../validation/orderFormValidation";
 
 export default function OrderForm() {
   const contextState: ContextStateType = useMyContext();
@@ -17,6 +24,70 @@ export default function OrderForm() {
   const [paymentType, setPaymentType] = useState("");
   const [orderResult, setOrderResult] = useState<string | null>(null);
   const [order, setOrder] = useState<OrderProp | null>(null);
+  const [formErrorInput, setFormErrorInput] = useState<ErrorInputProp>({
+    styles: { visibility: "hidden", marginTop: 0 },
+    message: "Введені некоректні дані",
+  });
+  const [firstNameErrorInput, setFirstNameErrorInput] =
+    useState<ErrorInputProp>({
+      styles: { display: "none" },
+      message: "Введене некоректне ім'я",
+    });
+  const [phoneErrorInput, setPhoneErrorInput] = useState<ErrorInputProp>({
+    styles: { display: "none" },
+    message: "Введений некоректний номер телефону",
+  });
+  const [emailErrorInput, setEmailErrorInput] = useState<ErrorInputProp>({
+    styles: { display: "none" },
+    message: "Введена некоректна електронна пошта",
+  });
+  const [addressErrorInput, setAddressErrorInput] = useState<ErrorInputProp>({
+    styles: { display: "none" },
+    message: "Введена некоректна адреса доставки",
+  });
+  const [paymentErrorInput, setPaymentErrorInput] = useState<ErrorInputProp>({
+    styles: { display: "none" },
+    message: "Обраний некоректний тип оплати",
+  });
+
+  const validateFormData = () => {
+    setFormErrorInput((prevData) => ({
+      ...prevData,
+      styles: { visibility: "hidden", marginTop: 0 },
+    }));
+    const validationResults: boolean[] = [];
+    validationResults.push(
+      validateFirstName(
+        customerName,
+        firstNameErrorInput,
+        setFirstNameErrorInput
+      )
+    );
+    validationResults.push(
+      validatePhoneNumber(customerPhone, phoneErrorInput, setPhoneErrorInput)
+    );
+    validationResults.push(
+      validateEmail(customerEmail, emailErrorInput, setEmailErrorInput)
+    );
+    validationResults.push(
+      validateDeliveryAddress(
+        deliveryAddress,
+        addressErrorInput,
+        setAddressErrorInput
+      )
+    );
+    validationResults.push(
+      validatePaymentType(paymentType, paymentErrorInput, setPaymentErrorInput)
+    );
+    let isValid = true;
+    for (const result of validationResults) {
+      if (!result) {
+        isValid = false;
+        break;
+      }
+    }
+    return isValid;
+  };
 
   const handleCreateOrderClick = () => {
     addOrder({
@@ -28,10 +99,17 @@ export default function OrderForm() {
       userId: user.id !== "" ? user.id : null,
     })
       .then((order) => {
-        console.log(`New order was created: ${order.totalOrderPrice}`);
-        setOrderResult("successful");
-        setOrder(order);
-        contextState.setCartProp({ totalCartPrice: 0, lines: [] });
+        if (order !== null) {
+          console.log(`New order was created: ${order.totalOrderPrice}`);
+          setOrderResult("successful");
+          setOrder(order);
+          contextState.setCartProp({ totalCartPrice: 0, lines: [] });
+        } else {
+          setFormErrorInput((prevData) => ({
+            ...prevData,
+            styles: { visibility: "visible", marginTop: 0 },
+          }));
+        }
       })
       .catch((error) => {
         console.error(error);
@@ -81,10 +159,18 @@ export default function OrderForm() {
             >
               Контактна інформація
             </div>
+            <div
+              style={formErrorInput.styles}
+              className="auth-form-error-input"
+            >
+              {formErrorInput.message}
+            </div>
             <form encType="multipart/form-data">
               <div className="order-form-input-block form-group">
                 <div className="order-form-input-block-element">
-                  <label htmlFor="customer-name">Ім'я</label>
+                  <label style={{ paddingTop: 0 }} htmlFor="customer-name">
+                    Ім'я
+                  </label>
                 </div>
                 <div className="order-form-input-block-element">
                   <input
@@ -97,8 +183,8 @@ export default function OrderForm() {
                     onChange={(e) => setCustomerName(e.target.value)}
                   />
                 </div>
-                <div id="error-name" className="error-input">
-                  Введіть ваше ім’я
+                <div style={firstNameErrorInput.styles} className="error-input">
+                  {firstNameErrorInput.message}
                 </div>
               </div>
               <div className="order-form-input-block form-group">
@@ -116,8 +202,8 @@ export default function OrderForm() {
                     onChange={(e) => setCustomerPhone(e.target.value)}
                   />
                 </div>
-                <div id="error-phone" className="error-input">
-                  Введіть ваш номер телефону
+                <div style={phoneErrorInput.styles} className="error-input">
+                  {phoneErrorInput.message}
                 </div>
               </div>
               <div className="order-form-input-block form-group">
@@ -130,13 +216,13 @@ export default function OrderForm() {
                     type="text"
                     id="customer-email"
                     name="customer_email"
-                    placeholder="Ваш email (необов'язково)"
+                    placeholder="Ваш email"
                     value={customerEmail}
                     onChange={(e) => setCustomerEmail(e.target.value)}
                   />
                 </div>
-                <div id="error-email" className="error-input">
-                  Введіть правильний email
+                <div style={emailErrorInput.styles} className="error-input">
+                  {emailErrorInput.message}
                 </div>
               </div>
               <div className="order-form-input-block form-group">
@@ -156,8 +242,8 @@ export default function OrderForm() {
                     onChange={(e) => setDeliveryAddress(e.target.value)}
                   />
                 </div>
-                <div id="error-delivery-address" className="error-input">
-                  Введіть адресу доставки
+                <div style={addressErrorInput.styles} className="error-input">
+                  {addressErrorInput.message}
                 </div>
               </div>
               <div className="order-form-input-block">
@@ -165,7 +251,7 @@ export default function OrderForm() {
                   <label htmlFor="payment-type">Тип оплати</label>
                 </div>
                 <div className="order-form-input-block-element">
-                  <div id="payment-type">
+                  <div style={{ marginBottom: 10 }} id="payment-type">
                     <input
                       className="form-check-input"
                       type="radio"
@@ -183,7 +269,9 @@ export default function OrderForm() {
                     Банківською карткою
                     <br />
                   </div>
-                  <br />
+                  <div style={paymentErrorInput.styles} className="error-input">
+                    {paymentErrorInput.message}
+                  </div>
                 </div>
               </div>
             </form>
@@ -216,7 +304,14 @@ export default function OrderForm() {
             </div>
           </div>
           <button
-            onClick={handleCreateOrderClick}
+            onClick={() => {
+              if (validateFormData()) {
+                console.log("The data is valid.");
+                handleCreateOrderClick();
+              } else {
+                console.log("The data is not valid.");
+              }
+            }}
             style={{ marginTop: 20, marginBottom: 20 }}
             className="regular-button"
           >

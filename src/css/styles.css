@@ -65,8 +65,17 @@ input[type="submit"] {
 .error-input {
   display: none;
   font-size: 14px;
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
   color: red;
-  float: left;
+  width: 100%;
+  margin-top: 0;
+}
+.form-error-input {
+  display: block;
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+  text-align: center;
+  font-size: 16px;
+  color: red;
   width: 100%;
   margin-top: 0;
 }

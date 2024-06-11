@@ -7,13 +7,12 @@ import {
   OrderProp,
   OrderPutProp,
 } from "../helpers/Interfaces";
-import { BASE_API_URL } from "../helpers/constants";
+import { getAxiosInstance } from "./axiosConfig";
 
 export async function fetchAllOrders() {
+  const axiosInstance = getAxiosInstance();
   try {
-    const response = await axios.get<OrderProp[]>(`${BASE_API_URL}/orders`, {
-      withCredentials: true,
-    });
+    const response = await axiosInstance.get<OrderProp[]>("orders");
     return response.data;
   } catch (error) {
     throw new Error("There was an error in getting all orders.");
@@ -21,12 +20,10 @@ export async function fetchAllOrders() {
 }
 
 export async function fetchUserOrders(userId: string) {
+  const axiosInstance = getAxiosInstance();
   try {
-    const response = await axios.get<OrderProp[]>(
-      `${BASE_API_URL}/orders?userId=${userId}`,
-      {
-        withCredentials: true,
-      }
+    const response = await axiosInstance.get<OrderProp[]>(
+      `orders?userId=${userId}`
     );
     return response.data;
   } catch (error) {
@@ -34,68 +31,89 @@ export async function fetchUserOrders(userId: string) {
   }
 }
 
-export async function fetchOrder(id: number) {
+export async function fetchOrder(id: number): Promise<OrderProp | null> {
+  const axiosInstance = getAxiosInstance();
   try {
-    const response = await axios.get<OrderProp>(
-      `${BASE_API_URL}/orders/${id}`,
-      {
-        withCredentials: true,
-      }
-    );
+    const response = await axiosInstance.get<OrderProp>(`orders/${id}`);
     return response.data;
   } catch (error) {
-    throw new Error("There was an error in getting the order by id.");
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          return null;
+        } else {
+          throw new Error("There was a server-side error.");
+        }
+      } else {
+        throw new Error("The request never reached the server.");
+      }
+    } else {
+      throw new Error("There was a non-axios related error.");
+    }
   }
 }
 
-export async function addOrder(orderForm: OrderFormProp) {
+export async function addOrder(
+  orderForm: OrderFormProp
+): Promise<OrderProp | null> {
+  const axiosInstance = getAxiosInstance();
   try {
-    const response = await axios.post<OrderProp>(
-      `${BASE_API_URL}/orders`,
-      orderForm,
-      {
-        withCredentials: true,
-      }
-    );
+    const response = await axiosInstance.post<OrderProp>("orders", orderForm);
     return response.data;
   } catch (error) {
-    throw new Error("There was an error in adding the item to the cart.");
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        if (error.response.status === 400 || error.response.status === 404) {
+          return null;
+        } else {
+          throw new Error("There was a server-side error.");
+        }
+      } else {
+        throw new Error("The request never reached the server.");
+      }
+    } else {
+      throw new Error("There was a non-axios related error.");
+    }
   }
 }
 
-export async function updateOrder(orderForm: OrderPutProp) {
+export async function updateOrder(
+  orderForm: OrderPutProp
+): Promise<OrderProp | null> {
+  const axiosInstance = getAxiosInstance();
   try {
-    const response = await axios.put<OrderProp>(
-      `${BASE_API_URL}/orders`,
-      orderForm,
-      {
-        withCredentials: true,
-      }
-    );
+    const response = await axiosInstance.put<OrderProp>("orders", orderForm);
     return response.data;
   } catch (error) {
-    throw new Error("There was an error in updating the item to the cart.");
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        if (error.response.status === 400 || error.response.status === 404) {
+          return null;
+        } else {
+          throw new Error("There was a server-side error.");
+        }
+      } else {
+        throw new Error("The request never reached the server.");
+      }
+    } else {
+      throw new Error("There was a non-axios related error.");
+    }
   }
 }
 
 export async function deleteOrder(id: number) {
+  const axiosInstance = getAxiosInstance();
   try {
-    await axios.delete(`${BASE_API_URL}/orders/${id}`, {
-      withCredentials: true,
-    });
+    await axiosInstance.delete(`orders/${id}`);
   } catch (error) {
     throw new Error("There was an error in deleting the order by id.");
   }
 }
 
 export async function fetchAllOrderLines() {
+  const axiosInstance = getAxiosInstance();
   try {
-    const response = await axios.get<OrderLineProp[]>(
-      `${BASE_API_URL}/orders/lines`,
-      {
-        withCredentials: true,
-      }
-    );
+    const response = await axiosInstance.get<OrderLineProp[]>("orders/lines");
     return response.data;
   } catch (error) {
     throw new Error("There was an error in getting all order lines.");
@@ -103,12 +121,10 @@ export async function fetchAllOrderLines() {
 }
 
 export async function fetchOrderLinesByOrder(orderId: number) {
+  const axiosInstance = getAxiosInstance();
   try {
-    const response = await axios.get<OrderLineProp[]>(
-      `${BASE_API_URL}/orders/lines?orderId=${orderId}`,
-      {
-        withCredentials: true,
-      }
+    const response = await axiosInstance.get<OrderLineProp[]>(
+      `orders/lines?orderId=${orderId}`
     );
     return response.data;
   } catch (error) {
@@ -116,55 +132,117 @@ export async function fetchOrderLinesByOrder(orderId: number) {
   }
 }
 
-export async function fetchOrderLine(id: number) {
+export async function fetchOrderLine(
+  id: number
+): Promise<OrderLineProp | null> {
+  const axiosInstance = getAxiosInstance();
   try {
-    const response = await axios.get<OrderLineProp>(
-      `${BASE_API_URL}/orders/lines/${id}`,
-      {
-        withCredentials: true,
-      }
+    const response = await axiosInstance.get<OrderLineProp>(
+      `orders/lines/${id}`
     );
     return response.data;
   } catch (error) {
-    throw new Error("There was an error in getting the order line by id.");
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          return null;
+        } else {
+          throw new Error("There was a server-side error.");
+        }
+      } else {
+        throw new Error("The request never reached the server.");
+      }
+    } else {
+      throw new Error("There was a non-axios related error.");
+    }
   }
 }
 
-export async function addOrderLine(orderLine: OrderLinePostProp) {
+export async function fetchOrderLineByOrderAndProductIds(
+  orderId: number,
+  productId: number
+): Promise<OrderLineProp | null> {
+  const axiosInstance = getAxiosInstance();
   try {
-    const response = await axios.post<OrderLineProp>(
-      `${BASE_API_URL}/orders/lines`,
-      orderLine,
-      {
-        withCredentials: true,
-      }
+    const response = await axiosInstance.get<OrderLineProp>(
+      `orders/lines/${orderId}/${productId}`
     );
     return response.data;
   } catch (error) {
-    throw new Error("There was an error in adding the order line.");
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          return null;
+        } else {
+          throw new Error("There was a server-side error.");
+        }
+      } else {
+        throw new Error("The request never reached the server.");
+      }
+    } else {
+      throw new Error("There was a non-axios related error.");
+    }
   }
 }
 
-export async function updateOrderLine(orderLine: OrderLinePutProp) {
+export async function addOrderLine(
+  orderLine: OrderLinePostProp
+): Promise<OrderLineProp | null> {
+  const axiosInstance = getAxiosInstance();
   try {
-    const response = await axios.put<OrderLineProp>(
-      `${BASE_API_URL}/orders/lines`,
-      orderLine,
-      {
-        withCredentials: true,
-      }
+    const response = await axiosInstance.post<OrderLineProp>(
+      "orders/lines",
+      orderLine
     );
     return response.data;
   } catch (error) {
-    throw new Error("There was an error in updating the order line.");
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        if (error.response.status === 400 || error.response.status === 404) {
+          return null;
+        } else {
+          throw new Error("There was a server-side error.");
+        }
+      } else {
+        throw new Error("The request never reached the server.");
+      }
+    } else {
+      throw new Error("There was a non-axios related error.");
+    }
+  }
+}
+
+export async function updateOrderLine(
+  orderLine: OrderLinePutProp
+): Promise<OrderLineProp | null> {
+  const axiosInstance = getAxiosInstance();
+  try {
+    const response = await axiosInstance.put<OrderLineProp>(
+      "orders/lines",
+      orderLine
+    );
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        if (error.response.status === 400 || error.response.status === 404) {
+          return null;
+        } else {
+          throw new Error("There was a server-side error.");
+        }
+      } else {
+        throw new Error("The request never reached the server.");
+      }
+    } else {
+      throw new Error("There was a non-axios related error.");
+    }
   }
 }
 
 export async function deleteOrderLine(id: number) {
+  const axiosInstance = getAxiosInstance();
   try {
-    await axios.delete(`${BASE_API_URL}/orders/lines/${id}`, {
-      withCredentials: true,
-    });
+    await axiosInstance.delete(`orders/lines/${id}`);
   } catch (error) {
     throw new Error("There was an error in deleting the order line by id.");
   }

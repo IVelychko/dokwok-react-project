@@ -1,9 +1,15 @@
 import { useState } from "react";
-import { RegisterUserProp } from "../../helpers/Interfaces";
+import { ErrorInputProp, RegisterUserProp } from "../../helpers/Interfaces";
 import { ContextStateType, useMyContext } from "../../hooks/hooks";
 import { useNavigate } from "react-router-dom";
 import { register } from "../../functions/authFunctions";
-import { fetchUserDataById } from "../../functions/userFunctions";
+import {
+  validateEmail,
+  validateFirstName,
+  validatePassword,
+  validatePhoneNumber,
+  validateUserName,
+} from "../../validation/userRegisterValidation";
 
 export default function Register() {
   const [formData, setFormData] = useState<RegisterUserProp>({
@@ -13,19 +19,98 @@ export default function Register() {
     phoneNumber: "",
     password: "",
   });
+  const [formErrorInput, setFormErrorInput] = useState<ErrorInputProp>({
+    styles: { visibility: "hidden" },
+    message: "Введені некоректні дані",
+  });
+  const [userNameErrorInput, setUserNameErrorInput] = useState<ErrorInputProp>({
+    styles: { display: "none" },
+    message: "Введений некоректний логін",
+  });
+  const [passwordErrorInput, setPasswordErrorInput] = useState<ErrorInputProp>({
+    styles: { display: "none" },
+    message: "Введений некоректний пароль",
+  });
+  const [firstNameErrorInput, setFirstNameErrorInput] =
+    useState<ErrorInputProp>({
+      styles: { display: "none" },
+      message: "Введене некоректне ім'я",
+    });
+  const [phoneErrorInput, setPhoneErrorInput] = useState<ErrorInputProp>({
+    styles: { display: "none" },
+    message: "Введений некоректний номер телефону",
+  });
+  const [emailErrorInput, setEmailErrorInput] = useState<ErrorInputProp>({
+    styles: { display: "none" },
+    message: "Введена некоректна електронна пошта",
+  });
   const contextState: ContextStateType = useMyContext();
   const navigate = useNavigate();
 
+  const validateFormData = async () => {
+    setFormErrorInput((prevData) => ({
+      ...prevData,
+      styles: { visibility: "hidden" },
+    }));
+    const validationResults: boolean[] = [];
+    validationResults.push(
+      await validateUserName(
+        formData.userName,
+        userNameErrorInput,
+        setUserNameErrorInput
+      )
+    );
+    validationResults.push(
+      validatePassword(
+        formData.password,
+        passwordErrorInput,
+        setPasswordErrorInput
+      )
+    );
+    validationResults.push(
+      validateFirstName(
+        formData.firstName,
+        firstNameErrorInput,
+        setFirstNameErrorInput
+      )
+    );
+    validationResults.push(
+      await validatePhoneNumber(
+        formData.phoneNumber,
+        phoneErrorInput,
+        setPhoneErrorInput
+      )
+    );
+    validationResults.push(
+      await validateEmail(formData.email, emailErrorInput, setEmailErrorInput)
+    );
+    let isValid = true;
+    for (const result of validationResults) {
+      if (!result) {
+        isValid = false;
+        break;
+      }
+    }
+    return isValid;
+  };
+
   const handleRegisterClick = () => {
     register(formData)
-      .then(() => {
-        fetchUserDataById(null)
-          .then((user) => {
-            contextState.setAuthUserProp(user);
-            console.log(`User ${user.userName} has just registered.`);
-            navigate("/account/profile", { replace: true });
-          })
-          .catch((error) => console.error(error));
+      .then((user) => {
+        if (user !== null) {
+          setFormErrorInput((prevData) => ({
+            ...prevData,
+            styles: { visibility: "hidden" },
+          }));
+          contextState.setAuthUserProp(user);
+          console.log(`User ${user.userName} has just registered.`);
+          navigate("/account/profile", { replace: true });
+        } else {
+          setFormErrorInput((prevData) => ({
+            ...prevData,
+            styles: { visibility: "visible" },
+          }));
+        }
       })
       .catch((error) => console.error(error));
   };
@@ -33,6 +118,9 @@ export default function Register() {
   return (
     <main>
       <div className="auth-heading">Реєстрація користувача</div>
+      <div style={formErrorInput.styles} className="auth-form-error-input">
+        {formErrorInput.message}
+      </div>
       <div className="auth-form-wrapper">
         <form className="auth-form">
           <div className="auth-form-input-block form-group">
@@ -54,8 +142,8 @@ export default function Register() {
                 }}
               />
             </div>
-            <div id="error-login" className="error-input">
-              Введіть ваш логін
+            <div style={userNameErrorInput.styles} className="error-input">
+              {userNameErrorInput.message}
             </div>
           </div>
           <div className="auth-form-input-block form-group">
@@ -77,8 +165,8 @@ export default function Register() {
                 }}
               />
             </div>
-            <div id="error-password" className="error-input">
-              Введіть ваш пароль
+            <div style={passwordErrorInput.styles} className="error-input">
+              {passwordErrorInput.message}
             </div>
           </div>
           <div className="auth-form-input-block form-group">
@@ -100,8 +188,8 @@ export default function Register() {
                 }}
               />
             </div>
-            <div id="error-fname" className="error-input">
-              Введіть ваше ім'я
+            <div style={firstNameErrorInput.styles} className="error-input">
+              {firstNameErrorInput.message}
             </div>
           </div>
           <div className="auth-form-input-block form-group">
@@ -123,8 +211,8 @@ export default function Register() {
                 }}
               />
             </div>
-            <div id="error-phone" className="error-input">
-              Введіть ваш номер телефону
+            <div style={phoneErrorInput.styles} className="error-input">
+              {phoneErrorInput.message}
             </div>
           </div>
           <div className="auth-form-input-block form-group">
@@ -146,12 +234,26 @@ export default function Register() {
                 }}
               />
             </div>
-            <div id="error-email" className="error-input">
-              Введіть вашу електронну пошту
+            <div style={emailErrorInput.styles} className="error-input">
+              {emailErrorInput.message}
             </div>
           </div>
         </form>
-        <button className="auth-button" onClick={handleRegisterClick}>
+        <button
+          className="auth-button"
+          onClick={() => {
+            validateFormData()
+              .then((result) => {
+                if (result) {
+                  console.log("The data is valid.");
+                  handleRegisterClick();
+                } else {
+                  console.log("The data is not valid.");
+                }
+              })
+              .catch((error) => console.error(error));
+          }}
+        >
           Зареєструватись
         </button>
       </div>

@@ -32,6 +32,14 @@ export default function ProductDetails() {
             <th>Price</th>
             <td>{product.price}</td>
           </tr>
+          <tr>
+            <th>Weight</th>
+            <td>{product.weight}</td>
+          </tr>
+          <tr>
+            <th>Measurement unit</th>
+            <td>{product.measurementUnit}</td>
+          </tr>
         </tbody>
       </table>
       <Link

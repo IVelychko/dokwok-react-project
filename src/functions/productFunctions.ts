@@ -1,17 +1,19 @@
 import axios from "axios";
-import { BASE_API_URL } from "../helpers/constants";
 import {
+  CheckIfTaken,
   ProductCategoryDataProp,
   ProductCategoryPostData,
   ProductDataProp,
   ProductPostData,
   ProductPutData,
 } from "../helpers/Interfaces";
+import { getAxiosInstance } from "./axiosConfig";
 
 export async function fetchProductCategoryData() {
+  const axiosInstance = getAxiosInstance();
   try {
-    const response = await axios.get<ProductCategoryDataProp[]>(
-      `${BASE_API_URL}/products/categories`
+    const response = await axiosInstance.get<ProductCategoryDataProp[]>(
+      "products/categories"
     );
     return response.data;
   } catch (error) {
@@ -19,109 +21,213 @@ export async function fetchProductCategoryData() {
   }
 }
 
-export async function fetchProductCategory(id: number) {
+export async function fetchProductCategory(
+  id: number
+): Promise<ProductCategoryDataProp | null> {
+  const axiosInstance = getAxiosInstance();
   try {
-    const response = await axios.get<ProductCategoryDataProp>(
-      `${BASE_API_URL}/products/categories/${id}`
+    const response = await axiosInstance.get<ProductCategoryDataProp>(
+      `products/categories/${id}`
     );
     return response.data;
   } catch (error) {
-    throw new Error("There was an error fetching the product category data.");
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          return null;
+        } else {
+          throw new Error("There was a server-side error.");
+        }
+      } else {
+        throw new Error("The request never reached the server.");
+      }
+    } else {
+      throw new Error("There was a non-axios related error.");
+    }
   }
 }
 
-export async function addCategory(category: ProductCategoryPostData) {
+export async function addCategory(
+  category: ProductCategoryPostData
+): Promise<ProductCategoryDataProp | null> {
+  const axiosInstance = getAxiosInstance();
   try {
-    const apiUrl = `${BASE_API_URL}/products/categories`;
-    const response = await axios.post<ProductCategoryDataProp>(
-      apiUrl,
-      category,
-      {
-        withCredentials: true,
-      }
+    const response = await axiosInstance.post<ProductCategoryDataProp>(
+      "products/categories",
+      category
     );
     return response.data;
   } catch (error) {
-    throw new Error("There was an error adding the category data.");
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        if (error.response.status === 400) {
+          return null;
+        } else {
+          throw new Error("There was a server-side error.");
+        }
+      } else {
+        throw new Error("The request never reached the server.");
+      }
+    } else {
+      throw new Error("There was a non-axios related error.");
+    }
   }
 }
 
-export async function updateCategory(category: ProductCategoryDataProp) {
+export async function updateCategory(
+  category: ProductCategoryDataProp
+): Promise<ProductCategoryDataProp | null> {
+  const axiosInstance = getAxiosInstance();
   try {
-    const apiUrl = `${BASE_API_URL}/products/categories`;
-    const response = await axios.put<ProductCategoryDataProp>(
-      apiUrl,
-      category,
-      {
-        withCredentials: true,
-      }
+    const response = await axiosInstance.put<ProductCategoryDataProp>(
+      "products/categories",
+      category
     );
     return response.data;
   } catch (error) {
-    throw new Error("There was an error updating the category data.");
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        if (error.response.status === 400 || error.response.status === 404) {
+          return null;
+        } else {
+          throw new Error("There was a server-side error.");
+        }
+      } else {
+        throw new Error("The request never reached the server.");
+      }
+    } else {
+      throw new Error("There was a non-axios related error.");
+    }
   }
 }
 
 export async function deleteCategory(id: number) {
+  const axiosInstance = getAxiosInstance();
   try {
-    const apiUrl = `${BASE_API_URL}/products/categories/${id}`;
-    await axios.delete(apiUrl, { withCredentials: true });
+    await axiosInstance.delete(`products/categories/${id}`);
   } catch (error) {
     throw new Error("There was an error deleting the category data.");
   }
 }
 
 export async function fetchProductData(productCategoryId: number | null) {
+  const axiosInstance = getAxiosInstance();
   try {
     const apiUrl = productCategoryId
-      ? `${BASE_API_URL}/products?categoryId=${productCategoryId}`
-      : `${BASE_API_URL}/products`;
-    const response = await axios.get<ProductDataProp[]>(apiUrl);
+      ? `products?categoryId=${productCategoryId}`
+      : "products";
+    const response = await axiosInstance.get<ProductDataProp[]>(apiUrl);
     return response.data;
   } catch (error) {
     throw new Error("There was an error fetching the product data.");
   }
 }
 
-export async function fetchProduct(id: number) {
+export async function fetchProduct(
+  id: number
+): Promise<ProductDataProp | null> {
+  const axiosInstance = getAxiosInstance();
   try {
-    const apiUrl = `${BASE_API_URL}/products/${id}`;
-    const response = await axios.get<ProductDataProp>(apiUrl);
+    const response = await axiosInstance.get<ProductDataProp>(`products/${id}`);
     return response.data;
   } catch (error) {
-    throw new Error("There was an error fetching the product data by id.");
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          return null;
+        } else {
+          throw new Error("There was a server-side error.");
+        }
+      } else {
+        throw new Error("The request never reached the server.");
+      }
+    } else {
+      throw new Error("There was a non-axios related error.");
+    }
   }
 }
 
-export async function addProduct(product: ProductPostData) {
+export async function addProduct(
+  product: ProductPostData
+): Promise<ProductDataProp | null> {
+  const axiosInstance = getAxiosInstance();
   try {
-    const apiUrl = `${BASE_API_URL}/products`;
-    const response = await axios.post<ProductDataProp>(apiUrl, product, {
-      withCredentials: true,
-    });
+    const response = await axiosInstance.post<ProductDataProp>(
+      "products",
+      product
+    );
     return response.data;
   } catch (error) {
-    throw new Error("There was an error adding the product data.");
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        if (error.response.status === 400) {
+          return null;
+        } else {
+          throw new Error("There was a server-side error.");
+        }
+      } else {
+        throw new Error("The request never reached the server.");
+      }
+    } else {
+      throw new Error("There was a non-axios related error.");
+    }
   }
 }
 
-export async function updateProduct(product: ProductPutData) {
+export async function updateProduct(
+  product: ProductPutData
+): Promise<ProductDataProp | null> {
+  const axiosInstance = getAxiosInstance();
   try {
-    const apiUrl = `${BASE_API_URL}/products`;
-    const response = await axios.put<ProductDataProp>(apiUrl, product, {
-      withCredentials: true,
-    });
+    const response = await axiosInstance.put<ProductDataProp>(
+      "products",
+      product
+    );
     return response.data;
   } catch (error) {
-    throw new Error("There was an error updating the product data.");
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        if (error.response.status === 400 || error.response.status === 404) {
+          return null;
+        } else {
+          throw new Error("There was a server-side error.");
+        }
+      } else {
+        throw new Error("The request never reached the server.");
+      }
+    } else {
+      throw new Error("There was a non-axios related error.");
+    }
   }
 }
 
 export async function deleteProduct(id: number) {
+  const axiosInstance = getAxiosInstance();
   try {
-    const apiUrl = `${BASE_API_URL}/products/${id}`;
-    await axios.delete(apiUrl, { withCredentials: true });
+    await axiosInstance.delete(`products/${id}`);
   } catch (error) {
     throw new Error("There was an error deleting the product data.");
+  }
+}
+
+export async function isProductNameTaken(name: string): Promise<CheckIfTaken> {
+  const axiosInstance = getAxiosInstance();
+  try {
+    const response = await axiosInstance.get(`products/isNameTaken/${name}`);
+    return response.data;
+  } catch (error) {
+    throw new Error("There was an error in checking the name.");
+  }
+}
+
+export async function isCategoryNameTaken(name: string): Promise<CheckIfTaken> {
+  const axiosInstance = getAxiosInstance();
+  try {
+    const response = await axiosInstance.get(
+      `products/categories/isNameTaken/${name}`
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error("There was an error in checking the name.");
   }
 }

@@ -2,7 +2,6 @@ import Menu from "./components/menu/Menu";
 import {
   AuthUserProp,
   CartProp,
-  OrderLineProp,
   OrderProp,
   ProductCategoryDataProp,
   ProductDataProp,
@@ -28,7 +27,7 @@ import Register from "./components/authorization/Register";
 import AccountLayout from "./components/account/AccountLayout";
 import Profile from "./components/account/Profile";
 import OrderHistory from "./components/account/OrderHistory";
-import { isLoggedIn } from "./functions/authFunctions";
+import { isAdminLoggedIn, isCustomerLoggedIn } from "./functions/authFunctions";
 import { fetchCart } from "./functions/cartFunctions";
 import ErrorPage from "./components/ErrorPage";
 import {
@@ -52,8 +51,19 @@ import EditOrder from "./components/admin/EditOrder";
 import OrderLineDetails from "./components/admin/OrderLineDetails";
 import CreateOrderLine from "./components/admin/CreateOrderLine";
 import EditOrderLine from "./components/admin/EditOrderLine";
+import AdminUsers from "./components/admin/AdminUsers";
+import {
+  fetchCustomerDataById,
+  fetchCustomers,
+} from "./functions/userFunctions";
+import UserDetails from "./components/admin/UserDetails";
+import AdminLogin from "./components/authorization/AdminLogin";
+import CreateUser from "./components/admin/CreateUser";
+import EditUser from "./components/admin/EditUser";
+import EditProfile from "./components/account/EditProfile";
+import { Categories } from "./helpers/constants";
 
-const getRoutes = (productCategories: ProductCategoryDataProp[]) => {
+const getRoutes = () => {
   const childrenRoutes: RouteObject[] = [];
 
   childrenRoutes.push({
@@ -69,11 +79,28 @@ const getRoutes = (productCategories: ProductCategoryDataProp[]) => {
         element: <Profile />,
       },
       {
+        path: "profile/edit",
+        element: <EditProfile />,
+        loader: async () => {
+          try {
+            const user = await isAdminLoggedIn();
+            if (user !== null) {
+              return true;
+            } else {
+              return false;
+            }
+          } catch (error) {
+            console.error(error);
+            return redirect("/error");
+          }
+        },
+      },
+      {
         path: "orders",
         element: <OrderHistory />,
         loader: async () => {
           try {
-            const user = await isLoggedIn();
+            const user = await isCustomerLoggedIn();
             if (user == null) {
               return redirect("/login");
             }
@@ -88,7 +115,7 @@ const getRoutes = (productCategories: ProductCategoryDataProp[]) => {
     ],
     loader: async () => {
       try {
-        const user = await isLoggedIn();
+        const user = await isCustomerLoggedIn();
         if (user == null) {
           return redirect("/login");
         }
@@ -116,6 +143,26 @@ const getRoutes = (productCategories: ProductCategoryDataProp[]) => {
     },
   });
   childrenRoutes.push({
+    path: "food-set",
+    element: <Menu heading="Сети" />,
+    loader: async () => await fetchProductData(Categories.foodSet),
+  });
+  childrenRoutes.push({
+    path: "noodles",
+    element: <Menu heading="Локшина" />,
+    loader: async () => await fetchProductData(Categories.noodles),
+  });
+  childrenRoutes.push({
+    path: "roll",
+    element: <Menu heading="Роли" />,
+    loader: async () => await fetchProductData(Categories.roll),
+  });
+  childrenRoutes.push({
+    path: "cold-beverage",
+    element: <Menu heading="Прохолодні напої" />,
+    loader: async () => await fetchProductData(Categories.coldBeverage),
+  });
+  childrenRoutes.push({
     path: "cart",
     element: <Cart />,
   });
@@ -135,13 +182,13 @@ const getRoutes = (productCategories: ProductCategoryDataProp[]) => {
     path: "error",
     element: <ErrorPage />,
   });
-  productCategories.forEach((category) => {
-    childrenRoutes.push({
-      path: `/${category.name.toLowerCase().replace(" ", "-")}`,
-      element: <Menu heading={category.name} />,
-      loader: async () => await fetchProductData(category.id),
-    });
-  });
+  // productCategories.forEach((category) => {
+  //   childrenRoutes.push({
+  //     path: `/${category.name.toLowerCase().replace(" ", "-")}`,
+  //     element: <Menu heading={category.name} />,
+  //     loader: async () => await fetchProductData(category.id),
+  //   });
+  // });
 
   const routes: RouteObject[] = [];
   routes.push(
@@ -159,13 +206,17 @@ const getRoutes = (productCategories: ProductCategoryDataProp[]) => {
         }
         let user: AuthUserProp | null = null;
         try {
-          user = await isLoggedIn();
+          user = await isCustomerLoggedIn();
         } catch (error) {
           console.error(error);
         }
         const rootLoaderData: RootLoaderData = { cart, user };
         return rootLoaderData;
       },
+    },
+    {
+      path: "/admin/login",
+      element: <AdminLogin />,
     },
     {
       path: "/admin",
@@ -208,12 +259,14 @@ const getRoutes = (productCategories: ProductCategoryDataProp[]) => {
             try {
               const id = params.id;
               const data = await fetchProduct(parseInt(id ?? "0"));
+              if (data === null) {
+                return redirect("/error");
+              }
               console.log("Items were fetched for the admin products page.");
               return data;
             } catch (error) {
               console.error(error);
-              const emptyArray: ProductDataProp[] = [];
-              return emptyArray;
+              return redirect("/error");
             }
           },
         },
@@ -227,6 +280,9 @@ const getRoutes = (productCategories: ProductCategoryDataProp[]) => {
           loader: async ({ params }) => {
             try {
               const data = await fetchProduct(parseInt(params.id ?? "0"));
+              if (data === null) {
+                return redirect("/error");
+              }
               return data;
             } catch (error) {
               console.error(error);
@@ -256,12 +312,14 @@ const getRoutes = (productCategories: ProductCategoryDataProp[]) => {
             try {
               const id = params.id;
               const data = await fetchProductCategory(parseInt(id ?? "0"));
+              if (data === null) {
+                return redirect("/error");
+              }
               console.log("Items were fetched for the admin categories page.");
               return data;
             } catch (error) {
               console.error(error);
-              const emptyArray: ProductCategoryDataProp[] = [];
-              return emptyArray;
+              return redirect("/error");
             }
           },
         },
@@ -277,6 +335,9 @@ const getRoutes = (productCategories: ProductCategoryDataProp[]) => {
               const data = await fetchProductCategory(
                 parseInt(params.id ?? "0")
               );
+              if (data === null) {
+                return redirect("/error");
+              }
               return data;
             } catch (error) {
               console.error(error);
@@ -306,12 +367,14 @@ const getRoutes = (productCategories: ProductCategoryDataProp[]) => {
             try {
               const id = params.id;
               const data = await fetchOrder(parseInt(id ?? "0"));
+              if (data === null) {
+                return redirect("/error");
+              }
               console.log("Items were fetched for the admin orders page.");
               return data;
             } catch (error) {
               console.error(error);
-              const emptyArray: OrderProp[] = [];
-              return emptyArray;
+              return redirect("/error");
             }
           },
         },
@@ -321,6 +384,9 @@ const getRoutes = (productCategories: ProductCategoryDataProp[]) => {
           loader: async ({ params }) => {
             try {
               const data = await fetchOrder(parseInt(params.id ?? "0"));
+              if (data === null) {
+                return redirect("/error");
+              }
               return data;
             } catch (error) {
               console.error(error);
@@ -335,12 +401,14 @@ const getRoutes = (productCategories: ProductCategoryDataProp[]) => {
             try {
               const id = params.id;
               const data = await fetchOrderLine(parseInt(id ?? "0"));
+              if (data === null) {
+                return redirect("/error");
+              }
               console.log("Items were fetched for the admin order lines page.");
               return data;
             } catch (error) {
               console.error(error);
-              const emptyArray: OrderLineProp[] = [];
-              return emptyArray;
+              return redirect("/error");
             }
           },
         },
@@ -361,6 +429,62 @@ const getRoutes = (productCategories: ProductCategoryDataProp[]) => {
           loader: async ({ params }) => {
             try {
               const data = await fetchOrderLine(parseInt(params.id ?? "0"));
+              if (data === null) {
+                return redirect("/error");
+              }
+              return data;
+            } catch (error) {
+              console.error(error);
+              return redirect("/error");
+            }
+          },
+        },
+        {
+          path: "users",
+          element: <AdminUsers />,
+          loader: async () => {
+            try {
+              const data = await fetchCustomers();
+              console.log("Items were fetched for the admin users page.");
+              return data;
+            } catch (error) {
+              console.error(error);
+              const emptyArray: AuthUserProp[] = [];
+              return emptyArray;
+            }
+          },
+        },
+        {
+          path: "users/details/:id",
+          element: <UserDetails />,
+          loader: async ({ params }) => {
+            try {
+              const id = params.id;
+              const data = await fetchCustomerDataById(id ?? "", true);
+              if (data === null) {
+                return redirect("/error");
+              }
+              console.log("Items were fetched for the admin users page.");
+              return data;
+            } catch (error) {
+              console.error(error);
+              return redirect("/error");
+            }
+          },
+        },
+        {
+          path: "users/create",
+          element: <CreateUser />,
+        },
+        {
+          path: "users/edit/:id",
+          element: <EditUser />,
+          loader: async ({ params }) => {
+            try {
+              const data = await fetchCustomerDataById(params.id ?? "", true);
+              if (data === null) {
+                return redirect("/error");
+              }
               return data;
             } catch (error) {
               console.error(error);
@@ -369,6 +493,18 @@ const getRoutes = (productCategories: ProductCategoryDataProp[]) => {
           },
         },
       ],
+      loader: async () => {
+        try {
+          const user = await isAdminLoggedIn();
+          if (user == null) {
+            return redirect("/admin/login");
+          }
+          return user;
+        } catch (error) {
+          console.error(error);
+          return redirect("/error");
+        }
+      },
     }
   );
 
@@ -377,8 +513,8 @@ const getRoutes = (productCategories: ProductCategoryDataProp[]) => {
 
 let routes: RouteObject[] = [];
 try {
-  const productCategories = await fetchProductCategoryData();
-  routes = getRoutes(productCategories);
+  // const productCategories = await fetchProductCategoryData();
+  routes = getRoutes();
 } catch (error) {
   console.error(error);
 }

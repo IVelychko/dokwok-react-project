@@ -1,18 +1,56 @@
 import { useState } from "react";
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { addOrderLine } from "../../functions/orderFunctions";
+import { ErrorInputProp } from "../../helpers/Interfaces";
+import {
+  validateProductIdCreate,
+  validateQuantity,
+} from "../../validation/orderLineValidation";
 
 export default function CreateOrderLine() {
   const loadedOrderId: number = useLoaderData() as number;
   const [productId, setProductId] = useState<string>("");
   const [quantity, setQuantity] = useState<string>("");
+  const [formErrorInput, setFormErrorInput] = useState<ErrorInputProp>({
+    styles: { visibility: "hidden", marginTop: 0 },
+    message: "Incorrect data",
+  });
+  const [productIdErrorInput, setProductIdErrorInput] =
+    useState<ErrorInputProp>({
+      styles: { display: "none" },
+      message: "Enter a correct product ID",
+    });
+  const [quantityErrorInput, setQuantityErrorInput] = useState<ErrorInputProp>({
+    styles: { display: "none" },
+    message: "Enter a correct quantity",
+  });
   const navigate = useNavigate();
 
-  const validateFormData = () => {
-    if (isNaN(parseInt(productId)) || isNaN(parseInt(quantity))) {
-      return false;
+  const validateFormData = async () => {
+    setFormErrorInput((prevData) => ({
+      ...prevData,
+      styles: { visibility: "hidden", marginTop: 0 },
+    }));
+    const validationResults: boolean[] = [];
+    validationResults.push(
+      await validateProductIdCreate(
+        loadedOrderId,
+        productId,
+        productIdErrorInput,
+        setProductIdErrorInput
+      )
+    );
+    validationResults.push(
+      validateQuantity(quantity, quantityErrorInput, setQuantityErrorInput)
+    );
+    let isValid = true;
+    for (const result of validationResults) {
+      if (!result) {
+        isValid = false;
+        break;
+      }
     }
-    return true;
+    return isValid;
   };
 
   const handleCreateClick = () => {
@@ -22,8 +60,15 @@ export default function CreateOrderLine() {
       quantity: parseInt(quantity),
     })
       .then((addedOrderLine) => {
-        console.log(`Order line was added with ID: ${addedOrderLine.id}`);
-        navigate(`/admin/orders/details/${loadedOrderId}`);
+        if (addedOrderLine !== null) {
+          console.log(`Order line was added with ID: ${addedOrderLine.id}`);
+          navigate(`/admin/orders/details/${loadedOrderId}`);
+        } else {
+          setFormErrorInput((prevData) => ({
+            ...prevData,
+            styles: { visibility: "visible", marginTop: 0 },
+          }));
+        }
       })
       .catch((error) => console.error(error));
   };
@@ -32,8 +77,14 @@ export default function CreateOrderLine() {
       <div className="bg-primary text-white text-center p-1 editor-header">
         Create an Order line
       </div>
+      <div style={formErrorInput.styles} className="form-error-input">
+        {formErrorInput.message}
+      </div>
       <form>
-        <div className="form-group">
+        <div
+          style={{ marginTop: 0 }}
+          className="form-group admin-form-input-block"
+        >
           <label htmlFor="orderline-productid">Product ID</label>
           <input
             type="number"
@@ -45,7 +96,10 @@ export default function CreateOrderLine() {
             }}
           />
         </div>
-        <div className="form-group">
+        <div style={productIdErrorInput.styles} className="error-input">
+          {productIdErrorInput.message}
+        </div>
+        <div className="form-group admin-form-input-block">
           <label htmlFor="orderline-quantity">Quantity</label>
           <input
             type="number"
@@ -57,17 +111,24 @@ export default function CreateOrderLine() {
             }}
           />
         </div>
+        <div style={quantityErrorInput.styles} className="error-input">
+          {quantityErrorInput.message}
+        </div>
         <div className="mt-2">
           <button
             type="button"
             className="btn btn-primary admin-products-button"
             onClick={() => {
-              if (validateFormData()) {
-                console.log("The data is valid.");
-                handleCreateClick();
-              } else {
-                console.log("The data is not valid.");
-              }
+              validateFormData()
+                .then((result) => {
+                  if (result) {
+                    console.log("The data is valid.");
+                    handleCreateClick();
+                  } else {
+                    console.log("The data is not valid.");
+                  }
+                })
+                .catch((error) => console.error(error));
             }}
           >
             Save

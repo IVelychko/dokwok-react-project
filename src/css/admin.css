@@ -25,3 +25,7 @@ th {
   font-weight: 500;
   line-height: 1.2;
 }
+
+.admin-form-input-block {
+  margin-top: 10px;
+}

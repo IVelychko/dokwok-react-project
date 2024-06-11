@@ -27,7 +27,9 @@ export default function CartItem({
           </div>
           <div className="cart-item-content-title">
             <div className="cart-item-content-title-name">{product.name}</div>
-            <div className="cart-item-content-title-weight">0</div>
+            <div className="cart-item-content-title-weight">
+              {product.weight} {product.measurementUnit}
+            </div>
           </div>
           <button
             className="cart-remove-button"
