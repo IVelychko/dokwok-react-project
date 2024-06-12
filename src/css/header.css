@@ -52,6 +52,41 @@ header nav a {
   margin-left: 60px;
   text-decoration: none;
 }
+.drawer-header-logo {
+  margin-bottom: 5px;
+  margin-left: 16px;
+  display: flex;
+}
+.drawer-header-logo img {
+  width: 140px;
+}
+.drawer-close-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 16px;
+  margin-left: auto;
+}
+.drawer-close-button img {
+  width: 17px;
+  height: 17px;
+  align-self: center;
+}
+.drawer-icon {
+  width: 32px;
+  margin-right: 30px;
+}
+.drawer-header-icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 0px;
+  margin-left: auto;
+}
+.drawer-header-icon-img {
+  width: 45px;
+  height: 45px;
+}
 #hamburger-menu {
   display: block;
   width: 40px;

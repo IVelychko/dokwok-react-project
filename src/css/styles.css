@@ -11,6 +11,9 @@
 * {
   box-sizing: border-box;
 }
+html {
+  overflow-y: scroll;
+}
 /* style of body */
 body {
   font-family: "Roboto", Arial, Helvetica, sans-serif;

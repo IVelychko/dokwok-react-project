@@ -28,7 +28,7 @@ export default function RootLayout() {
 
   return (
     <div className="flex-wrapper">
-      <Header cartProp={cartProp} />
+      <Header cartProp={cartProp} isUserLoggedIn={authUserProp.id !== ""} />
       <Outlet
         context={
           {

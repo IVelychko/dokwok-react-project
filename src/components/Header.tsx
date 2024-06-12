@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CartProp } from "../helpers/Interfaces";
 import { useEffect, useState } from "react";
 import Badge from "@mui/material/Badge";
+import Button from "@mui/material/Button";
 import {
   Box,
   Divider,
@@ -14,9 +15,10 @@ import {
 
 interface Props {
   cartProp: CartProp;
+  isUserLoggedIn: boolean;
 }
 
-export default function Header({ cartProp }: Readonly<Props>) {
+export default function Header({ cartProp, isUserLoggedIn }: Readonly<Props>) {
   const [cartSize, setCartSize] = useState<number>();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -33,29 +35,136 @@ export default function Header({ cartProp }: Readonly<Props>) {
     },
   };
 
+  const logInButtonStyle = {
+    textTransform: "capitalize",
+    color: "black",
+    letterSpacing: -0.1,
+    fontSize: 17,
+    fontWeight: 500,
+    "&:hover": {
+      textDecoration: "none",
+      backgroundColor: "rgb(0 0 0 / 4%)",
+    },
+  };
+
+  const drawerListStyle = { width: 400 };
+  const listItemTextStyle = {
+    fontSize: 18,
+    color: "gray",
+    fontFamily: "Montserrat",
+    fontWeight: 400,
+  };
+
+  const navigate = useNavigate();
+
+  const handleLogInClick = () => {
+    navigate("/login");
+  };
+
   const toggleDrawer = (isOpen: boolean) => () => {
     setIsDrawerOpen(isOpen);
   };
 
+  const accountButton = isUserLoggedIn ? (
+    <Link className="account-icon" to="/account" title="До вашого акаунту">
+      <img
+        className="account-icon-img"
+        alt="account"
+        src="/src/assets/header/user.png"
+      />
+    </Link>
+  ) : (
+    <div className="account-icon">
+      <Button sx={logInButtonStyle} onClick={handleLogInClick} variant="text">
+        Увійти
+      </Button>
+    </div>
+  );
+
+  const accountDrawerButton = isUserLoggedIn ? (
+    <div style={{ marginBottom: 5, marginTop: 5 }}>
+      <ListItem disablePadding>
+        <ListItemButton onClick={() => navigate("/account")}>
+          <img
+            className="drawer-icon"
+            alt="account"
+            src="/src/assets/header/user.png"
+          />
+          <ListItemText
+            primary={"Профіль"}
+            primaryTypographyProps={listItemTextStyle}
+          />
+        </ListItemButton>
+      </ListItem>
+    </div>
+  ) : (
+    <div style={{ marginBottom: 5, marginTop: 5 }}>
+      <ListItem disablePadding>
+        <ListItemButton onClick={() => navigate("/login")}>
+          <img
+            className="drawer-icon"
+            alt="account"
+            src="/src/assets/header/user.png"
+          />
+          <ListItemText
+            primary={"Увійти"}
+            primaryTypographyProps={listItemTextStyle}
+          />
+        </ListItemButton>
+      </ListItem>
+    </div>
+  );
+
   const DrawerList = (
-    <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
+    <Box sx={drawerListStyle} role="presentation" onClick={toggleDrawer(false)}>
       <List>
+        <div className="drawer-header-logo">
+          <Link to={"/"}>
+            <img alt="На головну" src="/src/assets/header/dokwok-logo.png" />
+          </Link>
+          <button className="drawer-close-button" onClick={toggleDrawer(false)}>
+            <img src="/src/assets/header/close2.png" alt="Закрити" />
+          </button>
+        </div>
+        <Divider />
+        {accountDrawerButton}
+        <Divider />
         {[
-          "Головна",
-          "Сети",
-          "Локшина",
-          "Роли",
-          "Прохолодні напої",
-          "Кошик",
-        ].map((text) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
+          {
+            title: "Сети",
+            link: "/food-set",
+            image: "/src/assets/header/drawer/sushi-set.png",
+          },
+          {
+            title: "Локшина",
+            link: "/noodles",
+            image: "/src/assets/header/drawer/noodles.png",
+          },
+          {
+            title: "Роли",
+            link: "/roll",
+            image: "/src/assets/header/drawer/three-rolls.png",
+          },
+          {
+            title: "Прохолодні напої",
+            link: "/cold-beverage",
+            image: "/src/assets/header/drawer/cold-beverage.png",
+          },
+        ].map((line) => (
+          <div key={line.title} style={{ marginBottom: 5, marginTop: 5 }}>
+            <ListItem disablePadding>
+              <ListItemButton onClick={() => navigate(line.link)}>
+                <img className="drawer-icon" alt="account" src={line.image} />
+                <ListItemText
+                  primary={line.title}
+                  primaryTypographyProps={listItemTextStyle}
+                />
+              </ListItemButton>
+            </ListItem>
+          </div>
         ))}
+        <Divider />
       </List>
-      <Divider />
     </Box>
   );
 
@@ -72,13 +181,7 @@ export default function Header({ cartProp }: Readonly<Props>) {
         <Link to="roll">Роли</Link>
         <Link to="cold-beverage">Прохолодні напої</Link>
       </nav>
-      <Link className="account-icon" to="/account" title="До вашого акаунту">
-        <img
-          className="account-icon-img"
-          alt="account"
-          src="/src/assets/header/user.png"
-        />
-      </Link>
+      {accountButton}
       <Link className="shopping-cart" to="cart" title="До товарів в кошику">
         <Badge sx={badgeStyle} color="primary" badgeContent={cartSize}>
           <img
@@ -88,23 +191,24 @@ export default function Header({ cartProp }: Readonly<Props>) {
           />
         </Badge>
       </Link>
-      <button onClick={toggleDrawer(true)}>Toggle drawer</button>
-      <Drawer open={isDrawerOpen} onClose={toggleDrawer(false)}>
+      <button
+        className="drawer-header-icon-button"
+        onClick={toggleDrawer(true)}
+      >
+        <img
+          className="drawer-header-icon-img"
+          src="/src/assets/header/bars-solid.svg"
+        />
+      </button>
+
+      <Drawer
+        ModalProps={{ disableScrollLock: true }}
+        open={isDrawerOpen}
+        onClose={toggleDrawer(false)}
+      >
         {DrawerList}
       </Drawer>
       {/* hidden checkbox for hamburger menu */}
-      <input type="checkbox" id="hamburger-input" className="burger-shower" />
-      <label id="hamburger-menu" htmlFor="hamburger-input">
-        <div id="sidebar-menu">
-          <h3>Меню</h3>
-          <Link to="/">Головна</Link>
-          <Link to="food-set">Сети</Link>
-          <Link to="noodles">Локшина</Link>
-          <Link to="roll">Роли</Link>
-          <Link to="cold-beverage">Прохолодні напої</Link>
-          <Link to="cart">Кошик</Link>
-        </div>
-      </label>
     </header>
   );
 }
