@@ -1,5 +1,5 @@
 import { Link, useLoaderData } from "react-router-dom";
-import { OrderLineProp } from "../../helpers/Interfaces";
+import { OrderLineProp } from "../../../helpers/Interfaces";
 
 export default function OrderLineDetails() {
   const orderLine: OrderLineProp = useLoaderData() as OrderLineProp;

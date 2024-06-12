@@ -37,29 +37,29 @@ import {
   fetchUserOrders,
 } from "./functions/orderFunctions";
 import AdminLayout from "./components/admin/AdminLayout";
-import AdminProducts from "./components/admin/AdminProducts";
-import ProductDetails from "./components/admin/ProductDetails";
-import CreateProduct from "./components/admin/CreateProduct";
-import EditProduct from "./components/admin/EditProduct";
-import AdminCategories from "./components/admin/AdminCategories";
-import CategoryDetails from "./components/admin/CategoryDetails";
-import CreateCategory from "./components/admin/CreateCategory";
-import EditCategory from "./components/admin/EditCategory";
-import AdminOrders from "./components/admin/AdminOrders";
-import OrderDetails from "./components/admin/OrderDetails";
-import EditOrder from "./components/admin/EditOrder";
-import OrderLineDetails from "./components/admin/OrderLineDetails";
-import CreateOrderLine from "./components/admin/CreateOrderLine";
-import EditOrderLine from "./components/admin/EditOrderLine";
-import AdminUsers from "./components/admin/AdminUsers";
+import AdminProducts from "./components/admin/products/AdminProducts";
+import ProductDetails from "./components/admin/products/ProductDetails";
+import CreateProduct from "./components/admin/products/CreateProduct";
+import EditProduct from "./components/admin/products/EditProduct";
+import AdminCategories from "./components/admin/categories/AdminCategories";
+import CategoryDetails from "./components/admin/categories/CategoryDetails";
+import CreateCategory from "./components/admin/categories/CreateCategory";
+import EditCategory from "./components/admin/categories/EditCategory";
+import AdminOrders from "./components/admin/orders/AdminOrders";
+import OrderDetails from "./components/admin/orders/OrderDetails";
+import EditOrder from "./components/admin/orders/EditOrder";
+import OrderLineDetails from "./components/admin/order-lines/OrderLineDetails";
+import CreateOrderLine from "./components/admin/order-lines/CreateOrderLine";
+import EditOrderLine from "./components/admin/order-lines/EditOrderLine";
+import AdminUsers from "./components/admin/users/AdminUsers";
 import {
   fetchCustomerDataById,
   fetchCustomers,
 } from "./functions/userFunctions";
-import UserDetails from "./components/admin/UserDetails";
+import UserDetails from "./components/admin/users/UserDetails";
 import AdminLogin from "./components/authorization/AdminLogin";
-import CreateUser from "./components/admin/CreateUser";
-import EditUser from "./components/admin/EditUser";
+import CreateUser from "./components/admin/users/CreateUser";
+import EditUser from "./components/admin/users/EditUser";
 import EditProfile from "./components/account/EditProfile";
 import { Categories } from "./helpers/constants";
 

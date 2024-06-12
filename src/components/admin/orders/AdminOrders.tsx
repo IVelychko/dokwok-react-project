@@ -1,7 +1,7 @@
 import { Link, useLoaderData } from "react-router-dom";
-import { OrderProp } from "../../helpers/Interfaces";
+import { OrderProp } from "../../../helpers/Interfaces";
 import { ReactNode, useState } from "react";
-import { deleteOrder, fetchAllOrders } from "../../functions/orderFunctions";
+import { deleteOrder, fetchAllOrders } from "../../../functions/orderFunctions";
 
 export default function AdminOrders() {
   const orderData: OrderProp[] = useLoaderData() as OrderProp[];

@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ErrorInputProp, RegisterUserProp } from "../../helpers/Interfaces";
-import { addUser } from "../../functions/userFunctions";
+import { ErrorInputProp, RegisterUserProp } from "../../../helpers/Interfaces";
+import { addUser } from "../../../functions/userFunctions";
 import {
   validateEmailCreate,
   validateFirstName,
   validatePassword,
   validatePhoneNumberCreate,
   validateUserNameCreate,
-} from "../../validation/userValidation";
+} from "../../../validation/userValidation";
 
 export default function CreateUser() {
   const [formData, setFormData] = useState<RegisterUserProp>({

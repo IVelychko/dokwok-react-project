@@ -4,18 +4,18 @@ import {
   AuthUserProp,
   ErrorInputProp,
   UserPasswordChangeAsAdminProp,
-} from "../../helpers/Interfaces";
+} from "../../../helpers/Interfaces";
 import {
   updateCustomerPasswordAsAdmin,
   updateUser,
-} from "../../functions/userFunctions";
+} from "../../../functions/userFunctions";
 import {
   validateEmailEdit,
   validateFirstName,
   validatePassword,
   validatePhoneNumberEdit,
   validateUserNameEdit,
-} from "../../validation/userValidation";
+} from "../../../validation/userValidation";
 
 export default function EditUser() {
   const loadedUser: AuthUserProp = useLoaderData() as AuthUserProp;

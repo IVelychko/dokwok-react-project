@@ -1,5 +1,5 @@
 import { Link, useLoaderData } from "react-router-dom";
-import { AuthUserProp } from "../../helpers/Interfaces";
+import { AuthUserProp } from "../../../helpers/Interfaces";
 
 export default function UserDetails() {
   const user: AuthUserProp = useLoaderData() as AuthUserProp;

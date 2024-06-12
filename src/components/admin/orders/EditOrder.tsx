@@ -3,21 +3,21 @@ import {
   ErrorInputProp,
   OrderProp,
   OrderPutProp,
-} from "../../helpers/Interfaces";
+} from "../../../helpers/Interfaces";
 import { useState } from "react";
-import { updateOrder } from "../../functions/orderFunctions";
+import { updateOrder } from "../../../functions/orderFunctions";
 import {
   BEINGPROCESSED_ORDER_STATUS,
   CANCELLED_ORDER_STATUS,
   COMPLETED_ORDER_STATUS,
-} from "../../helpers/constants";
+} from "../../../helpers/constants";
 import {
   validateDeliveryAddress,
   validateEmail,
   validateFirstName,
   validatePhoneNumber,
   validateUserId,
-} from "../../validation/orderAdminValidation";
+} from "../../../validation/orderAdminValidation";
 
 export default function EditOrder() {
   const loadedOrder: OrderProp = useLoaderData() as OrderProp;

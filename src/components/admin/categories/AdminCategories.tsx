@@ -1,10 +1,10 @@
 import { Link, useLoaderData } from "react-router-dom";
-import { ProductCategoryDataProp } from "../../helpers/Interfaces";
+import { ProductCategoryDataProp } from "../../../helpers/Interfaces";
 import { ReactNode, useState } from "react";
 import {
   deleteCategory,
   fetchProductCategoryData,
-} from "../../functions/productFunctions";
+} from "../../../functions/productFunctions";
 
 export default function AdminCategories() {
   const categoryData: ProductCategoryDataProp[] =

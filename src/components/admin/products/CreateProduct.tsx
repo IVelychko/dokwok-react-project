@@ -1,30 +1,23 @@
-import { Link, useLoaderData, useNavigate } from "react-router-dom";
-import { ErrorInputProp, ProductDataProp } from "../../helpers/Interfaces";
 import { useState } from "react";
-import { updateProduct } from "../../functions/productFunctions";
+import { Link, useNavigate } from "react-router-dom";
+import { addProduct } from "../../../functions/productFunctions";
+import { ErrorInputProp } from "../../../helpers/Interfaces";
 import {
   validateCategoryId,
   validateDescription,
   validateMeasurementUnit,
-  validateNameEdit,
+  validateNameCreate,
   validatePrice,
   validateWeight,
-} from "../../validation/productValidation";
+} from "../../../validation/productValidation";
 
-export default function EditProduct() {
-  const loadedProduct: ProductDataProp = useLoaderData() as ProductDataProp;
-  const [name, setName] = useState<string>(loadedProduct.name);
-  const [categoryId, setCategoryId] = useState<string>(
-    loadedProduct.categoryId.toString()
-  );
-  const [description, setDescription] = useState<string>(
-    loadedProduct.description
-  );
-  const [price, setPrice] = useState<string>(loadedProduct.price.toString());
-  const [weight, setWeight] = useState<string>(loadedProduct.weight.toString());
-  const [measurementUnit, setMeasurementUnit] = useState<string>(
-    loadedProduct.measurementUnit
-  );
+export default function CreateProduct() {
+  const [name, setName] = useState<string>("");
+  const [categoryId, setCategoryId] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [price, setPrice] = useState<string>("");
+  const [weight, setWeight] = useState<string>("");
+  const [measurementUnit, setMeasurementUnit] = useState<string>("");
   const [formErrorInput, setFormErrorInput] = useState<ErrorInputProp>({
     styles: { visibility: "hidden", marginTop: 0 },
     message: "Incorrect data",
@@ -65,12 +58,7 @@ export default function EditProduct() {
     }));
     const validationResults: boolean[] = [];
     validationResults.push(
-      await validateNameEdit(
-        loadedProduct.name,
-        name,
-        nameErrorInput,
-        setNameErrorInput
-      )
+      await validateNameCreate(name, nameErrorInput, setNameErrorInput)
     );
     validationResults.push(
       validateDescription(
@@ -109,9 +97,8 @@ export default function EditProduct() {
     return isValid;
   };
 
-  const handleEditClick = () => {
-    updateProduct({
-      id: loadedProduct.id,
+  const handleCreateClick = () => {
+    addProduct({
       name: name,
       categoryId: parseInt(categoryId),
       description: description,
@@ -119,10 +106,10 @@ export default function EditProduct() {
       weight: parseFloat(weight),
       measurementUnit: measurementUnit,
     })
-      .then((updatedProduct) => {
-        if (updatedProduct !== null) {
+      .then((addedProduct) => {
+        if (addedProduct !== null) {
           console.log(
-            `Product ${updatedProduct.name} with ID: ${updatedProduct.id} was updated`
+            `Product ${addedProduct.name} was added with ID: ${addedProduct.id}`
           );
           navigate("/admin/products");
         } else {
@@ -136,8 +123,8 @@ export default function EditProduct() {
   };
   return (
     <div className="col">
-      <div className="bg-warning text-white text-center p-1 editor-header">
-        Edit a Product
+      <div className="bg-primary text-white text-center p-1 editor-header">
+        Create a Product
       </div>
       <div style={formErrorInput.styles} className="form-error-input">
         {formErrorInput.message}
@@ -147,15 +134,6 @@ export default function EditProduct() {
           style={{ marginTop: 0 }}
           className="form-group admin-form-input-block"
         >
-          <label htmlFor="product-id">ID</label>
-          <input
-            id="product-id"
-            className="form-control"
-            value={loadedProduct.id}
-            disabled
-          />
-        </div>
-        <div className="form-group admin-form-input-block">
           <label htmlFor="product-name">Name</label>
           <input
             id="product-name"
@@ -189,6 +167,7 @@ export default function EditProduct() {
             id="product-category-id"
             className="form-control"
             value={categoryId}
+            type="number"
             onChange={(e) => {
               setCategoryId(e.target.value);
             }}
@@ -251,7 +230,7 @@ export default function EditProduct() {
                 .then((result) => {
                   if (result) {
                     console.log("The data is valid.");
-                    handleEditClick();
+                    handleCreateClick();
                   } else {
                     console.log("The data is not valid.");
                   }

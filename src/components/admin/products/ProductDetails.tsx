@@ -1,5 +1,5 @@
 import { Link, useLoaderData } from "react-router-dom";
-import { ProductDataProp } from "../../helpers/Interfaces";
+import { ProductDataProp } from "../../../helpers/Interfaces";
 
 export default function ProductDetails() {
   const product: ProductDataProp = useLoaderData() as ProductDataProp;

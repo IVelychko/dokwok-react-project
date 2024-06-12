@@ -1,7 +1,10 @@
 import { Link, useLoaderData } from "react-router-dom";
-import { AuthUserProp } from "../../helpers/Interfaces";
+import { AuthUserProp } from "../../../helpers/Interfaces";
 import { ReactNode, useState } from "react";
-import { deleteUserById, fetchCustomers } from "../../functions/userFunctions";
+import {
+  deleteUserById,
+  fetchCustomers,
+} from "../../../functions/userFunctions";
 
 export default function AdminUsers() {
   const userData: AuthUserProp[] = useLoaderData() as AuthUserProp[];

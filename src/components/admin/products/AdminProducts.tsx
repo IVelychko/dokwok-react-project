@@ -1,10 +1,10 @@
 import { Link, useLoaderData } from "react-router-dom";
-import { ProductDataProp } from "../../helpers/Interfaces";
+import { ProductDataProp } from "../../../helpers/Interfaces";
 import { ReactNode, useState } from "react";
 import {
   deleteProduct,
   fetchProductData,
-} from "../../functions/productFunctions";
+} from "../../../functions/productFunctions";
 
 export default function AdminProducts() {
   const productData: ProductDataProp[] = useLoaderData() as ProductDataProp[];

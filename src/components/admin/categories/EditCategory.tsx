@@ -1,13 +1,21 @@
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
+import {
+  ErrorInputProp,
+  ProductCategoryDataProp,
+} from "../../../helpers/Interfaces";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { addCategory } from "../../functions/productFunctions";
-import { ErrorInputProp } from "../../helpers/Interfaces";
-import { validateNameCreate } from "../../validation/categoryValidation";
+import { updateCategory } from "../../../functions/productFunctions";
+import { validateNameEdit } from "../../../validation/categoryValidation";
 
-export default function CreateCategory() {
-  const [name, setName] = useState<string>("");
+export default function EditCategory() {
+  const loadedCategory: ProductCategoryDataProp =
+    useLoaderData() as ProductCategoryDataProp;
+  const [name, setName] = useState<string>(loadedCategory.name);
   const [formErrorInput, setFormErrorInput] = useState<ErrorInputProp>({
-    styles: { visibility: "hidden", marginTop: 0 },
+    styles: {
+      visibility: "hidden",
+      marginTop: 0,
+    },
     message: "Incorrect data",
   });
   const [nameErrorInput, setNameErrorInput] = useState<ErrorInputProp>({
@@ -25,7 +33,12 @@ export default function CreateCategory() {
     }));
     const validationResults: boolean[] = [];
     validationResults.push(
-      await validateNameCreate(name, nameErrorInput, setNameErrorInput)
+      await validateNameEdit(
+        loadedCategory.name,
+        name,
+        nameErrorInput,
+        setNameErrorInput
+      )
     );
     let isValid = true;
     for (const result of validationResults) {
@@ -37,14 +50,15 @@ export default function CreateCategory() {
     return isValid;
   };
 
-  const handleCreateClick = () => {
-    addCategory({
+  const handleEditClick = () => {
+    updateCategory({
+      id: loadedCategory.id,
       name: name,
     })
-      .then((addedCategory) => {
-        if (addedCategory !== null) {
+      .then((updatedCategory) => {
+        if (updatedCategory !== null) {
           console.log(
-            `Category ${addedCategory.name} was added with ID: ${addedCategory.id}`
+            `Category ${updatedCategory.name} with ID: ${updatedCategory.id} was updated`
           );
           navigate("/admin/categories");
         } else {
@@ -58,8 +72,8 @@ export default function CreateCategory() {
   };
   return (
     <div className="col">
-      <div className="bg-primary text-white text-center p-1 editor-header">
-        Create a Category
+      <div className="bg-warning text-white text-center p-1 editor-header">
+        Edit a Category
       </div>
       <div style={formErrorInput.styles} className="form-error-input">
         {formErrorInput.message}
@@ -69,6 +83,15 @@ export default function CreateCategory() {
           style={{ marginTop: 0 }}
           className="form-group admin-form-input-block"
         >
+          <label htmlFor="category-id">ID</label>
+          <input
+            id="category-id"
+            className="form-control"
+            value={loadedCategory.id}
+            disabled
+          />
+        </div>
+        <div className="form-group admin-form-input-block">
           <label htmlFor="category-name">Name</label>
           <input
             id="category-name"
@@ -91,7 +114,7 @@ export default function CreateCategory() {
                 .then((result) => {
                   if (result) {
                     console.log("The data is valid.");
-                    handleCreateClick();
+                    handleEditClick();
                   } else {
                     console.log("The data is not valid.");
                   }

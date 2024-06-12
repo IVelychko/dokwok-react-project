@@ -1,5 +1,5 @@
 import { Link, useLoaderData } from "react-router-dom";
-import { ProductCategoryDataProp } from "../../helpers/Interfaces";
+import { ProductCategoryDataProp } from "../../../helpers/Interfaces";
 
 export default function CategoryDetails() {
   const category: ProductCategoryDataProp =

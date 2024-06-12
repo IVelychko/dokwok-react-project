@@ -1,10 +1,10 @@
 import { Link, useLoaderData } from "react-router-dom";
-import { OrderLineProp, OrderProp } from "../../helpers/Interfaces";
+import { OrderLineProp, OrderProp } from "../../../helpers/Interfaces";
 import { ReactNode, useState } from "react";
 import {
   deleteOrderLine,
   fetchOrderLinesByOrder,
-} from "../../functions/orderFunctions";
+} from "../../../functions/orderFunctions";
 
 export default function OrderDetails() {
   const order: OrderProp = useLoaderData() as OrderProp;
