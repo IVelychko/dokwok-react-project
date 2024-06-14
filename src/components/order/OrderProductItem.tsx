@@ -27,16 +27,8 @@ export default function OrderProductItem({ cartLine }: Readonly<Props>) {
           </div>
         </div>
         <div className="order-products-money">
-          <div
-            style={{
-              marginRight: 0,
-              marginLeft: "auto",
-              fontWeight: 500,
-              color: "#a6a6a6",
-            }}
-            className="order-products-quantity"
-          >
-            {cartLine.quantity} шт
+          <div className="order-products-quantity">
+            {cartLine.quantity} шт x {cartLine.product.price} ₴
           </div>
           <div className="order-products-price">
             <div>{cartLine.totalLinePrice}</div>

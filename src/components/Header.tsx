@@ -47,7 +47,10 @@ export default function Header({ cartProp, isUserLoggedIn }: Readonly<Props>) {
     },
   };
 
-  const drawerListStyle = { width: 400 };
+  const drawerListStyle = {
+    width: "100vw",
+    "@media (min-width: 400px)": { width: 400 },
+  };
   const listItemTextStyle = {
     fontSize: 18,
     color: "gray",
@@ -196,6 +199,7 @@ export default function Header({ cartProp, isUserLoggedIn }: Readonly<Props>) {
         onClick={toggleDrawer(true)}
       >
         <img
+          alt="Відкрити меню навігації"
           className="drawer-header-icon-img"
           src="/src/assets/header/bars-solid.svg"
         />
@@ -208,7 +212,6 @@ export default function Header({ cartProp, isUserLoggedIn }: Readonly<Props>) {
       >
         {DrawerList}
       </Drawer>
-      {/* hidden checkbox for hamburger menu */}
     </header>
   );
 }

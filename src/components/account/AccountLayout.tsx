@@ -35,11 +35,30 @@ export default function AccountLayout() {
       <div className="account-wrapper">
         <div className="account-side-bar">
           <nav>
-            <Link to="profile">Профіль</Link>
-            <Link to="orders">Історія замовлень</Link>
+            <Link className="profile-nav-item" to="profile">
+              <img
+                className="profile-nav-icon"
+                alt="account"
+                src="/src/assets/header/user.png"
+              />
+              <span>Профіль</span>
+            </Link>
+            <Link className="profile-nav-item" to="orders">
+              <img
+                className="profile-nav-icon"
+                alt="account"
+                src="/src/assets/profile/order.png"
+              />
+              <span>Історія замовлень</span>
+            </Link>
           </nav>
           <button className="account-logout-button" onClick={handleLogOutClick}>
-            Вийти
+            <img
+              className="profile-nav-icon"
+              alt="account"
+              src="/src/assets/profile/logout2.png"
+            />
+            <span>Вийти</span>
           </button>
         </div>
         <div className="account-content">

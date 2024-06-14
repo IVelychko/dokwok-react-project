@@ -6,11 +6,21 @@
   margin-top: 20px;
   margin-bottom: 20px;
 }
-.order-form-wrapper,
+.order-form-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 14px;
+
+  -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
 .order-products-wrapper {
   display: flex;
   flex-direction: column;
   padding: 14px;
+  margin-top: 20px;
 
   -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
   -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
@@ -38,11 +48,22 @@
   margin-right: 0;
   margin-left: auto;
 }
+.order-product-expand-button {
+  color: #e2520d;
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  margin-right: auto;
+  margin-left: 0;
+  margin-bottom: 10px;
+  background: none;
+  border: none;
+}
 .order-products-container {
   display: grid; /* determines block as grid container */
   grid-template-columns: 100%; /* sets quantity and width of grid columns. For example, if you need 3 columns in grid container - grid-template-columns: auto auto auto */
-  grid-auto-rows: 200px; /* sets height of grid rows */
-  padding-bottom: 25px;
+  grid-auto-rows: 140px; /* sets height of grid rows */
+  padding-bottom: 10px;
   justify-content: center;
   background: white;
 }
@@ -56,9 +77,11 @@
 }
 .order-products-item-content {
   display: flex;
+  flex-direction: column;
   background: white;
   height: 100%;
   width: 100%;
+  align-items: center;
 }
 .order-products-info {
   display: flex;
@@ -78,7 +101,9 @@
 .order-products-item-content-title {
   display: flex;
   flex-direction: column;
-  margin-left: 20px;
+  margin-left: auto;
+  margin-right: 0;
+  text-align: end;
 }
 .order-products-item-content-title-name {
   font-family: "Roboto", Arial, Helvetica, sans-serif;
@@ -107,7 +132,8 @@
   font-family: "Roboto", Arial, Helvetica, sans-serif;
   font-style: normal;
   font-size: 15px;
-  color: black;
+  font-weight: 500;
+  color: #a6a6a6;
   margin-left: 0;
   margin-right: auto;
 }
@@ -118,7 +144,7 @@
   font-family: "Roboto", Arial, Helvetica, sans-serif;
   font-style: normal;
   font-weight: 600;
-  font-size: 24px;
+  font-size: 18px;
   color: black;
   justify-content: right;
   margin-right: 0;
@@ -157,37 +183,58 @@
   margin-top: 20px;
   margin-bottom: 20px;
 }
+@media only screen and (min-width: 600px) {
+  .order-products-quantity {
+    margin-right: 0;
+    margin-left: auto;
+  }
+  .order-products-item-content {
+    flex-direction: row;
+  }
+  .order-products-item-content-title {
+    margin-left: 20px;
+    margin-right: 0;
+    text-align: start;
+  }
+  .order-products-container {
+    grid-auto-rows: 130px;
+  }
+}
 @media only screen and (min-width: 750px) {
   .order-product-modify-link {
     margin-left: auto;
     margin-right: 10px;
   }
-  .order-products-container {
-    grid-auto-rows: 130px;
-  }
-  .order-products-item-content {
-    flex-direction: row;
-    align-items: center;
-  }
-  .order-products-info {
-    width: 60%;
-  }
-  .order-products-money {
-    width: 40%;
-    height: 100%;
-  }
 }
-/* media rule for screens wider than 1200px */
-@media only screen and (min-width: 1200px) {
+/* media rule for screens wider than 1250px */
+@media only screen and (min-width: 1150px) {
   .order-wrapper {
     flex-direction: row;
   }
   .order-form-wrapper {
     width: 65%;
     margin-right: 10px;
+    height: max-content;
   }
   .order-products-wrapper {
     width: 35%;
     margin-left: 10px;
+    margin-top: 0;
+    height: max-content;
+  }
+  .order-products-quantity {
+    margin-left: 0;
+    margin-right: auto;
+  }
+  .order-products-item-content {
+    flex-direction: column;
+  }
+  .order-products-item-content-title {
+    margin-left: auto;
+    margin-right: 0;
+    text-align: end;
+  }
+  .order-products-container {
+    grid-auto-rows: 140px;
   }
 }

@@ -6,9 +6,11 @@
   display: flex;
   flex-direction: column;
   border-bottom: 1px solid #e4e4e4;
-  width: 300px;
   padding-top: 2px;
   padding-bottom: 12px;
+}
+.account-side-bar span {
+  display: none;
 }
 .account-side-bar nav a {
   font-family: "Montserrat", Arial, Helvetica, sans-serif;
@@ -18,15 +20,25 @@
   padding: 12px;
   color: gray;
 }
+.profile-nav-icon {
+  width: 29px;
+  height: 29px;
+}
+.profile-nav-item {
+  display: flex;
+  align-items: center;
+}
 .account-content {
   -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
   -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-  margin-left: 15px;
+  margin-left: 10px;
   width: 100%;
 }
 .account-logout-button {
+  display: flex;
+  align-items: center;
   font-family: "Montserrat", Arial, Helvetica, sans-serif;
   font-size: 17px;
   font-weight: 400;
@@ -51,20 +63,36 @@
 .acc-order-heading {
   display: flex;
   margin-bottom: 14px;
+  align-items: center;
+}
+.acc-order-heading-info {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  width: 100%;
+}
+.acc-order-number-and-date {
+  display: flex;
+  align-items: center;
 }
 .acc-order-number {
-  font-size: 20px;
+  font-size: 18px;
+  font-family: "Montserrat", Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+}
+.acc-order-date {
+  font-size: 15px;
   font-family: "Montserrat", Arial, Helvetica, sans-serif;
   font-style: normal;
   font-weight: 500;
+  margin-left: 15px;
 }
 .acc-order-status {
-  font-size: 20px;
+  font-size: 18px;
   font-family: "Montserrat", Arial, Helvetica, sans-serif;
   font-style: normal;
   font-weight: 500;
-  margin-left: auto;
-  margin-right: 0;
 }
 .profile-content {
   padding-top: 12px;
@@ -122,10 +150,15 @@
 }
 .acc-order-content {
   display: flex;
+  flex-direction: column;
   align-items: center;
   background: white;
   height: 100%;
   width: 100%;
+}
+.acc-order-content-underline {
+  width: 100px;
+  border-top: 1px solid #e4e4e4;
 }
 .acc-order-product-info {
   display: flex;
@@ -145,12 +178,14 @@
 .acc-order-product-item-content-title {
   display: flex;
   flex-direction: column;
-  margin-left: 20px;
+  margin-right: 0;
+  margin-left: auto;
+  text-align: end;
 }
 .acc-order-product-item-content-title-name {
   font-family: "Roboto", Arial, Helvetica, sans-serif;
   font-style: normal;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 18px;
   letter-spacing: 0.035em;
   color: #000000;
@@ -174,7 +209,8 @@
   font-family: "Roboto", Arial, Helvetica, sans-serif;
   font-style: normal;
   font-size: 15px;
-  color: black;
+  font-weight: 500;
+  color: #a6a6a6;
   margin-left: 0;
   margin-right: auto;
 }
@@ -184,8 +220,8 @@
   width: 140px;
   font-family: "Roboto", Arial, Helvetica, sans-serif;
   font-style: normal;
-  font-weight: 600;
-  font-size: 22px;
+  font-weight: 500;
+  font-size: 18px;
   color: black;
   justify-content: right;
   margin-right: 0;
@@ -195,6 +231,7 @@
 }
 .acc-order-info {
   display: flex;
+  flex-direction: column;
 }
 .acc-order-address {
   margin-right: 0;
@@ -221,13 +258,11 @@
   font-size: 16px;
 }
 .acc-order-price {
-  text-align: right;
+  text-align: left;
   margin-top: 10px;
-  margin-right: 0;
-  margin-left: auto;
 }
 .acc-order-price-info {
-  justify-content: right;
+  justify-content: left;
   display: flex;
   font-style: normal;
   font-weight: 400;
@@ -238,4 +273,96 @@
   display: flex;
   width: 107px;
   justify-content: right;
+}
+.profile-form {
+  width: 200px;
+}
+.acc-order-expand-arrow {
+  width: 32px;
+  height: 32px;
+  margin-right: 0;
+  margin-left: auto;
+}
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #edeae9;
+  margin: 15px 10px;
+  padding-left: 0;
+}
+/* media rule for screens wider than 360px */
+@media only screen and (min-width: 360px) {
+  .profile-form {
+    width: 250px;
+  }
+}
+/* media rule for screens wider than 400px */
+@media only screen and (min-width: 400px) {
+  .profile-form {
+    width: 300px;
+  }
+}
+/* media rule for screens wider than 550px */
+@media only screen and (min-width: 550px) {
+  .acc-order-price {
+    text-align: right;
+    margin-top: 10px;
+    margin-right: 0;
+    margin-left: auto;
+  }
+  .acc-order-price-info {
+    justify-content: right;
+  }
+  .acc-order-info {
+    flex-direction: row;
+  }
+}
+/* media rule for screens wider than 600px */
+@media only screen and (min-width: 600px) {
+  .acc-order-heading-info {
+    flex-direction: row;
+    align-items: center;
+  }
+  .acc-order-status {
+    margin-left: auto;
+    margin-right: 10px;
+  }
+}
+/* media rule for screens wider than 650px */
+@media only screen and (min-width: 650px) {
+  .acc-order-content {
+    flex-direction: row;
+  }
+  .acc-order-product-quantity {
+    margin-right: 0;
+    margin-left: auto;
+  }
+  .acc-order-product-item-content-title {
+    margin-left: 20px;
+    margin-right: 0;
+    text-align: start;
+  }
+}
+/* media rule for screens wider than 900px */
+@media only screen and (min-width: 900px) {
+  .account-side-bar nav {
+    width: 230px;
+  }
+  .account-side-bar span {
+    display: block;
+  }
+  .profile-nav-icon {
+    margin-right: 13px;
+  }
+  .account-content {
+    margin-left: 15px;
+    width: 100%;
+  }
+}
+/* media rule for screens wider than 1000px */
+@media only screen and (min-width: 1000px) {
+  .account-side-bar nav {
+    width: 300px;
+  }
 }

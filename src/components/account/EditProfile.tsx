@@ -188,7 +188,7 @@ export default function EditProfile() {
         <div style={{ marginTop: 20 }} className="account-heading">
           Зміна паролю
         </div>
-        <form className="auth-form">
+        <form className="profile-form">
           <div
             style={passwordFormErrorInput.styles}
             className="form-error-input"
@@ -274,7 +274,7 @@ export default function EditProfile() {
   return (
     <div className="account-profile">
       <div className="account-heading">Зміна особистих даних</div>
-      <form className="auth-form">
+      <form className="profile-form">
         <div style={userFormErrorInput.styles} className="form-error-input">
           {userFormErrorInput.message}
         </div>

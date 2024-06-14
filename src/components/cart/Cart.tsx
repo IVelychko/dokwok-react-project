@@ -10,7 +10,7 @@ export default function Cart() {
   if (cart === null || cart.lines.length < 1) {
     return (
       <main>
-        <div className="shopping-wrapper">
+        <div style={{ marginBottom: 120 }} className="shopping-wrapper">
           <div
             style={{
               textAlign: "center",
@@ -22,7 +22,7 @@ export default function Cart() {
           >
             Кошик порожній
           </div>
-          <Link to={"/"} style={{ marginTop: 20 }} className="go-home-button">
+          <Link style={{ marginTop: 20 }} to={"/"} className="go-home-button">
             На головну
           </Link>
         </div>
