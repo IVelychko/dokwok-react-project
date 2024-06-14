@@ -39,10 +39,13 @@ header nav a {
   margin-left: auto;
   margin-right: 0;
 }
-.shopping-cart-img,
 .account-icon-img {
   width: 35px;
   height: 35px;
+}
+.shopping-cart-img {
+  width: 36px;
+  height: 36px;
 }
 /* shoping cart image in header */
 .shopping-cart {

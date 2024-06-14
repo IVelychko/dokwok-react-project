@@ -10,7 +10,7 @@ export default function Cart() {
   if (cart === null || cart.lines.length < 1) {
     return (
       <main>
-        <div style={{ marginBottom: 120 }} className="shopping-wrapper">
+        <div style={{ marginBottom: 170 }} className="shopping-wrapper">
           <div
             style={{
               textAlign: "center",

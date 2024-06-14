@@ -77,14 +77,8 @@ export default function AdminLogin() {
 
   return (
     <div className="flex-wrapper">
-      <div className="bg-info text-white p-2">
-        <div className="container-fluid">
-          <div className="row">
-            <div className="col">
-              <span className="navbar-brand ml-2">DokWok Administration</span>
-            </div>
-          </div>
-        </div>
+      <div className="admin-header">
+        <span className="admin-header-logo">DokWok Administration</span>
       </div>
       <div className="container-fluid">
         <div className="auth-heading">Вхід в адміністрацію</div>

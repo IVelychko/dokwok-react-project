@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { ContextStateType, useMyContext } from "../../hooks/hooks";
 import { Link } from "react-router-dom";
 import OrderProductsContainer from "./OrderProductsContainer";
@@ -22,7 +22,7 @@ export default function OrderForm() {
   const [customerEmail, setCustomerEmail] = useState(user.email);
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [paymentType, setPaymentType] = useState("");
-  const [orderResult, setOrderResult] = useState<string | null>(null);
+  const [orderResult, setOrderResult] = useState<string | null>("successful");
   const [order, setOrder] = useState<OrderProp | null>(null);
   const [formErrorInput, setFormErrorInput] = useState<ErrorInputProp>({
     styles: { visibility: "hidden", marginTop: 0 },
@@ -117,12 +117,28 @@ export default function OrderForm() {
       });
   };
 
+  let orderResultMessage: ReactNode;
+  if (orderResult === "successful") {
+    orderResultMessage = (
+      <span>Замовлення №{order?.id} було створено успішно</span>
+    );
+  } else if (orderResult === "unsuccessful") {
+    orderResultMessage = (
+      <>
+        <div>Під час створення замовлення виникла помилка.</div>
+        <div style={{ marginTop: 15 }}>
+          Будь ласка повторіть спробу пізніше.
+        </div>
+      </>
+    );
+  } else {
+    orderResultMessage = null;
+  }
+
   if (orderResult !== null) {
-    const result = orderResult;
-    const resultOrder = order;
     return (
       <main>
-        <div className="order-result-wrapper">
+        <div style={{ marginBottom: 170 }} className="order-result-wrapper">
           <div
             style={{
               textAlign: "center",
@@ -132,11 +148,9 @@ export default function OrderForm() {
               marginTop: 100,
             }}
           >
-            {result === "successful"
-              ? `Замовлення №${resultOrder?.id} було створено успішно`
-              : "Під час створення замовлення виникла помилка. Будь ласка повторіть спробу пізніше"}
+            {orderResultMessage}
           </div>
-          <Link to={"/"} style={{ marginTop: 20 }} className="go-home-button">
+          <Link to={"/"} style={{ marginTop: 40 }} className="go-home-button">
             На головну
           </Link>
         </div>
@@ -213,7 +227,7 @@ export default function OrderForm() {
                 <div className="order-form-input-block-element">
                   <input
                     className="form-control"
-                    type="text"
+                    type="email"
                     id="customer-email"
                     name="customer_email"
                     placeholder="Ваш email"

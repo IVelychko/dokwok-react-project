@@ -150,6 +150,7 @@ export default function EditProduct() {
           <label htmlFor="product-id">ID</label>
           <input
             id="product-id"
+            type="number"
             className="form-control"
             value={loadedProduct.id}
             disabled
@@ -159,6 +160,7 @@ export default function EditProduct() {
           <label htmlFor="product-name">Name</label>
           <input
             id="product-name"
+            type="text"
             className="form-control"
             value={name}
             onChange={(e) => {
@@ -173,6 +175,7 @@ export default function EditProduct() {
           <label htmlFor="product-desc">Description</label>
           <input
             id="product-desc"
+            type="text"
             className="form-control"
             value={description}
             onChange={(e) => {
@@ -187,6 +190,7 @@ export default function EditProduct() {
           <label htmlFor="product-category-id">Category ID</label>
           <input
             id="product-category-id"
+            type="number"
             className="form-control"
             value={categoryId}
             onChange={(e) => {

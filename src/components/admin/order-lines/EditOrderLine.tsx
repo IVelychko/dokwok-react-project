@@ -94,6 +94,7 @@ export default function EditOrderLine() {
           <label htmlFor="orderline-id">ID</label>
           <input
             id="orderline-id"
+            type="number"
             className="form-control"
             value={loadedOrderLine.id}
             disabled
@@ -133,6 +134,7 @@ export default function EditOrderLine() {
           <label htmlFor="orderline-price">Total line price</label>
           <input
             id="orderline-price"
+            type="number"
             className="form-control"
             value={loadedOrderLine.totalLinePrice}
             disabled

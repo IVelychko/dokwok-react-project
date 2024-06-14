@@ -171,6 +171,7 @@ export default function EditUser() {
           <label htmlFor="user-id">ID</label>
           <input
             id="user-id"
+            type="text"
             className="form-control"
             value={userFormData.id}
             disabled
@@ -180,6 +181,7 @@ export default function EditUser() {
           <label htmlFor="user-firstname">First name</label>
           <input
             id="user-firstname"
+            type="text"
             className="form-control"
             value={userFormData.firstName}
             onChange={(e) => {
@@ -197,6 +199,7 @@ export default function EditUser() {
           <label htmlFor="user-username">User name</label>
           <input
             id="user-username"
+            type="text"
             className="form-control"
             value={userFormData.userName}
             onChange={(e) => {
@@ -214,6 +217,7 @@ export default function EditUser() {
           <label htmlFor="user-email">Email</label>
           <input
             id="user-email"
+            type="email"
             className="form-control"
             value={userFormData.email}
             onChange={(e) => {
@@ -231,6 +235,7 @@ export default function EditUser() {
           <label htmlFor="user-phone">Phone number</label>
           <input
             id="user-phone"
+            type="text"
             className="form-control"
             value={userFormData.phoneNumber}
             onChange={(e) => {

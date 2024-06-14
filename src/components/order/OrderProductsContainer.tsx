@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { CartProp } from "../../helpers/Interfaces";
 import OrderProductItem from "./OrderProductItem";
 
@@ -9,7 +9,12 @@ interface Props {
 export default function OrderProductsContainer({ cart }: Readonly<Props>) {
   const orderProductItemComponents: ReactNode[] = [];
   const [expanded, setExpanded] = useState<boolean>(false);
-  const [expandable, setExpandable] = useState<boolean>(cart.lines.length > 1);
+  const [expandable, setExpandable] = useState<boolean>(false);
+
+  useEffect(() => {
+    setExpandable(cart.lines.length > 1);
+  }, [cart.lines.length]);
+
   if (expandable) {
     if (expanded) {
       cart.lines.forEach((line) => {

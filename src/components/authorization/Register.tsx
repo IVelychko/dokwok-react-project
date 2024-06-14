@@ -222,7 +222,7 @@ export default function Register() {
             <div className="form-input-block-element">
               <input
                 className="form-control"
-                type="text"
+                type="email"
                 id="user-email"
                 name="user_email"
                 placeholder="Ваша електронна пошта"

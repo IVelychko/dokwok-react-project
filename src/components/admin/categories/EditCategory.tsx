@@ -19,9 +19,7 @@ export default function EditCategory() {
     message: "Incorrect data",
   });
   const [nameErrorInput, setNameErrorInput] = useState<ErrorInputProp>({
-    styles: {
-      display: "none",
-    },
+    styles: { display: "none" },
     message: "Enter a correct name",
   });
   const navigate = useNavigate();
@@ -86,6 +84,7 @@ export default function EditCategory() {
           <label htmlFor="category-id">ID</label>
           <input
             id="category-id"
+            type="number"
             className="form-control"
             value={loadedCategory.id}
             disabled
@@ -95,6 +94,7 @@ export default function EditCategory() {
           <label htmlFor="category-name">Name</label>
           <input
             id="category-name"
+            type="text"
             className="form-control"
             value={name}
             onChange={(e) => {

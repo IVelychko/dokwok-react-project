@@ -190,7 +190,7 @@ export default function Header({ cartProp, isUserLoggedIn }: Readonly<Props>) {
           <img
             className="shopping-cart-img"
             alt="shopping-cart"
-            src="/src/assets/header/empty-cart3.0.png"
+            src="/src/assets/header/shopping-cart8.0.svg"
           />
         </Badge>
       </Link>

@@ -137,6 +137,7 @@ export default function CreateProduct() {
           <label htmlFor="product-name">Name</label>
           <input
             id="product-name"
+            type="text"
             className="form-control"
             value={name}
             onChange={(e) => {
@@ -151,6 +152,7 @@ export default function CreateProduct() {
           <label htmlFor="product-desc">Description</label>
           <input
             id="product-desc"
+            type="text"
             className="form-control"
             value={description}
             onChange={(e) => {

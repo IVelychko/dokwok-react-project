@@ -72,6 +72,7 @@ export default function CreateCategory() {
           <label htmlFor="category-name">Name</label>
           <input
             id="category-name"
+            type="text"
             className="form-control"
             value={name}
             onChange={(e) => {

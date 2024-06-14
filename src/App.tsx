@@ -62,6 +62,9 @@ import CreateUser from "./components/admin/users/CreateUser";
 import EditUser from "./components/admin/users/EditUser";
 import EditProfile from "./components/account/EditProfile";
 import { Categories } from "./helpers/constants";
+import AdminErrorPage from "./components/admin/AdminErrorPage";
+import AboutUs from "./components/AboutUs";
+import Contacts from "./components/Contacts";
 
 const getRoutes = () => {
   const childrenRoutes: RouteObject[] = [];
@@ -182,13 +185,14 @@ const getRoutes = () => {
     path: "error",
     element: <ErrorPage />,
   });
-  // productCategories.forEach((category) => {
-  //   childrenRoutes.push({
-  //     path: `/${category.name.toLowerCase().replace(" ", "-")}`,
-  //     element: <Menu heading={category.name} />,
-  //     loader: async () => await fetchProductData(category.id),
-  //   });
-  // });
+  childrenRoutes.push({
+    path: "about-us",
+    element: <AboutUs />,
+  });
+  childrenRoutes.push({
+    path: "contacts",
+    element: <Contacts />,
+  });
 
   const routes: RouteObject[] = [];
   routes.push(
@@ -217,6 +221,10 @@ const getRoutes = () => {
     {
       path: "/admin/login",
       element: <AdminLogin />,
+    },
+    {
+      path: "/admin/error",
+      element: <AdminErrorPage />,
     },
     {
       path: "/admin",
@@ -260,13 +268,13 @@ const getRoutes = () => {
               const id = params.id;
               const data = await fetchProduct(parseInt(id ?? "0"));
               if (data === null) {
-                return redirect("/error");
+                return redirect("/admin/error");
               }
               console.log("Items were fetched for the admin products page.");
               return data;
             } catch (error) {
               console.error(error);
-              return redirect("/error");
+              return redirect("/admin/error");
             }
           },
         },
@@ -281,12 +289,12 @@ const getRoutes = () => {
             try {
               const data = await fetchProduct(parseInt(params.id ?? "0"));
               if (data === null) {
-                return redirect("/error");
+                return redirect("/admin/error");
               }
               return data;
             } catch (error) {
               console.error(error);
-              return redirect("/error");
+              return redirect("/admin/error");
             }
           },
         },
@@ -313,13 +321,13 @@ const getRoutes = () => {
               const id = params.id;
               const data = await fetchProductCategory(parseInt(id ?? "0"));
               if (data === null) {
-                return redirect("/error");
+                return redirect("/admin/error");
               }
               console.log("Items were fetched for the admin categories page.");
               return data;
             } catch (error) {
               console.error(error);
-              return redirect("/error");
+              return redirect("/admin/error");
             }
           },
         },
@@ -336,12 +344,12 @@ const getRoutes = () => {
                 parseInt(params.id ?? "0")
               );
               if (data === null) {
-                return redirect("/error");
+                return redirect("/admin/error");
               }
               return data;
             } catch (error) {
               console.error(error);
-              return redirect("/error");
+              return redirect("/admin/error");
             }
           },
         },
@@ -368,13 +376,13 @@ const getRoutes = () => {
               const id = params.id;
               const data = await fetchOrder(parseInt(id ?? "0"));
               if (data === null) {
-                return redirect("/error");
+                return redirect("/admin/error");
               }
               console.log("Items were fetched for the admin orders page.");
               return data;
             } catch (error) {
               console.error(error);
-              return redirect("/error");
+              return redirect("/admin/error");
             }
           },
         },
@@ -385,12 +393,12 @@ const getRoutes = () => {
             try {
               const data = await fetchOrder(parseInt(params.id ?? "0"));
               if (data === null) {
-                return redirect("/error");
+                return redirect("/admin/error");
               }
               return data;
             } catch (error) {
               console.error(error);
-              return redirect("/error");
+              return redirect("/admin/error");
             }
           },
         },
@@ -402,13 +410,13 @@ const getRoutes = () => {
               const id = params.id;
               const data = await fetchOrderLine(parseInt(id ?? "0"));
               if (data === null) {
-                return redirect("/error");
+                return redirect("/admin/error");
               }
               console.log("Items were fetched for the admin order lines page.");
               return data;
             } catch (error) {
               console.error(error);
-              return redirect("/error");
+              return redirect("/admin/error");
             }
           },
         },
@@ -418,7 +426,7 @@ const getRoutes = () => {
           loader: async ({ params }) => {
             const parsedId = parseInt(params.orderId ?? "0");
             if (parsedId === 0) {
-              return redirect("/error");
+              return redirect("/admin/error");
             }
             return params.orderId;
           },
@@ -430,12 +438,12 @@ const getRoutes = () => {
             try {
               const data = await fetchOrderLine(parseInt(params.id ?? "0"));
               if (data === null) {
-                return redirect("/error");
+                return redirect("/admin/error");
               }
               return data;
             } catch (error) {
               console.error(error);
-              return redirect("/error");
+              return redirect("/admin/error");
             }
           },
         },
@@ -462,13 +470,13 @@ const getRoutes = () => {
               const id = params.id;
               const data = await fetchCustomerDataById(id ?? "", true);
               if (data === null) {
-                return redirect("/error");
+                return redirect("/admin/error");
               }
               console.log("Items were fetched for the admin users page.");
               return data;
             } catch (error) {
               console.error(error);
-              return redirect("/error");
+              return redirect("/admin/error");
             }
           },
         },
@@ -483,12 +491,12 @@ const getRoutes = () => {
             try {
               const data = await fetchCustomerDataById(params.id ?? "", true);
               if (data === null) {
-                return redirect("/error");
+                return redirect("/admin/error");
               }
               return data;
             } catch (error) {
               console.error(error);
-              return redirect("/error");
+              return redirect("/admin/error");
             }
           },
         },
@@ -502,7 +510,7 @@ const getRoutes = () => {
           return user;
         } catch (error) {
           console.error(error);
-          return redirect("/error");
+          return redirect("/admin/error");
         }
       },
     }

@@ -10,22 +10,11 @@ export default function AdminLayout() {
 
   return (
     <div className="flex-wrapper">
-      <div className="bg-info text-white p-2">
-        <div className="container-fluid">
-          <div className="row">
-            <div className="col">
-              <span className="navbar-brand ml-2">DokWok Administration</span>
-            </div>
-            <div className="col-2 text-right">
-              <button
-                className="btn btn-sm btn-primary"
-                onClick={handleLogOutClick}
-              >
-                Log Out
-              </button>
-            </div>
-          </div>
-        </div>
+      <div className="admin-header">
+        <span className="admin-header-logo">DokWok Administration</span>
+        <button className="btn btn-sm btn-primary" onClick={handleLogOutClick}>
+          Log Out
+        </button>
       </div>
       <div className="container-fluid">
         <div className="row p-2">

@@ -104,10 +104,38 @@
   cursor: pointer;
   transition: 0.2s;
 }
+.menu-shopping-cart {
+  display: block;
+  max-height: 100%;
+  max-width: 100%;
+  margin-left: 60px;
+  text-decoration: none;
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+}
+.menu-shopping-cart-img {
+  width: 35px;
+  height: 35px;
+}
+.menu-shopping-cart-block {
+  background-color: #f9f8f8;
+  border-radius: 13px;
+  padding: 7px;
+  -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+  -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+}
 /* media rule for screens wider than 660px */
 @media only screen and (min-width: 660px) {
   .grid-container {
     grid-template-columns: 320px 320px;
+  }
+}
+/* media rule for screens wider than 1000px */
+@media only screen and (min-width: 1000px) {
+  .menu-shopping-cart {
+    display: none;
   }
 }
 /* media rule for screens wider than 1010px */

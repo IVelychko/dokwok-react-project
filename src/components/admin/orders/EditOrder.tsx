@@ -151,6 +151,7 @@ export default function EditOrder() {
           <label htmlFor="order-id">ID</label>
           <input
             id="order-id"
+            type="number"
             className="form-control"
             value={formData.id}
             disabled
@@ -159,6 +160,7 @@ export default function EditOrder() {
         <div className="form-group admin-form-input-block">
           <label htmlFor="order-creation-date">Creation date</label>
           <input
+            type="text"
             id="order-creation-date"
             className="form-control"
             value={formattedString}
@@ -169,6 +171,7 @@ export default function EditOrder() {
           <label htmlFor="order-name">Customer name</label>
           <input
             id="order-name"
+            type="text"
             className="form-control"
             value={formData.customerName}
             onChange={(e) => {
@@ -186,6 +189,7 @@ export default function EditOrder() {
           <label htmlFor="order-address">Delivery address</label>
           <input
             id="order-address"
+            type="text"
             className="form-control"
             value={formData.deliveryAddress}
             onChange={(e) => {
@@ -203,6 +207,7 @@ export default function EditOrder() {
           <label htmlFor="order-email">Email</label>
           <input
             id="order-email"
+            type="email"
             className="form-control"
             value={formData.email}
             onChange={(e) => {
@@ -237,6 +242,7 @@ export default function EditOrder() {
           <label htmlFor="order-phone">Phone number</label>
           <input
             id="order-phone"
+            type="text"
             className="form-control"
             value={formData.phoneNumber}
             onChange={(e) => {
@@ -272,6 +278,7 @@ export default function EditOrder() {
           <label htmlFor="order-price">Order price</label>
           <input
             id="order-price"
+            type="number"
             className="form-control"
             value={formData.totalOrderPrice}
             disabled
@@ -281,6 +288,7 @@ export default function EditOrder() {
           <label htmlFor="order-userid">User ID</label>
           <input
             id="order-userid"
+            type="text"
             className="form-control"
             value={formData.userId ?? ""}
             onChange={(e) => {

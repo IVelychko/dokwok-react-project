@@ -16,8 +16,8 @@ export default function Footer() {
           <div>096 12 34 567</div>
         </div>
         <div className="footer-links">
-          <a href="contacts">Контакти</a>
-          <a href="aboutus">Про нас</a>
+          <Link to="contacts">Контакти</Link>
+          <Link to="about-us">Про нас</Link>
         </div>
       </div>
       <div className="footer-partners">
