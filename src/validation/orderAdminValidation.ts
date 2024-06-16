@@ -1,3 +1,4 @@
+import { fetchShopById } from "../functions/shopFunctions";
 import { fetchCustomerDataById } from "../functions/userFunctions";
 import { ErrorInputProp } from "../helpers/Interfaces";
 import { RegularExpressions } from "../helpers/constants";
@@ -83,29 +84,142 @@ export function validateEmail(
   return isValid;
 }
 
-export function validateDeliveryAddress(
-  deliveryAddress: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
-): boolean {
+export async function validateDeliveryAddressAndShopId(
+  deliveryAddress: string | null,
+  shopId: string | null,
+  addressErrorInput: ErrorInputProp,
+  setAddressErrorInput: (errorInput: ErrorInputProp) => void,
+  shopIdErrorInput: ErrorInputProp,
+  setShopIdErrorInput: (errorInput: ErrorInputProp) => void
+): Promise<boolean> {
   let isValid = true;
-  if (deliveryAddress === null || deliveryAddress === "") {
-    setErrorInput({
+  if (
+    (deliveryAddress === null || deliveryAddress === "") &&
+    (shopId === null || shopId === "")
+  ) {
+    setAddressErrorInput({
       styles: { display: "block" },
-      message: "Enter a delivery address",
+      message:
+        "You must enter delivery address or shop ID. Both cannot be empty",
+    });
+    setShopIdErrorInput({
+      styles: { display: "block" },
+      message:
+        "You must enter delivery address or shop ID. Both cannot be empty",
     });
     isValid = false;
-  } else if (!RegularExpressions.Address.test(deliveryAddress)) {
+  } else if (
+    deliveryAddress !== null &&
+    deliveryAddress !== "" &&
+    (shopId === null || shopId === "")
+  ) {
+    if (!RegularExpressions.Address.test(deliveryAddress)) {
+      setAddressErrorInput({
+        styles: { display: "block" },
+        message: "Enter a correct delivery address",
+      });
+      isValid = false;
+    } else {
+      setAddressErrorInput({
+        message: addressErrorInput.message,
+        styles: { display: "none" },
+      });
+      setShopIdErrorInput({
+        message: shopIdErrorInput.message,
+        styles: { display: "none" },
+      });
+    }
+  } else if (
+    (deliveryAddress === null || deliveryAddress === "") &&
+    shopId !== null &&
+    shopId !== ""
+  ) {
+    if (isNaN(parseInt(shopId))) {
+      setShopIdErrorInput({
+        styles: { display: "block" },
+        message: "Enter a number for shop ID",
+      });
+      isValid = false;
+    } else if (parseInt(shopId) < 1) {
+      setShopIdErrorInput({
+        styles: { display: "block" },
+        message: "Enter a correct shop ID",
+      });
+      isValid = false;
+    } else {
+      try {
+        const shop = await fetchShopById(parseInt(shopId));
+        if (shop === null) {
+          setShopIdErrorInput({
+            styles: { display: "block" },
+            message: "There is no shop with this ID",
+          });
+          isValid = false;
+        } else {
+          setAddressErrorInput({
+            message: addressErrorInput.message,
+            styles: { display: "none" },
+          });
+          setShopIdErrorInput({
+            message: shopIdErrorInput.message,
+            styles: { display: "none" },
+          });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  } else if (
+    deliveryAddress !== null &&
+    deliveryAddress !== "" &&
+    shopId !== null &&
+    shopId !== ""
+  ) {
+    setAddressErrorInput({
+      styles: { display: "block" },
+      message:
+        "You must enter delivery address or shop ID. Both cannot be filled in",
+    });
+    setShopIdErrorInput({
+      styles: { display: "block" },
+      message:
+        "You must enter delivery address or shop ID. Both cannot be filled in",
+    });
+    isValid = false;
+  }
+  return isValid;
+}
+
+export async function validateShopId(
+  shopId: string,
+  errorInput: ErrorInputProp,
+  setErrorInput: (errorInput: ErrorInputProp) => void
+): Promise<boolean> {
+  let isValid = true;
+  if (parseInt(shopId) < 1) {
     setErrorInput({
       styles: { display: "block" },
-      message: "Enter a correct delivery address",
+      message: "Enter a correct shop ID",
     });
     isValid = false;
   } else {
-    setErrorInput({
-      message: errorInput.message,
-      styles: { display: "none" },
-    });
+    try {
+      const shop = await fetchShopById(parseInt(shopId));
+      if (shop === null) {
+        setErrorInput({
+          styles: { display: "block" },
+          message: "There is no shop with this ID",
+        });
+        isValid = false;
+      } else {
+        setErrorInput({
+          message: errorInput.message,
+          styles: { display: "none" },
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
   return isValid;
 }

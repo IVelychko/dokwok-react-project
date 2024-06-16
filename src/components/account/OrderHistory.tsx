@@ -1,8 +1,10 @@
 import { useLoaderData } from "react-router-dom";
 import { OrderProp } from "../../helpers/Interfaces";
 import OrderHistoryContainer from "./OrderHistoryContainer";
+import { ContextStateType, useMyContext } from "../../hooks/hooks";
 
 export default function OrderHistory() {
+  const contextState: ContextStateType = useMyContext();
   const userOrders: OrderProp[] = useLoaderData() as OrderProp[];
   if (userOrders.length < 1) {
     return (
@@ -26,7 +28,10 @@ export default function OrderHistory() {
   return (
     <div className="account-orders">
       <div className="account-heading">Історія замовлень</div>
-      <OrderHistoryContainer userOrders={userOrders} />
+      <OrderHistoryContainer
+        userOrders={userOrders}
+        shops={contextState.shopsProp}
+      />
     </div>
   );
 }

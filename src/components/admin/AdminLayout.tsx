@@ -32,6 +32,9 @@ export default function AdminLayout() {
               <Link className="btn btn-outline-primary" to="/admin/orders">
                 Orders
               </Link>
+              <Link className="btn btn-outline-primary" to="/admin/shops">
+                Shops
+              </Link>
             </div>
           </div>
           <Outlet />

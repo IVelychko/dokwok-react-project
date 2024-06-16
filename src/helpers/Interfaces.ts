@@ -48,13 +48,22 @@ export interface CartLineProp {
   totalLinePrice: number;
 }
 
-export interface OrderFormProp {
+export interface DeliveryOrderFormProp {
   customerName: string;
   phoneNumber: string;
   email: string;
   deliveryAddress: string;
   paymentType: string;
   userId: string | null;
+}
+
+export interface TakeawayOrderFormProp {
+  customerName: string;
+  phoneNumber: string;
+  email: string;
+  paymentType: string;
+  userId: string | null;
+  shopId: number;
 }
 
 export interface OrderLineProp {
@@ -84,12 +93,13 @@ export interface OrderProp {
   customerName: string;
   phoneNumber: string;
   email: string;
-  deliveryAddress: string;
+  deliveryAddress: string | null;
   paymentType: string;
   totalOrderPrice: number;
   creationDate: string;
   status: string;
   userId: string | null;
+  shopId: number | null;
   orderLines: OrderLineProp[];
 }
 
@@ -98,12 +108,13 @@ export interface OrderPutProp {
   customerName: string;
   phoneNumber: string;
   email: string;
-  deliveryAddress: string;
+  deliveryAddress: string | null;
   paymentType: string;
   totalOrderPrice: number;
   creationDate: string;
   status: string;
   userId: string | null;
+  shopId: number | null;
 }
 
 export interface LoginUserProp {
@@ -141,6 +152,7 @@ export interface UserPasswordChangeAsAdminProp {
 export interface RootLoaderData {
   cart: CartProp;
   user: AuthUserProp | null;
+  shops: ShopProp[];
 }
 
 export interface ErrorInputProp {
@@ -150,4 +162,19 @@ export interface ErrorInputProp {
 
 export interface CheckIfTaken {
   isTaken: boolean;
+}
+
+export interface ShopProp {
+  id: number;
+  street: string;
+  building: string;
+  openingTime: string;
+  closingTime: string;
+}
+
+export interface ShopPostProp {
+  street: string;
+  building: string;
+  openingTime: string;
+  closingTime: string;
 }

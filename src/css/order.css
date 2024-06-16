@@ -184,6 +184,81 @@
   margin-top: 20px;
   margin-bottom: 20px;
 }
+.order-form-order-type {
+  margin-top: 20px;
+}
+.order-takeaway-type-button-active {
+  width: fit-content;
+  background: #e2520d;
+  border-bottom: 2px;
+  border-top: 2px;
+  border-left: 2px;
+  border-right: 0;
+  border-style: solid;
+  border-color: #e2520d;
+  border-radius: 8px 0 0 8px;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  font-size: 18px;
+  text-decoration: none;
+  margin: auto;
+  cursor: pointer;
+}
+.order-takeaway-type-button-inactive {
+  background: white;
+  color: #e2520d;
+  width: fit-content;
+  border-bottom: 2px;
+  border-top: 2px;
+  border-left: 2px;
+  border-right: 0;
+  border-style: solid;
+  border-color: #e2520d;
+  border-radius: 8px 0 0 8px;
+  text-align: center;
+  padding: 10px;
+  font-size: 18px;
+  text-decoration: none;
+  margin: auto;
+  cursor: pointer;
+}
+.order-delivery-type-button-active {
+  width: fit-content;
+  background: #e2520d;
+  border-bottom: 2px;
+  border-top: 2px;
+  border-right: 2px;
+  border-left: 0;
+  border-style: solid;
+  border-color: #e2520d;
+  border-radius: 0 8px 8px 0;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  font-size: 18px;
+  text-decoration: none;
+  margin: auto;
+  cursor: pointer;
+}
+.order-delivery-type-button-inactive {
+  background: white;
+  color: #e2520d;
+  width: fit-content;
+  border-bottom: 2px;
+  border-top: 2px;
+  border-right: 2px;
+  border-left: 0;
+  border-style: solid;
+  border-color: #e2520d;
+  border-radius: 0 8px 8px 0;
+  text-align: center;
+  padding: 10px;
+  font-size: 18px;
+  text-decoration: none;
+  margin: auto;
+  cursor: pointer;
+}
 @media only screen and (min-width: 600px) {
   .order-products-quantity {
     margin-right: 0;

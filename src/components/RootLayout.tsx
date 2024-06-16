@@ -2,7 +2,12 @@ import Header from "./Header";
 import Footer from "./Footer";
 import { Outlet, useLoaderData } from "react-router-dom";
 import { useCallback, useState } from "react";
-import { AuthUserProp, CartProp, RootLoaderData } from "../helpers/Interfaces";
+import {
+  AuthUserProp,
+  CartProp,
+  RootLoaderData,
+  ShopProp,
+} from "../helpers/Interfaces";
 import { ContextStateType } from "../hooks/hooks";
 
 export default function RootLayout() {
@@ -17,6 +22,7 @@ export default function RootLayout() {
       phoneNumber: "",
     }
   );
+  const [shopsProp, setShopsProp] = useState<ShopProp[]>(rootLoaderData.shops);
 
   const handleCartChange = useCallback((cart: CartProp) => {
     setCartProp(cart);
@@ -24,6 +30,10 @@ export default function RootLayout() {
 
   const handleUserChange = useCallback((user: AuthUserProp) => {
     setAuthUserProp(user);
+  }, []);
+
+  const handleShopsChange = useCallback((shops: ShopProp[]) => {
+    setShopsProp(shops);
   }, []);
 
   return (
@@ -36,6 +46,8 @@ export default function RootLayout() {
             setCartProp: handleCartChange,
             authUserProp,
             setAuthUserProp: handleUserChange,
+            shopsProp,
+            setShopsProp: handleShopsChange,
           } satisfies ContextStateType
         }
       />

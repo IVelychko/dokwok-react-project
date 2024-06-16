@@ -1,6 +1,7 @@
 import axios from "axios";
 import {
-  OrderFormProp,
+  DeliveryOrderFormProp,
+  TakeawayOrderFormProp,
   OrderLinePostProp,
   OrderLineProp,
   OrderLinePutProp,
@@ -53,12 +54,42 @@ export async function fetchOrder(id: number): Promise<OrderProp | null> {
   }
 }
 
-export async function addOrder(
-  orderForm: OrderFormProp
+export async function addDeliveryOrder(
+  orderForm: DeliveryOrderFormProp
 ): Promise<OrderProp | null> {
   const axiosInstance = getAxiosInstance();
   try {
-    const response = await axiosInstance.post<OrderProp>("orders", orderForm);
+    const response = await axiosInstance.post<OrderProp>(
+      "orders/delivery",
+      orderForm
+    );
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        if (error.response.status === 400 || error.response.status === 404) {
+          return null;
+        } else {
+          throw new Error("There was a server-side error.");
+        }
+      } else {
+        throw new Error("The request never reached the server.");
+      }
+    } else {
+      throw new Error("There was a non-axios related error.");
+    }
+  }
+}
+
+export async function addTakeawayOrder(
+  orderForm: TakeawayOrderFormProp
+): Promise<OrderProp | null> {
+  const axiosInstance = getAxiosInstance();
+  try {
+    const response = await axiosInstance.post<OrderProp>(
+      "orders/takeaway",
+      orderForm
+    );
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

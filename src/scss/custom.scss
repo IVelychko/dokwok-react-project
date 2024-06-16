@@ -4,8 +4,10 @@
 $my-form-color: #e2520d;
 
 $input-focus-border-color: $my-form-color;
-
 $input-focus-box-shadow: 0 0 0 .25rem rgba($my-form-color, .25);
+
+$form-select-focus-border-color: $my-form-color;
+$form-select-focus-box-shadow: 0 0 0 .25rem rgba($my-form-color, .25);
 
 
 $form-check-input-focus-border: $my-form-color;

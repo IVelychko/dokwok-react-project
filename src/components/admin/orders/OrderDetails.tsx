@@ -81,7 +81,7 @@ export default function OrderDetails() {
           </tr>
           <tr>
             <th>Delivery address</th>
-            <td>{order.deliveryAddress}</td>
+            <td>{order.deliveryAddress ?? "None"}</td>
           </tr>
           <tr>
             <th>Email</th>
@@ -106,6 +106,10 @@ export default function OrderDetails() {
           <tr>
             <th>User ID</th>
             <td>{order.userId ?? "None"}</td>
+          </tr>
+          <tr>
+            <th>Shop ID</th>
+            <td>{order.shopId ?? "None"}</td>
           </tr>
         </tbody>
       </table>

@@ -1,0 +1,60 @@
+.contact-shops {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-bottom: 100px;
+}
+.contact-shops-header {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 500;
+  margin-bottom: 15px;
+}
+.contact-shop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #e4e4e4;
+  padding: 10px;
+}
+.contact-shop-address {
+  margin: auto;
+  font-size: 18px;
+}
+.working-time {
+  font-size: 18px;
+}
+.contact-shop-working-time {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 15px;
+}
+.working-time-header {
+  font-size: 18px;
+  font-weight: 500;
+}
+/* media rule for screens wider than 650px */
+@media only screen and (min-width: 650px) {
+  .contact-shop {
+    flex-direction: row;
+  }
+  .contact-shop-address {
+    margin-left: 0;
+    margin-right: auto;
+  }
+  .contact-shop-working-time {
+    margin-right: 0;
+    margin-left: auto;
+    margin-top: auto;
+  }
+}
+/* media rule for screens wider than 800px */
+@media only screen and (min-width: 800px) {
+  .contact-shops {
+    margin-left: 20%;
+    margin-right: 20%;
+  }
+}

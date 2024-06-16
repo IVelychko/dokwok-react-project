@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react";
-import { OrderProp } from "../../helpers/Interfaces";
+import { OrderProp, ShopProp } from "../../helpers/Interfaces";
 import {
   BEINGPROCESSED_ORDER_STATUS,
   CANCELLED_ORDER_STATUS,
@@ -9,19 +9,21 @@ import {
 interface Props {
   userOrder: OrderProp;
   orderQuantity: number;
+  shop: ShopProp | null;
 }
 
 export default function OrderHistoryItem({
   userOrder,
   orderQuantity,
+  shop,
 }: Readonly<Props>) {
   const defaultExpanded = orderQuantity === 1;
   const [expanded, setExpanded] = useState<boolean>(defaultExpanded);
   const orderLines: ReactNode[] = [];
   userOrder.orderLines.forEach((line) => {
     orderLines.push(
-      <>
-        <div key={line.product.id} className="acc-order-content">
+      <div key={line.product.id}>
+        <div className="acc-order-content">
           <div className="acc-order-product-info">
             <div className="acc-order-product-item-content-img">
               <img
@@ -49,7 +51,7 @@ export default function OrderHistoryItem({
           </div>
         </div>
         <hr />
-      </>
+      </div>
     );
   });
   const productPrices: ReactNode[] = [];
@@ -98,15 +100,33 @@ export default function OrderHistoryItem({
     "Грудня",
   ];
 
+  const orderDeliveryAddress =
+    userOrder.deliveryAddress !== null ? (
+      <>
+        <div className="acc-order-address-heading">Адреса доставки</div>
+        <div className="acc-order-address-info">
+          {userOrder.deliveryAddress}
+        </div>
+      </>
+    ) : null;
+
+  const orderShopAddress =
+    shop !== null ? (
+      <>
+        <div className="acc-order-address-heading">
+          Адреса закладу отримання
+        </div>
+        <div className="acc-order-address-info">
+          {`${shop.street} ${shop.building}`}
+        </div>
+      </>
+    ) : null;
+
   const dateAndTime = userOrder.creationDate.split("T");
   const date = dateAndTime[0].split("-");
   const day = date[2];
   const month = date[1];
   const year = date[0];
-
-  const time = dateAndTime[1].split(":", 2);
-  const hour = time[0];
-  const minutes = time[1];
 
   const expandedContent = expanded ? (
     <div className="acc-order-details">
@@ -121,12 +141,8 @@ export default function OrderHistoryItem({
               <div className="recipient-detail">{userOrder.email}</div>
             </div>
           </div>
-          <div className="acc-order-address">
-            <div className="acc-order-address-heading">Адреса доставки</div>
-            <div className="acc-order-address-info">
-              {userOrder.deliveryAddress}
-            </div>
-          </div>
+          <div className="acc-order-address">{orderDeliveryAddress}</div>
+          <div className="acc-order-address">{orderShopAddress}</div>
         </div>
         <div className="acc-order-price">
           <div style={{ marginBottom: 10 }} className="acc-order-price-heading">

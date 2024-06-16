@@ -30,7 +30,8 @@ export default function AdminOrders() {
         <td>{order.id}</td>
         <td>{formattedString}</td>
         <td>{order.totalOrderPrice}</td>
-        <td>{order.deliveryAddress}</td>
+        <td>{order.deliveryAddress ?? "None"}</td>
+        <td>{order.shopId ?? "None"}</td>
         <td>{order.status}</td>
         <td>
           <Link
@@ -64,6 +65,7 @@ export default function AdminOrders() {
             <th>CreationDate</th>
             <th>Price</th>
             <th>Delivery address</th>
+            <th>Shop ID</th>
             <th>Status</th>
             <td></td>
           </tr>

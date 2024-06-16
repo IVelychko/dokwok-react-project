@@ -20,6 +20,9 @@ export const RegularExpressions = {
   Password: /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d_-]{6,}$/,
   UserName: /^[a-zA-Z0-9_-]{5,}$/,
   Email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+  Street: /^[a-zA-Zа-яА-ЯёЁіїІЇєЄґҐ\s\-'`".]+$/,
+  Building: /^[0-9a-zA-Zа-яА-ЯёЁіїІЇєЄґҐ\s\-\/]+$/,
+  Hour: /^(?:[01]\d|2[0-3]):[0-5]\d$/,
 };
 
 export const Categories = {

@@ -2,7 +2,10 @@ import { ReactNode, useState } from "react";
 import { ContextStateType, useMyContext } from "../../hooks/hooks";
 import { Link } from "react-router-dom";
 import OrderProductsContainer from "./OrderProductsContainer";
-import { addOrder } from "../../functions/orderFunctions";
+import {
+  addDeliveryOrder,
+  addTakeawayOrder,
+} from "../../functions/orderFunctions";
 import { ErrorInputProp, OrderProp } from "../../helpers/Interfaces";
 import {
   validateDeliveryAddress,
@@ -12,17 +15,32 @@ import {
   validatePhoneNumber,
 } from "../../validation/orderFormValidation";
 
+interface ShopAddress {
+  id: number;
+  address: string;
+}
+
 export default function OrderForm() {
   const contextState: ContextStateType = useMyContext();
   const cart = contextState.cartProp;
   const user = contextState.authUserProp;
+  const shops = contextState.shopsProp;
+  const shopAddresses = shops.map((shop) => {
+    const stringAddress = `${shop.street} ${shop.building}`;
+    const shopAddress: ShopAddress = { id: shop.id, address: stringAddress };
+    return shopAddress;
+  });
+
+  const [isTakeawayActive, setIsTakeawayActive] = useState(true);
+  const [isDeliveryActive, setIsDeliveryActive] = useState(false);
 
   const [customerName, setCustomerName] = useState(user.firstName);
   const [customerPhone, setCustomerPhone] = useState(user.phoneNumber);
   const [customerEmail, setCustomerEmail] = useState(user.email);
   const [deliveryAddress, setDeliveryAddress] = useState("");
+  const [shopAddress, setShopAddress] = useState("");
   const [paymentType, setPaymentType] = useState("");
-  const [orderResult, setOrderResult] = useState<string | null>("successful");
+  const [orderResult, setOrderResult] = useState<string | null>(null);
   const [order, setOrder] = useState<OrderProp | null>(null);
   const [formErrorInput, setFormErrorInput] = useState<ErrorInputProp>({
     styles: { visibility: "hidden", marginTop: 0 },
@@ -69,13 +87,15 @@ export default function OrderForm() {
     validationResults.push(
       validateEmail(customerEmail, emailErrorInput, setEmailErrorInput)
     );
-    validationResults.push(
-      validateDeliveryAddress(
-        deliveryAddress,
-        addressErrorInput,
-        setAddressErrorInput
-      )
-    );
+    if (isDeliveryActive) {
+      validationResults.push(
+        validateDeliveryAddress(
+          deliveryAddress,
+          addressErrorInput,
+          setAddressErrorInput
+        )
+      );
+    }
     validationResults.push(
       validatePaymentType(paymentType, paymentErrorInput, setPaymentErrorInput)
     );
@@ -90,31 +110,67 @@ export default function OrderForm() {
   };
 
   const handleCreateOrderClick = () => {
-    addOrder({
-      customerName: customerName,
-      phoneNumber: customerPhone,
-      email: customerEmail,
-      deliveryAddress: deliveryAddress,
-      paymentType: paymentType,
-      userId: user.id !== "" ? user.id : null,
-    })
-      .then((order) => {
-        if (order !== null) {
-          console.log(`New order was created: ${order.totalOrderPrice}`);
-          setOrderResult("successful");
-          setOrder(order);
-          contextState.setCartProp({ totalCartPrice: 0, lines: [] });
-        } else {
-          setFormErrorInput((prevData) => ({
-            ...prevData,
-            styles: { visibility: "visible", marginTop: 0 },
-          }));
-        }
+    if (isTakeawayActive) {
+      const orderShop = shopAddresses.find(
+        (shop) => shop.address === shopAddress
+      );
+      if (orderShop === null) {
+        setFormErrorInput((prevData) => ({
+          ...prevData,
+          styles: { visibility: "visible", marginTop: 0 },
+        }));
+        return;
+      }
+      addTakeawayOrder({
+        customerName: customerName,
+        phoneNumber: customerPhone,
+        email: customerEmail,
+        shopId: orderShop!.id,
+        paymentType: paymentType,
+        userId: user.id !== "" ? user.id : null,
       })
-      .catch((error) => {
-        console.error(error);
-        setOrderResult("unsuccessful");
-      });
+        .then((order) => {
+          if (order !== null) {
+            setOrderResult("successful");
+            setOrder(order);
+            contextState.setCartProp({ totalCartPrice: 0, lines: [] });
+          } else {
+            setFormErrorInput((prevData) => ({
+              ...prevData,
+              styles: { visibility: "visible", marginTop: 0 },
+            }));
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          setOrderResult("unsuccessful");
+        });
+    } else {
+      addDeliveryOrder({
+        customerName: customerName,
+        phoneNumber: customerPhone,
+        email: customerEmail,
+        deliveryAddress: deliveryAddress,
+        paymentType: paymentType,
+        userId: user.id !== "" ? user.id : null,
+      })
+        .then((order) => {
+          if (order !== null) {
+            setOrderResult("successful");
+            setOrder(order);
+            contextState.setCartProp({ totalCartPrice: 0, lines: [] });
+          } else {
+            setFormErrorInput((prevData) => ({
+              ...prevData,
+              styles: { visibility: "visible", marginTop: 0 },
+            }));
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          setOrderResult("unsuccessful");
+        });
+    }
   };
 
   let orderResultMessage: ReactNode;
@@ -158,6 +214,48 @@ export default function OrderForm() {
     );
   }
 
+  const orderTypeInput: ReactNode = isTakeawayActive ? (
+    <div className="order-form-input-block form-group">
+      <div className="order-form-input-block-element">
+        <label htmlFor="shop-address">Адреси закладу</label>
+      </div>
+      <div className="order-form-input-block-element">
+        <select
+          id="shop-address"
+          className="form-select"
+          value={shopAddress}
+          onChange={(e) => {
+            setShopAddress(e.target.value);
+          }}
+        >
+          {shopAddresses.map((shopAddress) => (
+            <option key={shopAddress.address}>{shopAddress.address}</option>
+          ))}
+        </select>
+      </div>
+    </div>
+  ) : (
+    <div className="order-form-input-block form-group">
+      <div className="order-form-input-block-element">
+        <label htmlFor="customer-delivery-address">Адреса доставки</label>
+      </div>
+      <div className="order-form-input-block-element">
+        <input
+          className="form-control"
+          type="text"
+          id="customer-delivery-address"
+          name="customer_delivery_address"
+          placeholder="Ваша адреса"
+          value={deliveryAddress}
+          onChange={(e) => setDeliveryAddress(e.target.value)}
+        />
+      </div>
+      <div style={addressErrorInput.styles} className="error-input">
+        {addressErrorInput.message}
+      </div>
+    </div>
+  );
+
   return (
     <main>
       <div className="order-wrapper">
@@ -172,6 +270,34 @@ export default function OrderForm() {
               }}
             >
               Контактна інформація
+            </div>
+            <div className="order-form-order-type">
+              <button
+                onClick={() => {
+                  setIsTakeawayActive(true);
+                  setIsDeliveryActive(false);
+                }}
+                className={
+                  isTakeawayActive
+                    ? "order-takeaway-type-button-active"
+                    : "order-takeaway-type-button-inactive"
+                }
+              >
+                Самовиніс
+              </button>
+              <button
+                onClick={() => {
+                  setIsTakeawayActive(false);
+                  setIsDeliveryActive(true);
+                }}
+                className={
+                  isDeliveryActive
+                    ? "order-delivery-type-button-active"
+                    : "order-delivery-type-button-inactive"
+                }
+              >
+                Доставка
+              </button>
             </div>
             <div
               style={formErrorInput.styles}
@@ -239,27 +365,7 @@ export default function OrderForm() {
                   {emailErrorInput.message}
                 </div>
               </div>
-              <div className="order-form-input-block form-group">
-                <div className="order-form-input-block-element">
-                  <label htmlFor="customer-delivery-address">
-                    Адреса доставки
-                  </label>
-                </div>
-                <div className="order-form-input-block-element">
-                  <input
-                    className="form-control"
-                    type="text"
-                    id="customer-delivery-address"
-                    name="customer_delivery_address"
-                    placeholder="Ваша адреса"
-                    value={deliveryAddress}
-                    onChange={(e) => setDeliveryAddress(e.target.value)}
-                  />
-                </div>
-                <div style={addressErrorInput.styles} className="error-input">
-                  {addressErrorInput.message}
-                </div>
-              </div>
+              {orderTypeInput}
               <div className="order-form-input-block">
                 <div className="order-form-input-block-element">
                   <label htmlFor="payment-type">Тип оплати</label>

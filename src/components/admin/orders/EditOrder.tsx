@@ -1,9 +1,5 @@
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
-import {
-  ErrorInputProp,
-  OrderProp,
-  OrderPutProp,
-} from "../../../helpers/Interfaces";
+import { ErrorInputProp, OrderProp } from "../../../helpers/Interfaces";
 import { useState } from "react";
 import { updateOrder } from "../../../functions/orderFunctions";
 import {
@@ -12,7 +8,7 @@ import {
   COMPLETED_ORDER_STATUS,
 } from "../../../helpers/constants";
 import {
-  validateDeliveryAddress,
+  validateDeliveryAddressAndShopId,
   validateEmail,
   validateFirstName,
   validatePhoneNumber,
@@ -21,18 +17,19 @@ import {
 
 export default function EditOrder() {
   const loadedOrder: OrderProp = useLoaderData() as OrderProp;
-  const [formData, setFormData] = useState<OrderPutProp>({
-    id: loadedOrder.id,
-    customerName: loadedOrder.customerName,
-    status: loadedOrder.status,
-    deliveryAddress: loadedOrder.deliveryAddress,
-    creationDate: loadedOrder.creationDate,
-    totalOrderPrice: loadedOrder.totalOrderPrice,
-    email: loadedOrder.email,
-    paymentType: loadedOrder.paymentType,
-    phoneNumber: loadedOrder.phoneNumber,
-    userId: loadedOrder.userId,
-  });
+  const id = loadedOrder.id;
+  const [customerName, setCustomerName] = useState(loadedOrder.customerName);
+  const [status, setStatus] = useState(loadedOrder.status);
+  const [deliveryAddress, setDeliveryAddress] = useState(
+    loadedOrder.deliveryAddress
+  );
+  const creationDate = loadedOrder.creationDate;
+  const totalOrderPrice = loadedOrder.totalOrderPrice;
+  const [email, setEmail] = useState(loadedOrder.email);
+  const [paymentType, setPaymentType] = useState(loadedOrder.paymentType);
+  const [phoneNumber, setPhoneNumber] = useState(loadedOrder.phoneNumber);
+  const [userId, setUserId] = useState(loadedOrder.userId);
+  const [shopId, setShopId] = useState(loadedOrder.shopId?.toString() ?? null);
   const navigate = useNavigate();
 
   const [formErrorInput, setFormErrorInput] = useState<ErrorInputProp>({
@@ -60,6 +57,10 @@ export default function EditOrder() {
     styles: { display: "none" },
     message: "Enter a correct user ID",
   });
+  const [shopIdErrorInput, setShopIdErrorInput] = useState<ErrorInputProp>({
+    styles: { display: "none" },
+    message: "Enter a correct shop ID",
+  });
 
   const validateFormData = async () => {
     setFormErrorInput((prevData) => ({
@@ -69,35 +70,31 @@ export default function EditOrder() {
     const validationResults: boolean[] = [];
     validationResults.push(
       validateFirstName(
-        formData.customerName,
+        customerName,
         firstNameErrorInput,
         setFirstNameErrorInput
       )
     );
     validationResults.push(
-      validatePhoneNumber(
-        formData.phoneNumber,
-        phoneErrorInput,
-        setPhoneErrorInput
-      )
+      validatePhoneNumber(phoneNumber, phoneErrorInput, setPhoneErrorInput)
     );
     validationResults.push(
-      validateEmail(formData.email, emailErrorInput, setEmailErrorInput)
+      validateEmail(email, emailErrorInput, setEmailErrorInput)
     );
     validationResults.push(
-      validateDeliveryAddress(
-        formData.deliveryAddress,
+      await validateDeliveryAddressAndShopId(
+        deliveryAddress,
+        shopId,
         addressErrorInput,
-        setAddressErrorInput
+        setAddressErrorInput,
+        shopIdErrorInput,
+        setShopIdErrorInput
       )
     );
-    if (formData.userId !== null && formData.userId !== "") {
+
+    if (userId !== null && userId !== "") {
       validationResults.push(
-        await validateUserId(
-          formData.userId,
-          userIdErrorInput,
-          setUserIdErrorInput
-        )
+        await validateUserId(userId, userIdErrorInput, setUserIdErrorInput)
       );
     } else {
       setUserIdErrorInput((prevData) => ({
@@ -105,6 +102,7 @@ export default function EditOrder() {
         styles: { display: "none" },
       }));
     }
+
     let isValid = true;
     for (const result of validationResults) {
       if (!result) {
@@ -116,8 +114,22 @@ export default function EditOrder() {
   };
 
   const handleEditClick = () => {
-    formData.userId = formData.userId === "" ? null : formData.userId;
-    updateOrder(formData)
+    const newUserId = userId === "" ? null : userId;
+    const newShopId = shopId === "" ? null : shopId;
+    const newDeliveryAddress = deliveryAddress === "" ? null : deliveryAddress;
+    updateOrder({
+      id: id,
+      customerName: customerName,
+      status: status,
+      deliveryAddress: newDeliveryAddress,
+      creationDate: creationDate,
+      totalOrderPrice: totalOrderPrice,
+      email: email,
+      paymentType: paymentType,
+      phoneNumber: phoneNumber,
+      userId: newUserId,
+      shopId: newShopId === null ? null : parseInt(newShopId),
+    })
       .then((updatedOrder) => {
         if (updatedOrder !== null) {
           console.log(`Order with ID: ${updatedOrder.id} was updated`);
@@ -131,7 +143,7 @@ export default function EditOrder() {
       })
       .catch((error) => console.error(error));
   };
-  const date = new Date(formData.creationDate);
+  const date = new Date(creationDate);
   const datePart = date.toISOString().split("T")[0];
   const timePart = date.toTimeString().split(" ")[0].substring(0, 5);
   const formattedString = `${datePart}; ${timePart}`;
@@ -153,7 +165,7 @@ export default function EditOrder() {
             id="order-id"
             type="number"
             className="form-control"
-            value={formData.id}
+            value={id}
             disabled
           />
         </div>
@@ -173,12 +185,9 @@ export default function EditOrder() {
             id="order-name"
             type="text"
             className="form-control"
-            value={formData.customerName}
+            value={customerName}
             onChange={(e) => {
-              setFormData((prevData) => ({
-                ...prevData,
-                customerName: e.target.value,
-              }));
+              setCustomerName(e.target.value);
             }}
           />
         </div>
@@ -191,12 +200,9 @@ export default function EditOrder() {
             id="order-address"
             type="text"
             className="form-control"
-            value={formData.deliveryAddress}
+            value={deliveryAddress ?? ""}
             onChange={(e) => {
-              setFormData((prevData) => ({
-                ...prevData,
-                deliveryAddress: e.target.value,
-              }));
+              setDeliveryAddress(e.target.value);
             }}
           />
         </div>
@@ -209,12 +215,9 @@ export default function EditOrder() {
             id="order-email"
             type="email"
             className="form-control"
-            value={formData.email}
+            value={email}
             onChange={(e) => {
-              setFormData((prevData) => ({
-                ...prevData,
-                email: e.target.value,
-              }));
+              setEmail(e.target.value);
             }}
           />
         </div>
@@ -225,13 +228,10 @@ export default function EditOrder() {
           <label htmlFor="order-payment">Payment type</label>
           <select
             id="order-payment"
-            className="form-control"
-            value={formData.paymentType}
+            className="form-select"
+            value={paymentType}
             onChange={(e) => {
-              setFormData((prevData) => ({
-                ...prevData,
-                paymentType: e.target.value,
-              }));
+              setPaymentType(e.target.value);
             }}
           >
             <option>cash</option>
@@ -244,12 +244,9 @@ export default function EditOrder() {
             id="order-phone"
             type="text"
             className="form-control"
-            value={formData.phoneNumber}
+            value={phoneNumber}
             onChange={(e) => {
-              setFormData((prevData) => ({
-                ...prevData,
-                phoneNumber: e.target.value,
-              }));
+              setPhoneNumber(e.target.value);
             }}
           />
         </div>
@@ -260,13 +257,10 @@ export default function EditOrder() {
           <label htmlFor="order-status">Status</label>
           <select
             id="order-status"
-            className="form-control"
-            value={formData.status}
+            className="form-select"
+            value={status}
             onChange={(e) => {
-              setFormData((prevData) => ({
-                ...prevData,
-                status: e.target.value,
-              }));
+              setStatus(e.target.value);
             }}
           >
             <option>{BEINGPROCESSED_ORDER_STATUS}</option>
@@ -280,7 +274,7 @@ export default function EditOrder() {
             id="order-price"
             type="number"
             className="form-control"
-            value={formData.totalOrderPrice}
+            value={totalOrderPrice}
             disabled
           />
         </div>
@@ -290,17 +284,29 @@ export default function EditOrder() {
             id="order-userid"
             type="text"
             className="form-control"
-            value={formData.userId ?? ""}
+            value={userId ?? ""}
             onChange={(e) => {
-              setFormData((prevData) => ({
-                ...prevData,
-                userId: e.target.value,
-              }));
+              setUserId(e.target.value);
             }}
           />
         </div>
         <div style={userIdErrorInput.styles} className="error-input">
           {userIdErrorInput.message}
+        </div>
+        <div className="form-group admin-form-input-block">
+          <label htmlFor="order-shopid">Shop ID</label>
+          <input
+            id="order-shopid"
+            type="number"
+            className="form-control"
+            value={shopId ?? ""}
+            onChange={(e) => {
+              setShopId(e.target.value);
+            }}
+          />
+        </div>
+        <div style={shopIdErrorInput.styles} className="error-input">
+          {shopIdErrorInput.message}
         </div>
         <div className="mt-2">
           <button

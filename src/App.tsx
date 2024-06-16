@@ -6,6 +6,7 @@ import {
   ProductCategoryDataProp,
   ProductDataProp,
   RootLoaderData,
+  ShopProp,
 } from "./helpers/Interfaces";
 import {
   RouteObject,
@@ -65,6 +66,11 @@ import { Categories } from "./helpers/constants";
 import AdminErrorPage from "./components/admin/AdminErrorPage";
 import AboutUs from "./components/AboutUs";
 import Contacts from "./components/Contacts";
+import AdminShops from "./components/admin/shops/AdminShops";
+import { fetchShopById, fetchShops } from "./functions/shopFunctions";
+import ShopDetails from "./components/admin/shops/ShopDetails";
+import CreateShop from "./components/admin/shops/CreateShop";
+import EditShop from "./components/admin/shops/EditShop";
 
 const getRoutes = () => {
   const childrenRoutes: RouteObject[] = [];
@@ -214,7 +220,14 @@ const getRoutes = () => {
         } catch (error) {
           console.error(error);
         }
-        const rootLoaderData: RootLoaderData = { cart, user };
+        let shops: ShopProp[];
+        try {
+          shops = await fetchShops();
+        } catch (error) {
+          console.error(error);
+          return redirect("/error");
+        }
+        const rootLoaderData: RootLoaderData = { cart, user, shops };
         return rootLoaderData;
       },
     },
@@ -490,6 +503,58 @@ const getRoutes = () => {
           loader: async ({ params }) => {
             try {
               const data = await fetchCustomerDataById(params.id ?? "", true);
+              if (data === null) {
+                return redirect("/admin/error");
+              }
+              return data;
+            } catch (error) {
+              console.error(error);
+              return redirect("/admin/error");
+            }
+          },
+        },
+        {
+          path: "shops",
+          element: <AdminShops />,
+          loader: async () => {
+            try {
+              const data = await fetchShops();
+              console.log("Items were fetched for the admin shops page.");
+              return data;
+            } catch (error) {
+              console.error(error);
+              const emptyArray: ShopProp[] = [];
+              return emptyArray;
+            }
+          },
+        },
+        {
+          path: "shops/details/:id",
+          element: <ShopDetails />,
+          loader: async ({ params }) => {
+            try {
+              const data = await fetchShopById(parseInt(params.id ?? "0"));
+              if (data === null) {
+                return redirect("/admin/error");
+              }
+              console.log("Items were fetched for the admin shops page.");
+              return data;
+            } catch (error) {
+              console.error(error);
+              return redirect("/admin/error");
+            }
+          },
+        },
+        {
+          path: "shops/create",
+          element: <CreateShop />,
+        },
+        {
+          path: "shops/edit/:id",
+          element: <EditShop />,
+          loader: async ({ params }) => {
+            try {
+              const data = await fetchShopById(parseInt(params.id ?? "0"));
               if (data === null) {
                 return redirect("/admin/error");
               }
