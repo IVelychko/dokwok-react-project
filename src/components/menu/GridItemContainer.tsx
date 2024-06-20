@@ -17,7 +17,7 @@ export default function GridItemContainer({
           <div className="image-block">
             <img
               alt="product-img"
-              src="/src/assets/item-images/3-drakona-600x400.png"
+              src={`/src/assets/item-images/${product.name}.png`}
             />
           </div>
           <div className="item-title">{product.name}</div>

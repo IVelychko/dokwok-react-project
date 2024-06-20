@@ -167,6 +167,11 @@ const getRoutes = () => {
     loader: async () => await fetchProductData(Categories.roll),
   });
   childrenRoutes.push({
+    path: "pizza",
+    element: <Menu heading="Піца" />,
+    loader: async () => await fetchProductData(Categories.pizza),
+  });
+  childrenRoutes.push({
     path: "cold-beverage",
     element: <Menu heading="Прохолодні напої" />,
     loader: async () => await fetchProductData(Categories.coldBeverage),

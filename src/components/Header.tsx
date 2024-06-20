@@ -149,6 +149,11 @@ export default function Header({ cartProp, isUserLoggedIn }: Readonly<Props>) {
             image: "/src/assets/header/drawer/three-rolls.png",
           },
           {
+            title: "Піца",
+            link: "/pizza",
+            image: "/src/assets/header/drawer/pizza.png",
+          },
+          {
             title: "Прохолодні напої",
             link: "/cold-beverage",
             image: "/src/assets/header/drawer/cold-beverage.png",
@@ -182,6 +187,7 @@ export default function Header({ cartProp, isUserLoggedIn }: Readonly<Props>) {
         <Link to="food-set">Сети</Link>
         <Link to="noodles">Локшина</Link>
         <Link to="roll">Роли</Link>
+        <Link to="pizza">Піца</Link>
         <Link to="cold-beverage">Прохолодні напої</Link>
       </nav>
       {accountButton}

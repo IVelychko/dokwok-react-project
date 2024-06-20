@@ -103,8 +103,8 @@ header nav a:hover {
     padding: 0 40px;
   }
 }
-/* media rule for screens wider than 1000px */
-@media only screen and (min-width: 1000px) {
+/* media rule for screens wider than 1050px */
+@media only screen and (min-width: 1050px) {
   .drawer-header-icon-button {
     display: none;
   }

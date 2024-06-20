@@ -14,7 +14,7 @@ export default function OrderProductItem({ cartLine }: Readonly<Props>) {
           <div className="order-products-item-content-img">
             <img
               alt="product"
-              src="/src/assets/item-images/3-drakona-600x400.png"
+              src={`/src/assets/item-images/${product.name}.png`}
             />
           </div>
           <div className="order-products-item-content-title">

@@ -49,7 +49,7 @@ export default function Menu({ heading }: Readonly<Props>) {
       <GridItemContainer products={productData} onAddToCart={handleAddToCart} />
       <Link
         className="menu-shopping-cart"
-        to="cart"
+        to="/cart"
         title="До товарів в кошику"
       >
         <Badge sx={badgeStyle} color="primary" badgeContent={cartSize}>

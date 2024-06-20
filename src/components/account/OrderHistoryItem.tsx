@@ -28,7 +28,7 @@ export default function OrderHistoryItem({
             <div className="acc-order-product-item-content-img">
               <img
                 alt="product"
-                src="/src/assets/item-images/3-drakona-600x400.png"
+                src={`/src/assets/item-images/${line.product.name}.png`}
               />
             </div>
             <div className="acc-order-product-item-content-title">

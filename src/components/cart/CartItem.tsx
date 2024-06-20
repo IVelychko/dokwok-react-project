@@ -22,7 +22,7 @@ export default function CartItem({
           <div className="cart-item-content-img">
             <img
               alt="product"
-              src="/src/assets/item-images/3-drakona-600x400.png"
+              src={`/src/assets/item-images/${product.name}.png`}
             />
           </div>
           <div className="cart-item-content-title">
