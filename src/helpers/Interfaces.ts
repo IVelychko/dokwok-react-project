@@ -1,4 +1,4 @@
-export interface ProductDataProp {
+export interface Product {
   id: number;
   name: string;
   price: number;
@@ -9,7 +9,7 @@ export interface ProductDataProp {
   categoryName: string;
 }
 
-export interface ProductPostData {
+export interface ProductPost {
   name: string;
   price: number;
   weight: number;
@@ -18,7 +18,7 @@ export interface ProductPostData {
   categoryId: number;
 }
 
-export interface ProductPutData {
+export interface ProductPut {
   id: number;
   name: string;
   price: number;
@@ -28,27 +28,27 @@ export interface ProductPutData {
   categoryId: number;
 }
 
-export interface ProductCategoryDataProp {
+export interface ProductCategory {
   id: number;
   name: string;
 }
 
-export interface ProductCategoryPostData {
+export interface ProductCategoryPost {
   name: string;
 }
 
-export interface CartProp {
-  lines: CartLineProp[];
+export interface Cart {
+  lines: CartLine[];
   totalCartPrice: number;
 }
 
-export interface CartLineProp {
-  product: ProductDataProp;
+export interface CartLine {
+  product: Product;
   quantity: number;
   totalLinePrice: number;
 }
 
-export interface DeliveryOrderFormProp {
+export interface DeliveryOrderForm {
   customerName: string;
   phoneNumber: string;
   email: string;
@@ -57,7 +57,7 @@ export interface DeliveryOrderFormProp {
   userId: string | null;
 }
 
-export interface TakeawayOrderFormProp {
+export interface TakeawayOrderForm {
   customerName: string;
   phoneNumber: string;
   email: string;
@@ -66,29 +66,29 @@ export interface TakeawayOrderFormProp {
   shopId: number;
 }
 
-export interface OrderLineProp {
+export interface OrderLine {
   id: number;
   orderId: number;
   productId: number;
   quantity: number;
   totalLinePrice: number;
-  product: ProductDataProp;
+  product: Product;
 }
 
-export interface OrderLinePostProp {
+export interface OrderLinePost {
   orderId: number;
   productId: number;
   quantity: number;
 }
 
-export interface OrderLinePutProp {
+export interface OrderLinePut {
   id: number;
   orderId: number;
   productId: number;
   quantity: number;
 }
 
-export interface OrderProp {
+export interface Order {
   id: number;
   customerName: string;
   phoneNumber: string;
@@ -100,10 +100,10 @@ export interface OrderProp {
   status: string;
   userId: string | null;
   shopId: number | null;
-  orderLines: OrderLineProp[];
+  orderLines: OrderLine[];
 }
 
-export interface OrderPutProp {
+export interface OrderPut {
   id: number;
   customerName: string;
   phoneNumber: string;
@@ -117,12 +117,12 @@ export interface OrderPutProp {
   shopId: number | null;
 }
 
-export interface LoginUserProp {
+export interface LoginUser {
   userName: string;
   password: string;
 }
 
-export interface RegisterUserProp {
+export interface RegisterUser {
   firstName: string;
   userName: string;
   email: string;
@@ -130,7 +130,7 @@ export interface RegisterUserProp {
   password: string;
 }
 
-export interface AuthUserProp {
+export interface User {
   id: string;
   firstName: string;
   userName: string;
@@ -138,24 +138,39 @@ export interface AuthUserProp {
   phoneNumber: string;
 }
 
-export interface UserPasswordChangeProp {
+export interface AuthorizedUser {
+  id: string;
+  firstName: string;
+  userName: string;
+  email: string;
+  phoneNumber: string;
+  token: string;
+  refreshToken: string;
+}
+
+export interface RefreshToken {
+  token: string;
+  refreshToken: string;
+}
+
+export interface UserPasswordChange {
   userId: string;
   oldPassword: string;
   newPassword: string;
 }
 
-export interface UserPasswordChangeAsAdminProp {
+export interface UserPasswordChangeAsAdmin {
   userId: string;
   newPassword: string;
 }
 
 export interface RootLoaderData {
-  cart: CartProp;
-  user: AuthUserProp | null;
-  shops: ShopProp[];
+  cart: Cart;
+  user: AuthorizedUser | null;
+  shops: Shop[];
 }
 
-export interface ErrorInputProp {
+export interface ErrorInput {
   styles: React.CSSProperties;
   message: string;
 }
@@ -164,7 +179,7 @@ export interface CheckIfTaken {
   isTaken: boolean;
 }
 
-export interface ShopProp {
+export interface Shop {
   id: number;
   street: string;
   building: string;
@@ -172,7 +187,7 @@ export interface ShopProp {
   closingTime: string;
 }
 
-export interface ShopPostProp {
+export interface ShopPost {
   street: string;
   building: string;
   openingTime: string;

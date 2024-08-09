@@ -22,6 +22,9 @@ export default function GridItemContainer({
           </div>
           <div className="item-title">{product.name}</div>
           <div className="item-description">{product.description}</div>
+          <div style={{ marginTop: 7 }} className="item-description">
+            {product.weight} {product.measurementUnit}
+          </div>
         </div>
         <div className="buy">
           <button

@@ -591,7 +591,6 @@ const getRoutes = () => {
 
 let routes: RouteObject[] = [];
 try {
-  // const productCategories = await fetchProductCategoryData();
   routes = getRoutes();
 } catch (error) {
   console.error(error);

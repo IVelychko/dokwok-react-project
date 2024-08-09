@@ -1,15 +1,16 @@
 import axios from "axios";
 import {
-  AuthUserProp,
+  AuthorizedUser,
   CheckIfTaken,
-  LoginUserProp,
-  RegisterUserProp,
+  LoginUser,
+  RegisterUser,
+  User,
 } from "../helpers/Interfaces";
 import { getAxiosInstance } from "./axiosConfig";
 
 export async function customerLogin(
-  loginUser: LoginUserProp
-): Promise<AuthUserProp | null> {
+  loginUser: LoginUser
+): Promise<AuthorizedUser | null> {
   const axiosInstance = getAxiosInstance();
   try {
     const response = await axiosInstance.post(
@@ -35,8 +36,8 @@ export async function customerLogin(
 }
 
 export async function adminLogin(
-  loginUser: LoginUserProp
-): Promise<AuthUserProp | null> {
+  loginUser: LoginUser
+): Promise<AuthorizedUser | null> {
   const axiosInstance = getAxiosInstance();
   try {
     const response = await axiosInstance.post("users/admins/login", loginUser);
@@ -59,8 +60,8 @@ export async function adminLogin(
 }
 
 export async function register(
-  registerUser: RegisterUserProp
-): Promise<AuthUserProp | null> {
+  registerUser: RegisterUser
+): Promise<AuthorizedUser | null> {
   const axiosInstance = getAxiosInstance();
   try {
     const response = await axiosInstance.post("users/register", registerUser);
@@ -82,11 +83,12 @@ export async function register(
   }
 }
 
-export async function isCustomerLoggedIn(): Promise<AuthUserProp | null> {
+export async function isCustomerTokenValid(): Promise<User | null> {
   const axiosInstance = getAxiosInstance();
   try {
-    const response = await axiosInstance.get<AuthUserProp>(
-      "users/customers/isloggedin"
+    const response = await axiosInstance.get<AuthorizedUser>(
+      "users/customers/isTokenValid",
+      { headers: { Authorization: "" } }
     );
     return response.data;
   } catch (error) {
@@ -106,10 +108,10 @@ export async function isCustomerLoggedIn(): Promise<AuthUserProp | null> {
   }
 }
 
-export async function isAdminLoggedIn(): Promise<AuthUserProp | null> {
+export async function isAdminTokenValid(): Promise<AuthorizedUser | null> {
   const axiosInstance = getAxiosInstance();
   try {
-    const response = await axiosInstance.get<AuthUserProp>(
+    const response = await axiosInstance.get<AuthorizedUser>(
       "users/admins/isloggedin"
     );
     return response.data;
