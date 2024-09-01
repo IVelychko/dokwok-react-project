@@ -1,7 +1,7 @@
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { ErrorInputProp, ProductDataProp } from "../../../helpers/Interfaces";
 import { useState } from "react";
-import { updateProduct } from "../../../functions/productFunctions";
+import { updateProduct } from "../../../repositories/productRepository";
 import {
   validateCategoryId,
   validateDescription,

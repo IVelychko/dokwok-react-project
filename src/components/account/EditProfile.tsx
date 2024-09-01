@@ -4,11 +4,11 @@ import {
   ErrorInputProp,
   UserPasswordChangeProp,
 } from "../../helpers/Interfaces";
-import { ContextStateType, useMyContext } from "../../hooks/hooks";
+import { ContextState, useMyContext } from "../../hooks/hooks";
 import {
   updateCustomerPassword,
   updateUser,
-} from "../../functions/userFunctions";
+} from "../../repositories/userRepository";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import {
   validateEmail,
@@ -20,7 +20,7 @@ import {
 
 export default function EditProfile() {
   const isAdmin: boolean = useLoaderData() as boolean;
-  const contextState: ContextStateType = useMyContext();
+  const contextState: ContextState = useMyContext();
   const navigate = useNavigate();
   const authUser = contextState.authUserProp;
   const [userFormData, setUserFormData] = useState<AuthUserProp>({

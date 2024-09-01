@@ -1,5 +1,5 @@
-import { fetchOrderLineByOrderAndProductIds } from "../functions/orderFunctions";
-import { fetchProduct } from "../functions/productFunctions";
+import { fetchOrderLineByOrderAndProductIds } from "../repositories/orderRepository";
+import { getProduct } from "../repositories/productRepository";
 import { ErrorInputProp } from "../helpers/Interfaces";
 
 export async function validateProductIdCreate(
@@ -23,7 +23,7 @@ export async function validateProductIdCreate(
     isValid = false;
   } else {
     try {
-      const product = await fetchProduct(parseInt(productId));
+      const product = await getProduct(parseInt(productId));
       if (product === null) {
         setErrorInput({
           styles: { display: "block" },
@@ -78,7 +78,7 @@ export async function validateProductIdEdit(
   } else {
     try {
       if (currentProductId !== parseInt(productId)) {
-        const product = await fetchProduct(parseInt(productId));
+        const product = await getProduct(parseInt(productId));
         if (product === null) {
           setErrorInput({
             styles: { display: "block" },

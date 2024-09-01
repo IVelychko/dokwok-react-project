@@ -1,11 +1,11 @@
 import { ReactNode, useState } from "react";
-import { ContextStateType, useMyContext } from "../../hooks/hooks";
+import { ContextState, useMyContext } from "../../hooks/hooks";
 import { Link } from "react-router-dom";
 import OrderProductsContainer from "./OrderProductsContainer";
 import {
   addDeliveryOrder,
   addTakeawayOrder,
-} from "../../functions/orderFunctions";
+} from "../../repositories/orderRepository";
 import { ErrorInputProp, OrderProp } from "../../helpers/Interfaces";
 import {
   validateDeliveryAddress,
@@ -21,7 +21,7 @@ interface ShopAddress {
 }
 
 export default function OrderForm() {
-  const contextState: ContextStateType = useMyContext();
+  const contextState: ContextState = useMyContext();
   const cart = contextState.cartProp;
   const user = contextState.authUserProp;
   const shops = contextState.shopsProp;

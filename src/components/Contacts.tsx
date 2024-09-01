@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
-import { ContextStateType, useMyContext } from "../hooks/hooks";
+import { ContextState, useMyContext } from "../hooks/hooks";
 
 export default function Contacts() {
-  const contextState: ContextStateType = useMyContext();
+  const contextState: ContextState = useMyContext();
   const shops: ReactNode[] = contextState.shopsProp.map((shop, index) => (
     <div
       key={shop.id}

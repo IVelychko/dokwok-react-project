@@ -4,7 +4,7 @@ import {
   ProductCategoryDataProp,
 } from "../../../helpers/Interfaces";
 import { useState } from "react";
-import { updateCategory } from "../../../functions/productFunctions";
+import { updateCategory } from "../../../repositories/productRepository";
 import { validateNameEdit } from "../../../validation/categoryValidation";
 
 export default function EditCategory() {

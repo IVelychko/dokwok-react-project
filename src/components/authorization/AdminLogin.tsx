@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ErrorInputProp, LoginUserProp } from "../../helpers/Interfaces";
 import { useNavigate } from "react-router-dom";
-import { adminLogin } from "../../functions/authFunctions";
+import { adminLogin } from "../../repositories/authRepository";
 import {
   validatePassword,
   validateUserName,

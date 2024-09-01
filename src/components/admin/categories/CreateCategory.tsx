@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { addCategory } from "../../../functions/productFunctions";
+import { addCategory } from "../../../repositories/productRepository";
 import { ErrorInputProp } from "../../../helpers/Interfaces";
 import { validateNameCreate } from "../../../validation/categoryValidation";
 

@@ -32,3 +32,9 @@ export const Categories = {
   noodles: 4,
   coldBeverage: 5,
 };
+
+export const ErrorMessages = {
+  serverSideError: "A server-side error has occured",
+  errorNeverReached: "The request has never reached the server",
+  nonAxiosRelatedError: "A non-axios related error has occured",
+};

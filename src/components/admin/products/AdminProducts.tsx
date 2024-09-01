@@ -3,8 +3,8 @@ import { ProductDataProp } from "../../../helpers/Interfaces";
 import { ReactNode, useState } from "react";
 import {
   deleteProduct,
-  fetchProductData,
-} from "../../../functions/productFunctions";
+  getAllProducts,
+} from "../../../repositories/productRepository";
 
 export default function AdminProducts() {
   const productData: ProductDataProp[] = useLoaderData() as ProductDataProp[];
@@ -13,7 +13,7 @@ export default function AdminProducts() {
   const handleDeleteClick = (id: number) => {
     deleteProduct(id)
       .then(() => {
-        fetchProductData(null)
+        getAllProducts(null)
           .then((freshProducts) => {
             setProducts(freshProducts);
           })

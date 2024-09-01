@@ -3,8 +3,8 @@ import { AuthUserProp } from "../../../helpers/Interfaces";
 import { ReactNode, useState } from "react";
 import {
   deleteUserById,
-  fetchCustomers,
-} from "../../../functions/userFunctions";
+  getAllCustomers,
+} from "../../../repositories/userRepository";
 
 export default function AdminUsers() {
   const userData: AuthUserProp[] = useLoaderData() as AuthUserProp[];
@@ -13,7 +13,7 @@ export default function AdminUsers() {
   const handleDeleteClick = (id: string) => {
     deleteUserById(id)
       .then(() => {
-        fetchCustomers()
+        getAllCustomers()
           .then((freshUsers) => {
             setUsers(freshUsers);
           })

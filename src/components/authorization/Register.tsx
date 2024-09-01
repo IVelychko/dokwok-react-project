@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { ErrorInputProp, RegisterUserProp } from "../../helpers/Interfaces";
-import { ContextStateType, useMyContext } from "../../hooks/hooks";
+import { ContextState, useMyContext } from "../../hooks/hooks";
 import { useNavigate } from "react-router-dom";
-import { register } from "../../functions/authFunctions";
+import { register } from "../../repositories/authRepository";
 import {
   validateEmail,
   validateFirstName,
@@ -44,7 +44,7 @@ export default function Register() {
     styles: { display: "none" },
     message: "Введена некоректна електронна пошта",
   });
-  const contextState: ContextStateType = useMyContext();
+  const contextState: ContextState = useMyContext();
   const navigate = useNavigate();
 
   const validateFormData = async () => {

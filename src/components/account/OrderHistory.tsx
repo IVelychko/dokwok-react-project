@@ -1,10 +1,10 @@
 import { useLoaderData } from "react-router-dom";
 import { OrderProp } from "../../helpers/Interfaces";
 import OrderHistoryContainer from "./OrderHistoryContainer";
-import { ContextStateType, useMyContext } from "../../hooks/hooks";
+import { ContextState, useMyContext } from "../../hooks/hooks";
 
 export default function OrderHistory() {
-  const contextState: ContextStateType = useMyContext();
+  const contextState: ContextState = useMyContext();
   const userOrders: OrderProp[] = useLoaderData() as OrderProp[];
   if (userOrders.length < 1) {
     return (

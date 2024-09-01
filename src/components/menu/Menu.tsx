@@ -1,7 +1,7 @@
 import { ProductDataProp } from "../../helpers/Interfaces";
 import { Link, useLoaderData } from "react-router-dom";
-import { addItemToCart } from "../../functions/cartFunctions";
-import { ContextStateType, useMyContext } from "../../hooks/hooks";
+import { addItemToCart } from "../../repositories/cartFunctions";
+import { ContextState, useMyContext } from "../../hooks/hooks";
 import GridItemContainer from "./GridItemContainer";
 import Badge from "@mui/material/Badge";
 import { useEffect, useState } from "react";
@@ -12,7 +12,7 @@ interface Props {
 
 export default function Menu({ heading }: Readonly<Props>) {
   const productData: ProductDataProp[] = useLoaderData() as ProductDataProp[];
-  const contextState: ContextStateType = useMyContext();
+  const contextState: ContextState = useMyContext();
   const cart = contextState.cartProp;
   const [cartSize, setCartSize] = useState<number>();
 

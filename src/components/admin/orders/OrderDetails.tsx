@@ -4,7 +4,7 @@ import { ReactNode, useState } from "react";
 import {
   deleteOrderLine,
   fetchOrderLinesByOrder,
-} from "../../../functions/orderFunctions";
+} from "../../../repositories/orderRepository";
 
 export default function OrderDetails() {
   const order: OrderProp = useLoaderData() as OrderProp;

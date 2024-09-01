@@ -1,7 +1,7 @@
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { ErrorInputProp, OrderProp } from "../../../helpers/Interfaces";
 import { useState } from "react";
-import { updateOrder } from "../../../functions/orderFunctions";
+import { updateOrder } from "../../../repositories/orderRepository";
 import {
   BEINGPROCESSED_ORDER_STATUS,
   CANCELLED_ORDER_STATUS,

@@ -1,4 +1,4 @@
-import { isCategoryNameTaken } from "../functions/productFunctions";
+import { isCategoryNameTaken } from "../repositories/productRepository";
 import { ErrorInputProp } from "../helpers/Interfaces";
 import { RegularExpressions } from "../helpers/constants";
 

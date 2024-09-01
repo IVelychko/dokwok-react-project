@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
-import { updateOrderLine } from "../../../functions/orderFunctions";
+import { updateOrderLine } from "../../../repositories/orderRepository";
 import { ErrorInputProp, OrderLineProp } from "../../../helpers/Interfaces";
 import {
   validateProductIdEdit,

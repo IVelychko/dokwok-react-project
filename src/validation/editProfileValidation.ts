@@ -2,7 +2,7 @@ import {
   isEmailTaken,
   isPhoneNumberTaken,
   isUserNameTaken,
-} from "../functions/authFunctions";
+} from "../repositories/authRepository";
 import { ErrorInputProp } from "../helpers/Interfaces";
 import { RegularExpressions } from "../helpers/constants";
 

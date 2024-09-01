@@ -1,7 +1,7 @@
 import {
   fetchProductCategory,
   isProductNameTaken,
-} from "../functions/productFunctions";
+} from "../repositories/productRepository";
 import { ErrorInputProp } from "../helpers/Interfaces";
 import { RegularExpressions } from "../helpers/constants";
 

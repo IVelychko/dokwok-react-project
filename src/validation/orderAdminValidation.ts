@@ -1,5 +1,5 @@
-import { fetchShopById } from "../functions/shopFunctions";
-import { fetchCustomerDataById } from "../functions/userFunctions";
+import { getShopById } from "../repositories/shopRepository";
+import { getCustomerById } from "../repositories/userRepository";
 import { ErrorInputProp } from "../helpers/Interfaces";
 import { RegularExpressions } from "../helpers/constants";
 
@@ -148,7 +148,7 @@ export async function validateDeliveryAddressAndShopId(
       isValid = false;
     } else {
       try {
-        const shop = await fetchShopById(parseInt(shopId));
+        const shop = await getShopById(parseInt(shopId));
         if (shop === null) {
           setShopIdErrorInput({
             styles: { display: "block" },
@@ -204,7 +204,7 @@ export async function validateShopId(
     isValid = false;
   } else {
     try {
-      const shop = await fetchShopById(parseInt(shopId));
+      const shop = await getShopById(parseInt(shopId));
       if (shop === null) {
         setErrorInput({
           styles: { display: "block" },
@@ -238,7 +238,7 @@ export async function validateUserId(
     isValid = false;
   } else {
     try {
-      const user = await fetchCustomerDataById(userId, true);
+      const user = await getCustomerById(userId, true);
       if (user === null) {
         setErrorInput({
           styles: { display: "block" },

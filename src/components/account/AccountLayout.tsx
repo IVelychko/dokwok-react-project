@@ -1,12 +1,12 @@
 import { Link, Outlet, useLoaderData, useNavigate } from "react-router-dom";
-import { ContextStateType, useMyContext } from "../../hooks/hooks";
-import { logOut } from "../../functions/authFunctions";
+import { ContextState, useMyContext } from "../../hooks/hooks";
+import { logOut } from "../../repositories/authRepository";
 import { AuthUserProp } from "../../helpers/Interfaces";
 import { useEffect } from "react";
 
 export default function AccountLayout() {
   const user: AuthUserProp = useLoaderData() as AuthUserProp;
-  const contextState: ContextStateType = useMyContext();
+  const contextState: ContextState = useMyContext();
   const handleUserChange = contextState.setAuthUserProp;
   const navigate = useNavigate();
 
@@ -62,7 +62,7 @@ export default function AccountLayout() {
           </button>
         </div>
         <div className="account-content">
-          <Outlet context={contextState satisfies ContextStateType} />
+          <Outlet context={contextState satisfies ContextState} />
         </div>
       </div>
     </main>

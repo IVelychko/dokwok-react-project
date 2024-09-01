@@ -1,7 +1,7 @@
 import { Link, useLoaderData } from "react-router-dom";
 import { OrderProp } from "../../../helpers/Interfaces";
 import { ReactNode, useState } from "react";
-import { deleteOrder, fetchAllOrders } from "../../../functions/orderFunctions";
+import { deleteOrder, getAllOrders } from "../../../repositories/orderRepository";
 
 export default function AdminOrders() {
   const orderData: OrderProp[] = useLoaderData() as OrderProp[];
@@ -10,7 +10,7 @@ export default function AdminOrders() {
   const handleDeleteClick = (id: number) => {
     deleteOrder(id)
       .then(() => {
-        fetchAllOrders()
+        getAllOrders()
           .then((freshOrders) => {
             setOrders(freshOrders);
           })

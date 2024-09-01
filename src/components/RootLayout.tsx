@@ -8,7 +8,7 @@ import {
   RootLoaderData,
   ShopProp,
 } from "../helpers/Interfaces";
-import { ContextStateType } from "../hooks/hooks";
+import { ContextState } from "../hooks/hooks";
 
 export default function RootLayout() {
   const rootLoaderData: RootLoaderData = useLoaderData() as RootLoaderData;
@@ -48,7 +48,7 @@ export default function RootLayout() {
             setAuthUserProp: handleUserChange,
             shopsProp,
             setShopsProp: handleShopsChange,
-          } satisfies ContextStateType
+          } satisfies ContextState
         }
       />
       <Footer />

@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
-import { ContextStateType, useMyContext } from "../../hooks/hooks";
+import { ContextState, useMyContext } from "../../hooks/hooks";
 import CartContainer from "./CartContainer";
 
 export default function Cart() {
-  const contextState: ContextStateType = useMyContext();
+  const contextState: ContextState = useMyContext();
   const cart = contextState.cartProp;
   const setCart = contextState.setCartProp;
 

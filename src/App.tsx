@@ -1,26 +1,14 @@
+import createStore from 'react-auth-kit/createStore';
+import createRefresh from 'react-auth-kit/createRefresh';
 import Menu from "./components/menu/Menu";
 import {
-  AuthUserProp,
-  CartProp,
-  OrderProp,
-  ProductCategoryDataProp,
-  ProductDataProp,
-  RootLoaderData,
-  ShopProp,
-} from "./helpers/Interfaces";
-import {
-  RouteObject,
+  Route,
   RouterProvider,
+  Routes,
   createBrowserRouter,
-  redirect,
+  createRoutesFromElements
 } from "react-router-dom";
 import RootLayout from "./components/RootLayout";
-import {
-  fetchProduct,
-  fetchProductCategory,
-  fetchProductCategoryData,
-  fetchProductData,
-} from "./functions/productFunctions";
 import Cart from "./components/cart/Cart";
 import OrderForm from "./components/order/OrderForm";
 import Login from "./components/authorization/Login";
@@ -28,15 +16,7 @@ import Register from "./components/authorization/Register";
 import AccountLayout from "./components/account/AccountLayout";
 import Profile from "./components/account/Profile";
 import OrderHistory from "./components/account/OrderHistory";
-import { isAdminLoggedIn, isCustomerLoggedIn } from "./functions/authFunctions";
-import { fetchCart } from "./functions/cartFunctions";
 import ErrorPage from "./components/ErrorPage";
-import {
-  fetchAllOrders,
-  fetchOrder,
-  fetchOrderLine,
-  fetchUserOrders,
-} from "./functions/orderFunctions";
 import AdminLayout from "./components/admin/AdminLayout";
 import AdminProducts from "./components/admin/products/AdminProducts";
 import ProductDetails from "./components/admin/products/ProductDetails";
@@ -53,550 +33,114 @@ import OrderLineDetails from "./components/admin/order-lines/OrderLineDetails";
 import CreateOrderLine from "./components/admin/order-lines/CreateOrderLine";
 import EditOrderLine from "./components/admin/order-lines/EditOrderLine";
 import AdminUsers from "./components/admin/users/AdminUsers";
-import {
-  fetchCustomerDataById,
-  fetchCustomers,
-} from "./functions/userFunctions";
 import UserDetails from "./components/admin/users/UserDetails";
 import AdminLogin from "./components/authorization/AdminLogin";
 import CreateUser from "./components/admin/users/CreateUser";
 import EditUser from "./components/admin/users/EditUser";
 import EditProfile from "./components/account/EditProfile";
-import { Categories } from "./helpers/constants";
 import AdminErrorPage from "./components/admin/AdminErrorPage";
 import AboutUs from "./components/AboutUs";
 import Contacts from "./components/Contacts";
 import AdminShops from "./components/admin/shops/AdminShops";
-import { fetchShopById, fetchShops } from "./functions/shopFunctions";
 import ShopDetails from "./components/admin/shops/ShopDetails";
 import CreateShop from "./components/admin/shops/CreateShop";
 import EditShop from "./components/admin/shops/EditShop";
+import { accountLayoutRouteLoader, adminCategoriesRouteLoader, adminCategoryDetailsRouteLoader, adminCreateOrderLineRouteLoader, adminEditCategoryRouteLoader, adminEditOrderLineRouteLoader, adminEditOrderRouteLoader, adminEditProductRouteLoader, adminEditShopRouteLoader, adminEditUserRouteLoader, adminOrderDetailsRouteLoader, adminOrderLineDetailsRouteLoader, adminOrdersRouteLoader, adminProductDetailsRouteLoader, adminProductsRouteLoader, adminRootRouteLoader, adminShopDetailsRouteLoader, adminShopsRouteLoader, adminUserDetailsRouteLoader, adminUsersRouteLoader, allMenuRouteLoader, coldBeverageMenuRouteLoader, editProfileRouteLoader, foodSetMenuRouteLoader, noodlesMenuRouteLoader, orderHistoryRouteLoader, pizzaMenuRouteLoader, rollsMenuRouteLoader, rootRouteLoader } from "./helpers/routeLoaders";
+import { refreshToken } from './repositories/authRepository';
+import { User } from './models/dataTransferObjects';
 
-const getRoutes = () => {
-  const childrenRoutes: RouteObject[] = [];
+const router = createBrowserRouter(createRoutesFromElements(<Routes>
+  <Route path="/" element={<RootLayout />} loader={rootRouteLoader}>
+    <Route path="account" element={<AccountLayout />} loader={accountLayoutRouteLoader}>
+      <Route index element={<Profile />} />
+      <Route path="profile" element={<Profile />} />
+      <Route path="profile/edit" element={<EditProfile />} loader={editProfileRouteLoader} />
+      <Route path="orders" element={<OrderHistory />} loader={orderHistoryRouteLoader} />
+    </Route>
+    <Route index element={<Menu heading="Всі пропозиції" />} loader={allMenuRouteLoader} />
+    <Route path="food-set" element={<Menu heading="Сети" />} loader={foodSetMenuRouteLoader} />
+    <Route path="noodles" element={<Menu heading="Локшина" />} loader={noodlesMenuRouteLoader} />
+    <Route path="roll" element={<Menu heading="Роли" />} loader={rollsMenuRouteLoader} />
+    <Route path="pizza" element={<Menu heading="Піца" />} loader={pizzaMenuRouteLoader} />
+    <Route path="cold-beverage" element={<Menu heading="Прохолодні напої" />} loader={coldBeverageMenuRouteLoader} />
+    <Route path="cart" element={<Cart />} />
+    <Route path="order" element={<OrderForm />} />
+    <Route path="login" element={<Login />} />
+    <Route path="register" element={<Register />} />
+    <Route path="error" element={<ErrorPage />} />
+    <Route path="about-us" element={<AboutUs />} />
+    <Route path="contacts" element={<Contacts />} />
+  </Route>
+  <Route path="/admin">
+    <Route path="login" element={<AdminLogin />} />
+    <Route path="error" element={<AdminErrorPage />} />
+  </Route>
+  <Route path="/admin" element={<AdminLayout />} loader={adminRootRouteLoader}>
+    <Route path="products" element={<AdminProducts />} loader={adminProductsRouteLoader} />
+    <Route index element={<AdminProducts />} loader={adminProductsRouteLoader} />
+    <Route path="products/details/:id" element={<ProductDetails />} loader={adminProductDetailsRouteLoader} />
+    <Route path="products/create" element={<CreateProduct />} />
+    <Route path="products/edit/:id" element={<EditProduct />} loader={adminEditProductRouteLoader} />
+    <Route path="categories" element={<AdminCategories />} loader={adminCategoriesRouteLoader} />
+    <Route path="categories/details/:id" element={<CategoryDetails />} loader={adminCategoryDetailsRouteLoader} />
+    <Route path="categories/create" element={<CreateCategory />} />
+    <Route path="categories/edit/:id" element={<EditCategory />} loader={adminEditCategoryRouteLoader} />
+    <Route path="orders" element={<AdminOrders />} loader={adminOrdersRouteLoader} />
+    <Route path="orders/details/:id" element={<OrderDetails />} loader={adminOrderDetailsRouteLoader} />
+    <Route path="orders/edit/:id" element={<EditOrder />} loader={adminEditOrderRouteLoader} />
+    <Route path="order-lines/details/:id" element={<OrderLineDetails />} loader={adminOrderLineDetailsRouteLoader} />
+    <Route path="order-lines/create/order/:orderId" element={<CreateOrderLine />} loader={adminCreateOrderLineRouteLoader} />
+    <Route path="order-lines/edit/:id" element={<EditOrderLine />} loader={adminEditOrderLineRouteLoader} />
+    <Route path="users" element={<AdminUsers />} loader={adminUsersRouteLoader} />
+    <Route path="users/details/:id" element={<UserDetails />} loader={adminUserDetailsRouteLoader} />
+    <Route path="users/create" element={<CreateUser />} />
+    <Route path="users/edit/:id" element={<EditUser />} loader={adminEditUserRouteLoader} />
+    <Route path="shops" element={<AdminShops />} loader={adminShopsRouteLoader} />
+    <Route path="shops/details/:id" element={<ShopDetails />} loader={adminShopDetailsRouteLoader} />
+    <Route path="shops/create" element={<CreateShop />} />
+    <Route path="shops/edit/:id" element={<EditShop />} loader={adminEditShopRouteLoader} />
+  </Route></Routes>
+));
 
-  childrenRoutes.push({
-    path: "account",
-    element: <AccountLayout />,
-    children: [
-      {
-        index: true,
-        element: <Profile />,
-      },
-      {
-        path: "profile",
-        element: <Profile />,
-      },
-      {
-        path: "profile/edit",
-        element: <EditProfile />,
-        loader: async () => {
-          try {
-            const user = await isAdminLoggedIn();
-            if (user !== null) {
-              return true;
-            } else {
-              return false;
-            }
-          } catch (error) {
-            console.error(error);
-            return redirect("/error");
-          }
-        },
-      },
-      {
-        path: "orders",
-        element: <OrderHistory />,
-        loader: async () => {
-          try {
-            const user = await isCustomerLoggedIn();
-            if (user == null) {
-              return redirect("/login");
-            }
-            const userOrders = await fetchUserOrders(user.id);
-            return userOrders;
-          } catch (error) {
-            console.error(error);
-            return redirect("/error");
-          }
-        },
-      },
-    ],
-    loader: async () => {
-      try {
-        const user = await isCustomerLoggedIn();
-        if (user == null) {
-          return redirect("/login");
-        }
-        return user;
-      } catch (error) {
-        console.error(error);
-        return redirect("/error");
+const refresh = createRefresh<User>({
+  interval: 30,
+  refreshApiCallback: async (param) => {
+    try {
+      if (!param.authToken) {
+        return {
+          isSuccess: false
+        };
       }
-    },
-  });
-
-  childrenRoutes.push({
-    index: true,
-    element: <Menu heading="Всі пропозиції" />,
-    loader: async () => {
-      try {
-        const data = await fetchProductData(null);
-        console.log("Items were fetched for the main page.");
-        return data;
-      } catch (error) {
-        console.error(error);
-        const emptyArray: ProductDataProp[] = [];
-        return emptyArray;
-      }
-    },
-  });
-  childrenRoutes.push({
-    path: "food-set",
-    element: <Menu heading="Сети" />,
-    loader: async () => await fetchProductData(Categories.foodSet),
-  });
-  childrenRoutes.push({
-    path: "noodles",
-    element: <Menu heading="Локшина" />,
-    loader: async () => await fetchProductData(Categories.noodles),
-  });
-  childrenRoutes.push({
-    path: "roll",
-    element: <Menu heading="Роли" />,
-    loader: async () => await fetchProductData(Categories.roll),
-  });
-  childrenRoutes.push({
-    path: "pizza",
-    element: <Menu heading="Піца" />,
-    loader: async () => await fetchProductData(Categories.pizza),
-  });
-  childrenRoutes.push({
-    path: "cold-beverage",
-    element: <Menu heading="Прохолодні напої" />,
-    loader: async () => await fetchProductData(Categories.coldBeverage),
-  });
-  childrenRoutes.push({
-    path: "cart",
-    element: <Cart />,
-  });
-  childrenRoutes.push({
-    path: "order",
-    element: <OrderForm />,
-  });
-  childrenRoutes.push({
-    path: "login",
-    element: <Login />,
-  });
-  childrenRoutes.push({
-    path: "register",
-    element: <Register />,
-  });
-  childrenRoutes.push({
-    path: "error",
-    element: <ErrorPage />,
-  });
-  childrenRoutes.push({
-    path: "about-us",
-    element: <AboutUs />,
-  });
-  childrenRoutes.push({
-    path: "contacts",
-    element: <Contacts />,
-  });
-
-  const routes: RouteObject[] = [];
-  routes.push(
-    {
-      path: "/",
-      element: <RootLayout />,
-      children: childrenRoutes,
-      loader: async () => {
-        let cart: CartProp;
-        try {
-          cart = await fetchCart();
-        } catch (error) {
-          console.error(error);
-          return redirect("/error");
-        }
-        let user: AuthUserProp | null = null;
-        try {
-          user = await isCustomerLoggedIn();
-        } catch (error) {
-          console.error(error);
-        }
-        let shops: ShopProp[];
-        try {
-          shops = await fetchShops();
-        } catch (error) {
-          console.error(error);
-          return redirect("/error");
-        }
-        const rootLoaderData: RootLoaderData = { cart, user, shops };
-        return rootLoaderData;
-      },
-    },
-    {
-      path: "/admin/login",
-      element: <AdminLogin />,
-    },
-    {
-      path: "/admin/error",
-      element: <AdminErrorPage />,
-    },
-    {
-      path: "/admin",
-      element: <AdminLayout />,
-      children: [
-        {
-          path: "products",
-          element: <AdminProducts />,
-          loader: async () => {
-            try {
-              const data = await fetchProductData(null);
-              console.log("Items were fetched for the admin products page.");
-              return data;
-            } catch (error) {
-              console.error(error);
-              const emptyArray: ProductDataProp[] = [];
-              return emptyArray;
-            }
-          },
-        },
-        {
-          index: true,
-          element: <AdminProducts />,
-          loader: async () => {
-            try {
-              const data = await fetchProductData(null);
-              console.log("Items were fetched for the admin products page.");
-              return data;
-            } catch (error) {
-              console.error(error);
-              const emptyArray: ProductDataProp[] = [];
-              return emptyArray;
-            }
-          },
-        },
-        {
-          path: "products/details/:id",
-          element: <ProductDetails />,
-          loader: async ({ params }) => {
-            try {
-              const id = params.id;
-              const data = await fetchProduct(parseInt(id ?? "0"));
-              if (data === null) {
-                return redirect("/admin/error");
-              }
-              console.log("Items were fetched for the admin products page.");
-              return data;
-            } catch (error) {
-              console.error(error);
-              return redirect("/admin/error");
-            }
-          },
-        },
-        {
-          path: "products/create",
-          element: <CreateProduct />,
-        },
-        {
-          path: "products/edit/:id",
-          element: <EditProduct />,
-          loader: async ({ params }) => {
-            try {
-              const data = await fetchProduct(parseInt(params.id ?? "0"));
-              if (data === null) {
-                return redirect("/admin/error");
-              }
-              return data;
-            } catch (error) {
-              console.error(error);
-              return redirect("/admin/error");
-            }
-          },
-        },
-        {
-          path: "categories",
-          element: <AdminCategories />,
-          loader: async () => {
-            try {
-              const data = await fetchProductCategoryData();
-              console.log("Items were fetched for the admin categories page.");
-              return data;
-            } catch (error) {
-              console.error(error);
-              const emptyArray: ProductCategoryDataProp[] = [];
-              return emptyArray;
-            }
-          },
-        },
-        {
-          path: "categories/details/:id",
-          element: <CategoryDetails />,
-          loader: async ({ params }) => {
-            try {
-              const id = params.id;
-              const data = await fetchProductCategory(parseInt(id ?? "0"));
-              if (data === null) {
-                return redirect("/admin/error");
-              }
-              console.log("Items were fetched for the admin categories page.");
-              return data;
-            } catch (error) {
-              console.error(error);
-              return redirect("/admin/error");
-            }
-          },
-        },
-        {
-          path: "categories/create",
-          element: <CreateCategory />,
-        },
-        {
-          path: "categories/edit/:id",
-          element: <EditCategory />,
-          loader: async ({ params }) => {
-            try {
-              const data = await fetchProductCategory(
-                parseInt(params.id ?? "0")
-              );
-              if (data === null) {
-                return redirect("/admin/error");
-              }
-              return data;
-            } catch (error) {
-              console.error(error);
-              return redirect("/admin/error");
-            }
-          },
-        },
-        {
-          path: "orders",
-          element: <AdminOrders />,
-          loader: async () => {
-            try {
-              const data = await fetchAllOrders();
-              console.log("Items were fetched for the admin orders page.");
-              return data;
-            } catch (error) {
-              console.error(error);
-              const emptyArray: OrderProp[] = [];
-              return emptyArray;
-            }
-          },
-        },
-        {
-          path: "orders/details/:id",
-          element: <OrderDetails />,
-          loader: async ({ params }) => {
-            try {
-              const id = params.id;
-              const data = await fetchOrder(parseInt(id ?? "0"));
-              if (data === null) {
-                return redirect("/admin/error");
-              }
-              console.log("Items were fetched for the admin orders page.");
-              return data;
-            } catch (error) {
-              console.error(error);
-              return redirect("/admin/error");
-            }
-          },
-        },
-        {
-          path: "orders/edit/:id",
-          element: <EditOrder />,
-          loader: async ({ params }) => {
-            try {
-              const data = await fetchOrder(parseInt(params.id ?? "0"));
-              if (data === null) {
-                return redirect("/admin/error");
-              }
-              return data;
-            } catch (error) {
-              console.error(error);
-              return redirect("/admin/error");
-            }
-          },
-        },
-        {
-          path: "order-lines/details/:id",
-          element: <OrderLineDetails />,
-          loader: async ({ params }) => {
-            try {
-              const id = params.id;
-              const data = await fetchOrderLine(parseInt(id ?? "0"));
-              if (data === null) {
-                return redirect("/admin/error");
-              }
-              console.log("Items were fetched for the admin order lines page.");
-              return data;
-            } catch (error) {
-              console.error(error);
-              return redirect("/admin/error");
-            }
-          },
-        },
-        {
-          path: "order-lines/create/order/:orderId",
-          element: <CreateOrderLine />,
-          loader: async ({ params }) => {
-            const parsedId = parseInt(params.orderId ?? "0");
-            if (parsedId === 0) {
-              return redirect("/admin/error");
-            }
-            return params.orderId;
-          },
-        },
-        {
-          path: "order-lines/edit/:id",
-          element: <EditOrderLine />,
-          loader: async ({ params }) => {
-            try {
-              const data = await fetchOrderLine(parseInt(params.id ?? "0"));
-              if (data === null) {
-                return redirect("/admin/error");
-              }
-              return data;
-            } catch (error) {
-              console.error(error);
-              return redirect("/admin/error");
-            }
-          },
-        },
-        {
-          path: "users",
-          element: <AdminUsers />,
-          loader: async () => {
-            try {
-              const data = await fetchCustomers();
-              console.log("Items were fetched for the admin users page.");
-              return data;
-            } catch (error) {
-              console.error(error);
-              const emptyArray: AuthUserProp[] = [];
-              return emptyArray;
-            }
-          },
-        },
-        {
-          path: "users/details/:id",
-          element: <UserDetails />,
-          loader: async ({ params }) => {
-            try {
-              const id = params.id;
-              const data = await fetchCustomerDataById(id ?? "", true);
-              if (data === null) {
-                return redirect("/admin/error");
-              }
-              console.log("Items were fetched for the admin users page.");
-              return data;
-            } catch (error) {
-              console.error(error);
-              return redirect("/admin/error");
-            }
-          },
-        },
-        {
-          path: "users/create",
-          element: <CreateUser />,
-        },
-        {
-          path: "users/edit/:id",
-          element: <EditUser />,
-          loader: async ({ params }) => {
-            try {
-              const data = await fetchCustomerDataById(params.id ?? "", true);
-              if (data === null) {
-                return redirect("/admin/error");
-              }
-              return data;
-            } catch (error) {
-              console.error(error);
-              return redirect("/admin/error");
-            }
-          },
-        },
-        {
-          path: "shops",
-          element: <AdminShops />,
-          loader: async () => {
-            try {
-              const data = await fetchShops();
-              console.log("Items were fetched for the admin shops page.");
-              return data;
-            } catch (error) {
-              console.error(error);
-              const emptyArray: ShopProp[] = [];
-              return emptyArray;
-            }
-          },
-        },
-        {
-          path: "shops/details/:id",
-          element: <ShopDetails />,
-          loader: async ({ params }) => {
-            try {
-              const data = await fetchShopById(parseInt(params.id ?? "0"));
-              if (data === null) {
-                return redirect("/admin/error");
-              }
-              console.log("Items were fetched for the admin shops page.");
-              return data;
-            } catch (error) {
-              console.error(error);
-              return redirect("/admin/error");
-            }
-          },
-        },
-        {
-          path: "shops/create",
-          element: <CreateShop />,
-        },
-        {
-          path: "shops/edit/:id",
-          element: <EditShop />,
-          loader: async ({ params }) => {
-            try {
-              const data = await fetchShopById(parseInt(params.id ?? "0"));
-              if (data === null) {
-                return redirect("/admin/error");
-              }
-              return data;
-            } catch (error) {
-              console.error(error);
-              return redirect("/admin/error");
-            }
-          },
-        },
-      ],
-      loader: async () => {
-        try {
-          const user = await isAdminLoggedIn();
-          if (user == null) {
-            return redirect("/admin/login");
+      const response = await refreshToken(param.authToken);
+      if (response === 400) {
+        return {
+          isSuccess: false
+        };
+      } else {
+        return {
+          isSuccess: true,
+          newAuthToken: response.token,
+          newAuthUserState: {
+            id: response.id,
+            email: response.email,
+            firstName: response.firstName,
+            userName: response.userName,
+            phoneNumber: response.phoneNumber
           }
-          return user;
-        } catch (error) {
-          console.error(error);
-          return redirect("/admin/error");
-        }
-      },
+        };
+      }
+    } catch (error) {
+      return {
+        isSuccess: false
+      };
     }
-  );
+  },
+})
 
-  return routes;
-};
-
-let routes: RouteObject[] = [];
-try {
-  routes = getRoutes();
-} catch (error) {
-  console.error(error);
-}
-
-const router = createBrowserRouter(routes);
+const store = createStore({
+  authName:'jwtBearerAuth',
+  authType:'localstorage'
+});
 
 export default function App() {
   return <RouterProvider router={router} />;

@@ -6,7 +6,7 @@ import {
   validateClosingTime,
   validateOpeningTime,
 } from "../../../validation/shopValidation";
-import { updateShop } from "../../../functions/shopFunctions";
+import { updateShop } from "../../../repositories/shopRepository";
 
 export default function EditShop() {
   const loadedShop: ShopProp = useLoaderData() as ShopProp;

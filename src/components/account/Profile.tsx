@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { ContextStateType, useMyContext } from "../../hooks/hooks";
+import { ContextState, useMyContext } from "../../hooks/hooks";
 
 export default function Profile() {
-  const contextState: ContextStateType = useMyContext();
+  const contextState: ContextState = useMyContext();
   const authUser = contextState.authUserProp;
   const navigate = useNavigate();
 

@@ -1,4 +1,4 @@
-import { isAddressTaken } from "../functions/shopFunctions";
+import { isAddressTaken } from "../repositories/shopRepository";
 import { ErrorInputProp } from "../helpers/Interfaces";
 import { RegularExpressions } from "../helpers/constants";
 

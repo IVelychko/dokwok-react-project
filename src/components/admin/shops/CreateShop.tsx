@@ -6,7 +6,7 @@ import {
   validateClosingTime,
   validateOpeningTime,
 } from "../../../validation/shopValidation";
-import { addShop } from "../../../functions/shopFunctions";
+import { addShop } from "../../../repositories/shopRepository";
 
 export default function CreateShop() {
   const [street, setStreet] = useState<string>("");

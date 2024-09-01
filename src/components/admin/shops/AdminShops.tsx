@@ -1,7 +1,7 @@
 import { Link, useLoaderData } from "react-router-dom";
 import { ShopProp } from "../../../helpers/Interfaces";
 import { ReactNode, useState } from "react";
-import { deleteShop, fetchShops } from "../../../functions/shopFunctions";
+import { deleteShop, getAllShops } from "../../../repositories/shopRepository";
 
 export default function AdminShops() {
   const shopData: ShopProp[] = useLoaderData() as ShopProp[];
@@ -10,7 +10,7 @@ export default function AdminShops() {
   const handleDeleteClick = (id: number) => {
     deleteShop(id)
       .then(() => {
-        fetchShops()
+        getAllShops()
           .then((freshShops) => {
             setShops(freshShops);
           })

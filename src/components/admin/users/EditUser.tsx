@@ -8,7 +8,7 @@ import {
 import {
   updateCustomerPasswordAsAdmin,
   updateUser,
-} from "../../../functions/userFunctions";
+} from "../../../repositories/userRepository";
 import {
   validateEmailEdit,
   validateFirstName,

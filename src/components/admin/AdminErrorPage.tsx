@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { logOut } from "../../functions/authFunctions";
+import { logOut } from "../../repositories/authRepository";
 
 export default function AdminErrorPage() {
   const navigate = useNavigate();

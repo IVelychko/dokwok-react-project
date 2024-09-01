@@ -4,7 +4,7 @@ import { ReactNode, useState } from "react";
 import {
   deleteCategory,
   fetchProductCategoryData,
-} from "../../../functions/productFunctions";
+} from "../../../repositories/productRepository";
 
 export default function AdminCategories() {
   const categoryData: ProductCategoryDataProp[] =

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ErrorInputProp, RegisterUserProp } from "../../../helpers/Interfaces";
-import { addUser } from "../../../functions/userFunctions";
+import { addUser } from "../../../repositories/userRepository";
 import {
   validateEmailCreate,
   validateFirstName,

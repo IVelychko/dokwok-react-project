@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ErrorInputProp, LoginUserProp } from "../../helpers/Interfaces";
-import { ContextStateType, useMyContext } from "../../hooks/hooks";
-import { customerLogin } from "../../functions/authFunctions";
+import { ContextState, useMyContext } from "../../hooks/hooks";
+import { customerLogin } from "../../repositories/authRepository";
 import {
   validatePassword,
   validateUserName,
@@ -31,7 +31,7 @@ export default function Login() {
     },
     message: "Введений некоректний пароль",
   });
-  const contextState: ContextStateType = useMyContext();
+  const contextState: ContextState = useMyContext();
   const navigate = useNavigate();
 
   const validateFormData = () => {
