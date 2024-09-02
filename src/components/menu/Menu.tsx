@@ -1,6 +1,6 @@
 import { ProductDataProp } from "../../helpers/Interfaces";
 import { Link, useLoaderData } from "react-router-dom";
-import { addItemToCart } from "../../repositories/cartFunctions";
+import { addItemToCart } from "../../repositories/cartManagement";
 import { ContextState, useMyContext } from "../../hooks/hooks";
 import GridItemContainer from "./GridItemContainer";
 import Badge from "@mui/material/Badge";

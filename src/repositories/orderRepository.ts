@@ -1,17 +1,18 @@
-import axios from "axios";
+import axios, { AxiosInstance } from "axios";
 import { Order } from "../models/dataTransferObjects";
 import {
   AddDeliveryOrderRequest,
   AddTakeawayOrderRequest,
   UpdateOrderRequest,
 } from "../models/requests";
-import { getAxiosInstance } from "./axiosConfig";
 import { ErrorMessages } from "../helpers/constants";
+import useRegularAxios from "../hooks/useRegularAxios";
 
-export async function getAllOrders(token: string): Promise<Order[] | 401> {
-  const axiosInstance = getAxiosInstance(false, token);
+export async function getAllOrders(
+  authAxios: AxiosInstance
+): Promise<Order[] | 401> {
   try {
-    const response = await axiosInstance.get<Order[]>("orders");
+    const response = await authAxios.get<Order[]>("orders");
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -32,13 +33,10 @@ export async function getAllOrders(token: string): Promise<Order[] | 401> {
 
 export async function getAllUserOrders(
   userId: string,
-  token: string
+  authAxios: AxiosInstance
 ): Promise<Order[] | 401> {
-  const axiosInstance = getAxiosInstance(false, token);
   try {
-    const response = await axiosInstance.get<Order[]>(
-      `orders?userId=${userId}`
-    );
+    const response = await authAxios.get<Order[]>(`orders?userId=${userId}`);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -59,11 +57,10 @@ export async function getAllUserOrders(
 
 export async function getOrder(
   id: number,
-  token: string
+  authAxios: AxiosInstance
 ): Promise<Order | 401 | 404> {
-  const axiosInstance = getAxiosInstance(false, token);
   try {
-    const response = await axiosInstance.get<Order>(`orders/${id}`);
+    const response = await authAxios.get<Order>(`orders/${id}`);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -87,7 +84,7 @@ export async function getOrder(
 export async function addDeliveryOrder(
   order: AddDeliveryOrderRequest
 ): Promise<Order | 400> {
-  const axiosInstance = getAxiosInstance(false);
+  const axiosInstance = useRegularAxios();
   try {
     const response = await axiosInstance.post<Order>("orders/delivery", order);
     return response.data;
@@ -111,7 +108,7 @@ export async function addDeliveryOrder(
 export async function addTakeawayOrder(
   order: AddTakeawayOrderRequest
 ): Promise<Order | 400> {
-  const axiosInstance = getAxiosInstance(false);
+  const axiosInstance = useRegularAxios();
   try {
     const response = await axiosInstance.post<Order>("orders/takeaway", order);
     return response.data;
@@ -134,11 +131,10 @@ export async function addTakeawayOrder(
 
 export async function updateOrder(
   order: UpdateOrderRequest,
-  token: string
+  authAxios: AxiosInstance
 ): Promise<Order | 400 | 401 | 404> {
-  const axiosInstance = getAxiosInstance(false, token);
   try {
-    const response = await axiosInstance.put<Order>("orders", order);
+    const response = await authAxios.put<Order>("orders", order);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -163,11 +159,10 @@ export async function updateOrder(
 
 export async function deleteOrder(
   id: number,
-  token: string
+  authAxios: AxiosInstance
 ): Promise<200 | 401 | 404> {
-  const axiosInstance = getAxiosInstance(false, token);
   try {
-    await axiosInstance.delete(`orders/${id}`);
+    await authAxios.delete(`orders/${id}`);
     return 200;
   } catch (error) {
     if (axios.isAxiosError(error)) {

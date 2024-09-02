@@ -38,3 +38,12 @@ export const ErrorMessages = {
   errorNeverReached: "The request has never reached the server",
   nonAxiosRelatedError: "A non-axios related error has occured",
 };
+
+export const Roles = {
+  admin: "Admin",
+  customer: "Customer",
+};
+
+export const AccessTokenKey = "accessToken";
+
+export const ShoppingCartKey = "shoppingCart";

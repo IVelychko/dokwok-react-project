@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosInstance } from "axios";
 import { CheckIfTaken, User } from "../models/dataTransferObjects";
 import {
   AddUserRequest,
@@ -6,13 +6,14 @@ import {
   UserPasswordChangeAsAdminRequest,
   UserPasswordChangeRequest,
 } from "../models/requests";
-import { getAxiosInstance } from "./axiosConfig";
 import { ErrorMessages } from "../helpers/constants";
+import useRegularAxios from "../hooks/useRegularAxios";
 
-export async function getAllUsers(token: string): Promise<User[] | 401> {
-  const axiosInstance = getAxiosInstance(false, token);
+export async function getAllUsers(
+  authAxios: AxiosInstance
+): Promise<User[] | 401> {
   try {
-    const response = await axiosInstance.get<User[]>("users");
+    const response = await authAxios.get<User[]>("users");
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -31,10 +32,11 @@ export async function getAllUsers(token: string): Promise<User[] | 401> {
   }
 }
 
-export async function getAllCustomers(token: string): Promise<User[] | 401> {
-  const axiosInstance = getAxiosInstance(false, token);
+export async function getAllCustomers(
+  authAxios: AxiosInstance
+): Promise<User[] | 401> {
   try {
-    const response = await axiosInstance.get<User[]>("users/customers");
+    const response = await authAxios.get<User[]>("users/customers");
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -55,11 +57,10 @@ export async function getAllCustomers(token: string): Promise<User[] | 401> {
 
 export async function getUserById(
   id: string,
-  token: string
+  authAxios: AxiosInstance
 ): Promise<User | 401 | 404> {
-  const axiosInstance = getAxiosInstance(false, token);
   try {
-    const response = await axiosInstance.get<User>(`users/id/${id}`);
+    const response = await authAxios.get<User>(`users/id/${id}`);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -82,11 +83,10 @@ export async function getUserById(
 
 export async function getCustomerById(
   id: string,
-  token: string
+  authAxios: AxiosInstance
 ): Promise<User | 401 | 404> {
-  const axiosInstance = getAxiosInstance(false, token);
   try {
-    const response = await axiosInstance.get<User>(`users/customers/id/${id}`);
+    const response = await authAxios.get<User>(`users/customers/id/${id}`);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -109,11 +109,10 @@ export async function getCustomerById(
 
 export async function addUser(
   addUserRequest: AddUserRequest,
-  token: string
+  authAxios: AxiosInstance
 ): Promise<User | 400 | 401> {
-  const axiosInstance = getAxiosInstance(false, token);
   try {
-    const response = await axiosInstance.post("users", addUserRequest);
+    const response = await authAxios.post("users", addUserRequest);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -136,11 +135,10 @@ export async function addUser(
 
 export async function updateUser(
   updateUserRequest: UpdateUserRequest,
-  token: string
+  authAxios: AxiosInstance
 ): Promise<User | 400 | 401 | 404> {
-  const axiosInstance = getAxiosInstance(false, token);
   try {
-    const response = await axiosInstance.put<User>(`users`, updateUserRequest);
+    const response = await authAxios.put<User>(`users`, updateUserRequest);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -165,11 +163,10 @@ export async function updateUser(
 
 export async function updateCustomerPassword(
   passwordChangeRequest: UserPasswordChangeRequest,
-  token: string
+  authAxios: AxiosInstance
 ): Promise<boolean | 400 | 401 | 404> {
-  const axiosInstance = getAxiosInstance(false, token);
   try {
-    await axiosInstance.put("users/password", passwordChangeRequest);
+    await authAxios.put("users/password", passwordChangeRequest);
     return true;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -194,11 +191,10 @@ export async function updateCustomerPassword(
 
 export async function updateCustomerPasswordAsAdmin(
   changePasswordRequest: UserPasswordChangeAsAdminRequest,
-  token: string
+  authAxios: AxiosInstance
 ): Promise<boolean | 400 | 401 | 404> {
-  const axiosInstance = getAxiosInstance(false, token);
   try {
-    await axiosInstance.put("users/password/asAdmin", changePasswordRequest);
+    await authAxios.put("users/password/asAdmin", changePasswordRequest);
     return true;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -223,11 +219,10 @@ export async function updateCustomerPasswordAsAdmin(
 
 export async function deleteUserById(
   id: string,
-  token: string
+  authAxios: AxiosInstance
 ): Promise<200 | 401 | 404> {
-  const axiosInstance = getAxiosInstance(false, token);
   try {
-    await axiosInstance.delete(`users/${id}`);
+    await authAxios.delete(`users/${id}`);
     return 200;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -251,7 +246,7 @@ export async function deleteUserById(
 export async function isUserNameTaken(
   userName: string
 ): Promise<CheckIfTaken | 400> {
-  const axiosInstance = getAxiosInstance(false);
+  const axiosInstance = useRegularAxios();
   try {
     const response = await axiosInstance.get(
       `users/customers/isUserNameTaken/${userName}`
@@ -275,7 +270,7 @@ export async function isUserNameTaken(
 }
 
 export async function isEmailTaken(email: string): Promise<CheckIfTaken | 400> {
-  const axiosInstance = getAxiosInstance(false);
+  const axiosInstance = useRegularAxios();
   try {
     const response = await axiosInstance.get(
       `users/customers/isEmailTaken/${email}`
@@ -301,7 +296,7 @@ export async function isEmailTaken(email: string): Promise<CheckIfTaken | 400> {
 export async function isPhoneNumberTaken(
   phoneNumber: string
 ): Promise<CheckIfTaken | 400> {
-  const axiosInstance = getAxiosInstance(false);
+  const axiosInstance = useRegularAxios();
   try {
     const response = await axiosInstance.get(
       `users/customers/isPhoneTaken/${phoneNumber}`

@@ -66,6 +66,11 @@ export interface AuthorizedUser {
   token: string;
 }
 
+export interface AuthData {
+  user: AuthorizedUser;
+  roles: string[];
+}
+
 export interface CheckIfTaken {
   isTaken: boolean;
 }

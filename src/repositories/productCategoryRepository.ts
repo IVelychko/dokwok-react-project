@@ -1,14 +1,14 @@
-import axios from "axios";
+import axios, { AxiosInstance } from "axios";
 import { CheckIfTaken, ProductCategory } from "../models/dataTransferObjects";
-import { getAxiosInstance } from "./axiosConfig";
 import { ErrorMessages } from "../helpers/constants";
 import {
   AddProductCategoryRequest,
   UpdateProductCategoryRequest,
 } from "../models/requests";
+import useRegularAxios from "../hooks/useRegularAxios";
 
 export async function getAllProductCategories(): Promise<ProductCategory[]> {
-  const axiosInstance = getAxiosInstance(false);
+  const axiosInstance = useRegularAxios();
   try {
     const response = await axiosInstance.get<ProductCategory[]>(
       "products/categories"
@@ -30,7 +30,7 @@ export async function getAllProductCategories(): Promise<ProductCategory[]> {
 export async function getProductCategory(
   id: number
 ): Promise<ProductCategory | 404> {
-  const axiosInstance = getAxiosInstance(false);
+  const axiosInstance = useRegularAxios();
   try {
     const response = await axiosInstance.get<ProductCategory>(
       `products/categories/${id}`
@@ -55,11 +55,10 @@ export async function getProductCategory(
 
 export async function addCategory(
   category: AddProductCategoryRequest,
-  token: string
+  authAxios: AxiosInstance
 ): Promise<ProductCategory | 400 | 401> {
-  const axiosInstance = getAxiosInstance(false, token);
   try {
-    const response = await axiosInstance.post<ProductCategory>(
+    const response = await authAxios.post<ProductCategory>(
       "products/categories",
       category
     );
@@ -85,11 +84,10 @@ export async function addCategory(
 
 export async function updateCategory(
   category: UpdateProductCategoryRequest,
-  token: string
+  authAxios: AxiosInstance
 ): Promise<ProductCategory | 400 | 401 | 404> {
-  const axiosInstance = getAxiosInstance(false, token);
   try {
-    const response = await axiosInstance.put<ProductCategory>(
+    const response = await authAxios.put<ProductCategory>(
       "products/categories",
       category
     );
@@ -117,11 +115,10 @@ export async function updateCategory(
 
 export async function deleteCategory(
   id: number,
-  token: string
+  authAxios: AxiosInstance
 ): Promise<200 | 401 | 404> {
-  const axiosInstance = getAxiosInstance(false, token);
   try {
-    await axiosInstance.delete(`products/categories/${id}`);
+    await authAxios.delete(`products/categories/${id}`);
     return 200;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -145,7 +142,7 @@ export async function deleteCategory(
 export async function isCategoryNameTaken(
   name: string
 ): Promise<CheckIfTaken | 400> {
-  const axiosInstance = getAxiosInstance(false);
+  const axiosInstance = useRegularAxios();
   try {
     const response = await axiosInstance.get(
       `products/categories/isNameTaken/${name}`

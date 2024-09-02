@@ -5,7 +5,7 @@ import {
   addItemToCart,
   removeItemFromCart,
   removeLineFromCart,
-} from "../../repositories/cartFunctions";
+} from "../../repositories/cartManagement";
 
 interface Props {
   cart: CartProp;

@@ -1,11 +1,11 @@
-import axios from "axios";
+import axios, { AxiosInstance } from "axios";
 import { CheckIfTaken, Shop } from "../models/dataTransferObjects";
 import { AddShopRequest, UpdateShopRequest } from "../models/requests";
-import { getAxiosInstance } from "./axiosConfig";
 import { ErrorMessages } from "../helpers/constants";
+import useRegularAxios from "../hooks/useRegularAxios";
 
 export async function getAllShops(): Promise<Shop[]> {
-  const axiosInstance = getAxiosInstance(false);
+  const axiosInstance = useRegularAxios();
   try {
     const response = await axiosInstance.get<Shop[]>("shops");
     return response.data;
@@ -23,7 +23,7 @@ export async function getAllShops(): Promise<Shop[]> {
 }
 
 export async function getShopById(id: number): Promise<Shop | 404> {
-  const axiosInstance = getAxiosInstance(false);
+  const axiosInstance = useRegularAxios();
   try {
     const response = await axiosInstance.get<Shop>(`shops/${id}`);
     return response.data;
@@ -46,11 +46,10 @@ export async function getShopById(id: number): Promise<Shop | 404> {
 
 export async function addShop(
   shop: AddShopRequest,
-  token: string
+  authAxios: AxiosInstance
 ): Promise<Shop | 400 | 401> {
-  const axiosInstance = getAxiosInstance(false, token);
   try {
-    const response = await axiosInstance.post<Shop>("shops", shop);
+    const response = await authAxios.post<Shop>("shops", shop);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -73,11 +72,10 @@ export async function addShop(
 
 export async function updateShop(
   shop: UpdateShopRequest,
-  token: string
+  authAxios: AxiosInstance
 ): Promise<Shop | 400 | 401 | 404> {
-  const axiosInstance = getAxiosInstance(false, token);
   try {
-    const response = await axiosInstance.put<Shop>("shops", shop);
+    const response = await authAxios.put<Shop>("shops", shop);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -102,11 +100,10 @@ export async function updateShop(
 
 export async function deleteShop(
   id: number,
-  token: string
+  authAxios: AxiosInstance
 ): Promise<200 | 401 | 404> {
-  const axiosInstance = getAxiosInstance(false, token);
   try {
-    await axiosInstance.delete(`shops/${id}`);
+    await authAxios.delete(`shops/${id}`);
     return 200;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -131,7 +128,7 @@ export async function isAddressTaken(
   street: string,
   building: string
 ): Promise<CheckIfTaken | 400> {
-  const axiosInstance = getAxiosInstance(false);
+  const axiosInstance = useRegularAxios();
   try {
     const response = await axiosInstance.get(
       `shops/isAddressTaken/${street}/${building}`

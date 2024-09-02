@@ -1,13 +1,13 @@
-import axios from "axios";
+import axios, { AxiosInstance } from "axios";
 import { CheckIfTaken, Product } from "../models/dataTransferObjects";
 import { AddProductRequest, UpdateProductRequest } from "../models/requests";
-import { getAxiosInstance } from "./axiosConfig";
 import { ErrorMessages } from "../helpers/constants";
+import useRegularAxios from "../hooks/useRegularAxios";
 
 export async function getAllProducts(
   productCategoryId: number | null
 ): Promise<Product[]> {
-  const axiosInstance = getAxiosInstance(false);
+  const axiosInstance = useRegularAxios();
   try {
     const apiUrl = productCategoryId
       ? `products?categoryId=${productCategoryId}`
@@ -28,7 +28,7 @@ export async function getAllProducts(
 }
 
 export async function getProduct(id: number): Promise<Product | 404> {
-  const axiosInstance = getAxiosInstance(false);
+  const axiosInstance = useRegularAxios();
   try {
     const response = await axiosInstance.get<Product>(`products/${id}`);
     return response.data;
@@ -51,11 +51,10 @@ export async function getProduct(id: number): Promise<Product | 404> {
 
 export async function addProduct(
   product: AddProductRequest,
-  token: string
+  authAxios: AxiosInstance
 ): Promise<Product | 400 | 401> {
-  const axiosInstance = getAxiosInstance(false, token);
   try {
-    const response = await axiosInstance.post<Product>("products", product);
+    const response = await authAxios.post<Product>("products", product);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -78,11 +77,10 @@ export async function addProduct(
 
 export async function updateProduct(
   product: UpdateProductRequest,
-  token: string
+  authAxios: AxiosInstance
 ): Promise<Product | 400 | 401 | 404> {
-  const axiosInstance = getAxiosInstance(false, token);
   try {
-    const response = await axiosInstance.put<Product>("products", product);
+    const response = await authAxios.put<Product>("products", product);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -107,11 +105,10 @@ export async function updateProduct(
 
 export async function deleteProduct(
   id: number,
-  token: string
+  authAxios: AxiosInstance
 ): Promise<200 | 401 | 404> {
-  const axiosInstance = getAxiosInstance(false, token);
   try {
-    await axiosInstance.delete(`products/${id}`);
+    await authAxios.delete(`products/${id}`);
     return 200;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -135,7 +132,7 @@ export async function deleteProduct(
 export async function isProductNameTaken(
   name: string
 ): Promise<CheckIfTaken | 400> {
-  const axiosInstance = getAxiosInstance(false);
+  const axiosInstance = useRegularAxios();
   try {
     const response = await axiosInstance.get(`products/isNameTaken/${name}`);
     return response.data;
