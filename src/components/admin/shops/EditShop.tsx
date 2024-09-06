@@ -1,15 +1,18 @@
 import { useState } from "react";
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
-import { ErrorInputProp, ShopProp } from "../../../helpers/Interfaces";
+import { ErrorInput } from "../../../helpers/Interfaces";
 import {
   validateAddressEdit,
   validateClosingTime,
   validateOpeningTime,
 } from "../../../validation/shopValidation";
 import { updateShop } from "../../../repositories/shopRepository";
+import { Shop } from "../../../models/dataTransferObjects";
+import useAuthAxios from "../../../hooks/useAuthAxios";
 
 export default function EditShop() {
-  const loadedShop: ShopProp = useLoaderData() as ShopProp;
+  const authAxios = useAuthAxios();
+  const loadedShop: Shop = useLoaderData() as Shop;
   const [street, setStreet] = useState<string>(loadedShop.street);
   const [building, setBuilding] = useState<string>(loadedShop.building);
   const [openingTime, setOpeningTime] = useState<string>(
@@ -18,31 +21,31 @@ export default function EditShop() {
   const [closingTime, setClosingTime] = useState<string>(
     loadedShop.closingTime
   );
-  const [formErrorInput, setFormErrorInput] = useState<ErrorInputProp>({
+  const [formErrorInput, setFormErrorInput] = useState<ErrorInput>({
     styles: { visibility: "hidden", marginTop: 0 },
     message: "Incorrect data",
   });
-  const [streetErrorInput, setStreetErrorInput] = useState<ErrorInputProp>({
+  const [streetErrorInput, setStreetErrorInput] = useState<ErrorInput>({
     styles: {
       display: "none",
     },
     message: "Enter a correct street",
   });
-  const [buildingErrorInput, setBuildingErrorInput] = useState<ErrorInputProp>({
+  const [buildingErrorInput, setBuildingErrorInput] = useState<ErrorInput>({
     styles: {
       display: "none",
     },
     message: "Enter a correct building",
   });
   const [openingTimeErrorInput, setOpeningTimeErrorInput] =
-    useState<ErrorInputProp>({
+    useState<ErrorInput>({
       styles: {
         display: "none",
       },
       message: "Enter a correct opening time",
     });
   const [closingTimeErrorInput, setClosingTimeErrorInput] =
-    useState<ErrorInputProp>({
+    useState<ErrorInput>({
       styles: {
         display: "none",
       },
@@ -100,9 +103,9 @@ export default function EditShop() {
       building: building,
       openingTime: openingTime,
       closingTime: closingTime,
-    })
+    }, authAxios)
       .then((updatedShop) => {
-        if (updatedShop !== null) {
+        if (updatedShop !== 400 && updatedShop !== 401 && updatedShop !== 404) {
           navigate("/admin/shops");
         } else {
           setFormErrorInput((prevData) => ({

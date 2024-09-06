@@ -1,13 +1,11 @@
 import { Link } from "react-router-dom";
-import { ContextState, useMyContext } from "../../hooks/hooks";
 import CartContainer from "./CartContainer";
+import useRootContext from "../../hooks/useRootContext";
 
 export default function Cart() {
-  const contextState: ContextState = useMyContext();
-  const cart = contextState.cartProp;
-  const setCart = contextState.setCartProp;
+  const { cart, setCart } = useRootContext();
 
-  if (cart === null || cart.lines.length < 1) {
+  if (cart.lines.length < 1) {
     return (
       <main>
         <div style={{ marginBottom: 170 }} className="shopping-wrapper">

@@ -1,19 +1,18 @@
-import { ProductDataProp } from "../../helpers/Interfaces";
+import { Product } from "../../models/dataTransferObjects";
 import { Link, useLoaderData } from "react-router-dom";
 import { addItemToCart } from "../../repositories/cartManagement";
-import { ContextState, useMyContext } from "../../hooks/hooks";
 import GridItemContainer from "./GridItemContainer";
 import Badge from "@mui/material/Badge";
 import { useEffect, useState } from "react";
+import useRootContext from "../../hooks/useRootContext";
 
 interface Props {
   heading: string;
 }
 
 export default function Menu({ heading }: Readonly<Props>) {
-  const productData: ProductDataProp[] = useLoaderData() as ProductDataProp[];
-  const contextState: ContextState = useMyContext();
-  const cart = contextState.cartProp;
+  const productData: Product[] = useLoaderData() as Product[];
+  const { cart, setCart } = useRootContext();
   const [cartSize, setCartSize] = useState<number>();
 
   useEffect(() => {
@@ -26,7 +25,7 @@ export default function Menu({ heading }: Readonly<Props>) {
   const handleAddToCart = (productId: number, quantity: number) => {
     addItemToCart(productId, quantity)
       .then((cart) => {
-        contextState.setCartProp(cart);
+        setCart(cart);
         console.log("Item was added to the cart.");
       })
       .catch((error) => console.error(error));

@@ -1,8 +1,8 @@
 import { Link, useLoaderData } from "react-router-dom";
-import { ShopProp } from "../../../helpers/Interfaces";
+import { Shop } from "../../../models/dataTransferObjects";
 
 export default function ShopDetails() {
-  const shop: ShopProp = useLoaderData() as ShopProp;
+  const shop: Shop = useLoaderData() as Shop;
   return (
     <div className="col">
       <h3 className="bg-info text-white text-center p-1">Details</h3>

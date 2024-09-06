@@ -1,18 +1,23 @@
 import { Link, useLoaderData } from "react-router-dom";
-import { OrderProp } from "../../../helpers/Interfaces";
+import { Order } from "../../../models/dataTransferObjects";
 import { ReactNode, useState } from "react";
 import { deleteOrder, getAllOrders } from "../../../repositories/orderRepository";
+import useAuthAxios from "../../../hooks/useAuthAxios";
 
 export default function AdminOrders() {
-  const orderData: OrderProp[] = useLoaderData() as OrderProp[];
-  const [orders, setOrders] = useState<OrderProp[]>(orderData);
+  const authAxios = useAuthAxios();
+  const orderData: Order[] = useLoaderData() as Order[];
+  const [orders, setOrders] = useState<Order[]>(orderData);
   const orderRows: ReactNode[] = [];
   const handleDeleteClick = (id: number) => {
-    deleteOrder(id)
+    deleteOrder(id, authAxios)
       .then(() => {
-        getAllOrders()
+        getAllOrders(authAxios)
           .then((freshOrders) => {
-            setOrders(freshOrders);
+            if (freshOrders !== 401) {
+              setOrders(freshOrders);
+            }
+            throw new Error("User is not authorized to get all orders");
           })
           .catch((error) => {
             console.error(error);

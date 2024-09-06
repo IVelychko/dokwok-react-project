@@ -1,9 +1,9 @@
 import { ReactNode, useEffect, useState } from "react";
-import { CartProp } from "../../helpers/Interfaces";
+import { Cart } from "../../models/dataTransferObjects";
 import OrderProductItem from "./OrderProductItem";
 
 interface Props {
-  cart: CartProp;
+  cart: Cart;
 }
 
 export default function OrderProductsContainer({ cart }: Readonly<Props>) {

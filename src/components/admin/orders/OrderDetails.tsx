@@ -1,33 +1,41 @@
 import { Link, useLoaderData } from "react-router-dom";
-import { OrderLineProp, OrderProp } from "../../../helpers/Interfaces";
+import { OrderLine, Order } from "../../../models/dataTransferObjects";
 import { ReactNode, useState } from "react";
-import {
-  deleteOrderLine,
-  fetchOrderLinesByOrder,
-} from "../../../repositories/orderRepository";
+import useAuthAxios from "../../../hooks/useAuthAxios";
+import { deleteOrderLine, getAllOrderLinesByOrderId } from "../../../repositories/orderLineRepository";
 
 export default function OrderDetails() {
-  const order: OrderProp = useLoaderData() as OrderProp;
+  const authAxios = useAuthAxios();
+  const order: Order = useLoaderData() as Order;
   const date = new Date(order.creationDate);
   const datePart = date.toISOString().split("T")[0];
   const timePart = date.toTimeString().split(" ")[0].substring(0, 5);
   const formattedString = `${datePart}; ${timePart}`;
 
-  const [orderLines, setOrderLines] = useState<OrderLineProp[]>(
+  const [orderLines, setOrderLines] = useState<OrderLine[]>(
     order.orderLines
   );
   const orderLineRows: ReactNode[] = [];
 
   const handleDeleteClick = (id: number) => {
-    deleteOrderLine(id)
-      .then(() => {
-        fetchOrderLinesByOrder(order.id)
+    deleteOrderLine(id, authAxios)
+      .then((response) => {
+        if (response === 200) {
+          getAllOrderLinesByOrderId(order.id, authAxios)
           .then((freshOrderLines) => {
-            setOrderLines(freshOrderLines);
+            if (freshOrderLines !== 401) {
+              setOrderLines(freshOrderLines);
+            } else {
+              throw new Error("User is not authorized");
+            }
           })
           .catch((error) => {
             console.error(error);
           });
+        } else {
+          throw new Error("User is not authorized or the order was not found");
+        }
+        
       })
       .catch((error) => console.error(error));
   };

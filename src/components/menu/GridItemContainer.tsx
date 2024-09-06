@@ -1,7 +1,7 @@
-import { ProductDataProp } from "../../helpers/Interfaces";
+import { Product } from "../../models/dataTransferObjects";
 
 interface Props {
-  products: ProductDataProp[] | null;
+  products: Product[] | null;
   onAddToCart: (productId: number, quantity: number) => void;
 }
 

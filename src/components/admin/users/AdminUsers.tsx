@@ -1,21 +1,27 @@
 import { Link, useLoaderData } from "react-router-dom";
-import { AuthUserProp } from "../../../helpers/Interfaces";
+import { User } from "../../../models/dataTransferObjects";
 import { ReactNode, useState } from "react";
 import {
   deleteUserById,
   getAllCustomers,
 } from "../../../repositories/userRepository";
+import useAuthAxios from "../../../hooks/useAuthAxios";
 
 export default function AdminUsers() {
-  const userData: AuthUserProp[] = useLoaderData() as AuthUserProp[];
-  const [users, setUsers] = useState<AuthUserProp[]>(userData);
+  const authAxios = useAuthAxios();
+  const loadedUsers: User[] = useLoaderData() as User[];
+  const [users, setUsers] = useState<User[]>(loadedUsers);
   const userRows: ReactNode[] = [];
   const handleDeleteClick = (id: string) => {
-    deleteUserById(id)
+    deleteUserById(id, authAxios)
       .then(() => {
-        getAllCustomers()
+        getAllCustomers(authAxios)
           .then((freshUsers) => {
-            setUsers(freshUsers);
+            if (freshUsers !== 401) {
+              setUsers(freshUsers);
+            } else {
+              throw new Error("User is not authorized");
+            }
           })
           .catch((error) => {
             console.error(error);

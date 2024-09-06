@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { ErrorInputProp, RegisterUserProp } from "../../helpers/Interfaces";
-import { ContextState, useMyContext } from "../../hooks/hooks";
+import { ErrorInput } from "../../helpers/Interfaces";
 import { useNavigate } from "react-router-dom";
 import { register } from "../../repositories/authRepository";
 import {
@@ -10,41 +9,45 @@ import {
   validatePhoneNumber,
   validateUserName,
 } from "../../validation/userRegisterValidation";
+import { RegisterUserRequest } from "../../models/requests";
+import useAuth from "../../hooks/useAuth";
+import { storeAccessToken } from "../../helpers/accessTokenManagement";
+import { storeUserId } from "../../helpers/userIdManagement";
 
 export default function Register() {
-  const [formData, setFormData] = useState<RegisterUserProp>({
+  const [formData, setFormData] = useState<RegisterUserRequest>({
     firstName: "",
     userName: "",
     email: "",
     phoneNumber: "",
     password: "",
   });
-  const [formErrorInput, setFormErrorInput] = useState<ErrorInputProp>({
+  const [formErrorInput, setFormErrorInput] = useState<ErrorInput>({
     styles: { visibility: "hidden" },
     message: "Введені некоректні дані",
   });
-  const [userNameErrorInput, setUserNameErrorInput] = useState<ErrorInputProp>({
+  const [userNameErrorInput, setUserNameErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Введений некоректний логін",
   });
-  const [passwordErrorInput, setPasswordErrorInput] = useState<ErrorInputProp>({
+  const [passwordErrorInput, setPasswordErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Введений некоректний пароль",
   });
   const [firstNameErrorInput, setFirstNameErrorInput] =
-    useState<ErrorInputProp>({
+    useState<ErrorInput>({
       styles: { display: "none" },
       message: "Введене некоректне ім'я",
     });
-  const [phoneErrorInput, setPhoneErrorInput] = useState<ErrorInputProp>({
+  const [phoneErrorInput, setPhoneErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Введений некоректний номер телефону",
   });
-  const [emailErrorInput, setEmailErrorInput] = useState<ErrorInputProp>({
+  const [emailErrorInput, setEmailErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Введена некоректна електронна пошта",
   });
-  const contextState: ContextState = useMyContext();
+  const { setAuth } = useAuth();
   const navigate = useNavigate();
 
   const validateFormData = async () => {
@@ -97,12 +100,14 @@ export default function Register() {
   const handleRegisterClick = () => {
     register(formData)
       .then((user) => {
-        if (user !== null) {
+        if (user !== 400) {
           setFormErrorInput((prevData) => ({
             ...prevData,
             styles: { visibility: "hidden" },
           }));
-          contextState.setAuthUserProp(user);
+          setAuth({ user: user });
+          storeAccessToken(user.token);
+          storeUserId(user.id);
           console.log(`User ${user.userName} has just registered.`);
           navigate("/account/profile", { replace: true });
         } else {

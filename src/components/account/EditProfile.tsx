@@ -1,15 +1,12 @@
 import { ReactNode, useState } from "react";
 import {
-  AuthUserProp,
-  ErrorInputProp,
-  UserPasswordChangeProp,
+  ErrorInput
 } from "../../helpers/Interfaces";
-import { ContextState, useMyContext } from "../../hooks/hooks";
 import {
   updateCustomerPassword,
   updateUser,
 } from "../../repositories/userRepository";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   validateEmail,
   validateFirstName,
@@ -17,58 +14,63 @@ import {
   validatePhoneNumber,
   validateUserName,
 } from "../../validation/editProfileValidation";
+import useAuth from "../../hooks/useAuth";
+import { Roles } from "../../helpers/constants";
+import { UpdateUserRequest, UserPasswordChangeRequest } from "../../models/requests";
+import useAuthAxios from "../../hooks/useAuthAxios";
 
 export default function EditProfile() {
-  const isAdmin: boolean = useLoaderData() as boolean;
-  const contextState: ContextState = useMyContext();
+  const { auth, setAuth } = useAuth();
+  const user = auth!.user;
+  const isAdmin = user.roles.includes(Roles.admin);
   const navigate = useNavigate();
-  const authUser = contextState.authUserProp;
-  const [userFormData, setUserFormData] = useState<AuthUserProp>({
-    id: authUser.id,
-    userName: authUser.userName,
-    firstName: authUser.firstName,
-    email: authUser.email,
-    phoneNumber: authUser.phoneNumber,
+  const authAxios = useAuthAxios();
+  const [userFormData, setUserFormData] = useState<UpdateUserRequest>({
+    id: user.id,
+    userName: user.userName,
+    firstName: user.firstName,
+    email: user.email,
+    phoneNumber: user.phoneNumber,
   });
   const [passwordFormData, setPasswordFormData] =
-    useState<UserPasswordChangeProp>({
-      userId: authUser.id,
+    useState<UserPasswordChangeRequest>({
+      userId: user.id,
       oldPassword: "",
       newPassword: "",
     });
-  const [userFormErrorInput, setUserFormErrorInput] = useState<ErrorInputProp>({
+  const [userFormErrorInput, setUserFormErrorInput] = useState<ErrorInput>({
     styles: { visibility: "hidden" },
     message: "Введені некоректні дані",
   });
   const [passwordFormErrorInput, setPasswordFormErrorInput] =
-    useState<ErrorInputProp>({
+    useState<ErrorInput>({
       styles: { visibility: "hidden" },
       message: "Введені некоректні дані",
     });
   const [firstNameErrorInput, setFirstNameErrorInput] =
-    useState<ErrorInputProp>({
+    useState<ErrorInput>({
       styles: { display: "none" },
       message: "Введене некоректне ім'я",
     });
-  const [userNameErrorInput, setUserNameErrorInput] = useState<ErrorInputProp>({
+  const [userNameErrorInput, setUserNameErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Введений некоректний логін",
   });
-  const [emailErrorInput, setEmailErrorInput] = useState<ErrorInputProp>({
+  const [emailErrorInput, setEmailErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Введена некоректна електронна пошта",
   });
-  const [phoneErrorInput, setPhoneErrorInput] = useState<ErrorInputProp>({
+  const [phoneErrorInput, setPhoneErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Введений некоректний номер телефону",
   });
   const [newPasswordErrorInput, setNewPasswordErrorInput] =
-    useState<ErrorInputProp>({
+    useState<ErrorInput>({
       styles: { display: "none" },
       message: "Введений некоректний пароль",
     });
   const [oldPasswordErrorInput, setOldPasswordErrorInput] =
-    useState<ErrorInputProp>({
+    useState<ErrorInput>({
       styles: { display: "none" },
       message: "Введений некоректний пароль",
     });
@@ -81,7 +83,7 @@ export default function EditProfile() {
     const validationResults: boolean[] = [];
     validationResults.push(
       await validateUserName(
-        authUser.userName,
+        user.userName,
         userFormData.userName,
         userNameErrorInput,
         setUserNameErrorInput
@@ -96,7 +98,7 @@ export default function EditProfile() {
     );
     validationResults.push(
       await validatePhoneNumber(
-        authUser.phoneNumber,
+        user.phoneNumber,
         userFormData.phoneNumber,
         phoneErrorInput,
         setPhoneErrorInput
@@ -104,7 +106,7 @@ export default function EditProfile() {
     );
     validationResults.push(
       await validateEmail(
-        authUser.email,
+        user.email,
         userFormData.email,
         emailErrorInput,
         setEmailErrorInput
@@ -151,10 +153,14 @@ export default function EditProfile() {
   };
 
   const handleUserSaveClick = () => {
-    updateUser(userFormData, false)
-      .then((user) => {
-        if (user !== null) {
-          contextState.setAuthUserProp(user);
+    updateUser(userFormData, authAxios)
+      .then((updatedUser) => {
+        if (updatedUser !== 400 && updatedUser !== 401 && updatedUser !== 404) {
+          user.email = updatedUser.email;
+          user.firstName = updatedUser.firstName;
+          user.phoneNumber = updatedUser.phoneNumber;
+          user.userName = updatedUser.userName;
+          setAuth({ user: user });
           navigate("/account/profile");
         } else {
           setUserFormErrorInput((prevData) => ({
@@ -167,9 +173,9 @@ export default function EditProfile() {
   };
 
   const handlePasswordSaveClick = () => {
-    updateCustomerPassword(passwordFormData)
+    updateCustomerPassword(passwordFormData, authAxios)
       .then((result) => {
-        if (!result) {
+        if (result === true) {
           setPasswordFormErrorInput((prevData) => ({
             ...prevData,
             styles: { visibility: "visible" },

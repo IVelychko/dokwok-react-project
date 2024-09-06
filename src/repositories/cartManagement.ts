@@ -46,6 +46,7 @@ export async function addItemToCart(productId: number, quantity: number) {
   cart.lines.forEach((cl) => (cartPrice += cl.totalLinePrice));
   cart.totalCartPrice = cartPrice;
   localStorage.setItem(ShoppingCartKey, JSON.stringify(cart));
+  return cart;
 }
 
 export async function removeItemFromCart(productId: number, quantity: number) {
@@ -81,16 +82,15 @@ export async function removeItemFromCart(productId: number, quantity: number) {
   cart.lines.forEach((cl) => (cartPrice += cl.totalLinePrice));
   cart.totalCartPrice = cartPrice;
   localStorage.setItem(ShoppingCartKey, JSON.stringify(cart));
+  return cart;
 }
 
 export async function removeLineFromCart(productId: number) {
-  let product: Product;
   try {
     const response = await getProduct(productId);
     if (response === 404) {
       throw new Error("The product does not exist");
     }
-    product = response;
   } catch (error) {
     throw new Error("An error occured while getting the product data");
   }
@@ -104,13 +104,16 @@ export async function removeLineFromCart(productId: number) {
   );
   cart.lines = updatedCartLines;
 
-  let cartPrice: number = 0;
-  cart.lines.forEach((cl) => (cartPrice += cl.totalLinePrice));
-  cart.totalCartPrice = cartPrice;
   if (cart.lines.length > 0) {
+    let cartPrice: number = 0;
+    cart.lines.forEach((cl) => (cartPrice += cl.totalLinePrice));
+    cart.totalCartPrice = cartPrice;
     localStorage.setItem(ShoppingCartKey, JSON.stringify(cart));
+    return cart;
   } else {
+    cart.totalCartPrice = 0;
     localStorage.removeItem(ShoppingCartKey);
+    return cart;
   }
 }
 

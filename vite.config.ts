@@ -6,5 +6,9 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000,
+    https: {
+      key: "dokwok-privateKey.key",
+      cert: "dokwok.crt",
+    },
   },
 });

@@ -1,37 +1,40 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ErrorInputProp, LoginUserProp } from "../../helpers/Interfaces";
-import { ContextState, useMyContext } from "../../hooks/hooks";
+import { ErrorInput } from "../../helpers/Interfaces";
 import { customerLogin } from "../../repositories/authRepository";
 import {
   validatePassword,
   validateUserName,
 } from "../../validation/userLoginValidation";
+import { LoginCustomerRequest } from "../../models/requests";
+import useAuth from "../../hooks/useAuth";
+import { storeAccessToken } from "../../helpers/accessTokenManagement";
+import { storeUserId } from "../../helpers/userIdManagement";
 
 export default function Login() {
-  const [formData, setFormData] = useState<LoginUserProp>({
+  const [formData, setFormData] = useState<LoginCustomerRequest>({
     userName: "",
     password: "",
   });
-  const [formErrorInput, setFormErrorInput] = useState<ErrorInputProp>({
+  const [formErrorInput, setFormErrorInput] = useState<ErrorInput>({
     styles: {
       visibility: "hidden",
     },
     message: "Введені некоректні дані",
   });
-  const [userNameErrorInput, setUserNameErrorInput] = useState<ErrorInputProp>({
+  const [userNameErrorInput, setUserNameErrorInput] = useState<ErrorInput>({
     styles: {
       display: "none",
     },
     message: "Введений некоректний логін",
   });
-  const [passwordErrorInput, setPasswordErrorInput] = useState<ErrorInputProp>({
+  const [passwordErrorInput, setPasswordErrorInput] = useState<ErrorInput>({
     styles: {
       display: "none",
     },
     message: "Введений некоректний пароль",
   });
-  const contextState: ContextState = useMyContext();
+  const { setAuth } = useAuth();
   const navigate = useNavigate();
 
   const validateFormData = () => {
@@ -67,12 +70,14 @@ export default function Login() {
   const handleLoginClick = () => {
     customerLogin(formData)
       .then((user) => {
-        if (user !== null) {
+        if (user !== 400 && user !== 404) {
           setFormErrorInput((prevData) => ({
             ...prevData,
             styles: { visibility: "hidden" },
           }));
-          contextState.setAuthUserProp(user);
+          setAuth({ user: user });
+          storeAccessToken(user.token);
+          storeUserId(user.id);
           console.log(`User ${user.userName} has just logged in.`);
           navigate("/account/profile", { replace: true });
         } else {

@@ -1,14 +1,14 @@
 import { ReactNode } from "react";
-import { ContextState, useMyContext } from "../hooks/hooks";
+import useRootContext from "../hooks/useRootContext";
 
 export default function Contacts() {
-  const contextState: ContextState = useMyContext();
-  const shops: ReactNode[] = contextState.shopsProp.map((shop, index) => (
+  const { shops } = useRootContext();
+  const shopComponents: ReactNode[] = shops.map((shop, index) => (
     <div
       key={shop.id}
       style={{
         borderBottom:
-          index === contextState.shopsProp.length - 1
+          index === shops.length - 1
             ? "none"
             : "1px solid #e4e4e4",
       }}
@@ -44,7 +44,7 @@ export default function Contacts() {
       </div>
       <div className="contact-shops">
         <div className="contact-shops-header">Ресторани</div>
-        {shops}
+        {shopComponents}
       </div>
     </main>
   );

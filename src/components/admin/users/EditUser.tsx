@@ -1,10 +1,6 @@
 import { useState } from "react";
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
-import {
-  AuthUserProp,
-  ErrorInputProp,
-  UserPasswordChangeAsAdminProp,
-} from "../../../helpers/Interfaces";
+import { ErrorInput } from "../../../helpers/Interfaces";
 import {
   updateCustomerPasswordAsAdmin,
   updateUser,
@@ -16,10 +12,14 @@ import {
   validatePhoneNumberEdit,
   validateUserNameEdit,
 } from "../../../validation/userValidation";
+import useAuthAxios from "../../../hooks/useAuthAxios";
+import { User } from "../../../models/dataTransferObjects";
+import { UpdateUserRequest, UserPasswordChangeAsAdminRequest } from "../../../models/requests";
 
 export default function EditUser() {
-  const loadedUser: AuthUserProp = useLoaderData() as AuthUserProp;
-  const [userFormData, setUserFormData] = useState<AuthUserProp>({
+  const authAxios = useAuthAxios();
+  const loadedUser: User = useLoaderData() as User;
+  const [userFormData, setUserFormData] = useState<UpdateUserRequest>({
     id: loadedUser.id,
     firstName: loadedUser.firstName,
     userName: loadedUser.userName,
@@ -27,38 +27,38 @@ export default function EditUser() {
     phoneNumber: loadedUser.phoneNumber,
   });
   const [passwordFormData, setPasswordFormData] =
-    useState<UserPasswordChangeAsAdminProp>({
+    useState<UserPasswordChangeAsAdminRequest>({
       userId: loadedUser.id,
       newPassword: "",
     });
-  const [userFormErrorInput, setUserFormErrorInput] = useState<ErrorInputProp>({
+  const [userFormErrorInput, setUserFormErrorInput] = useState<ErrorInput>({
     styles: { visibility: "hidden", marginTop: 0 },
     message: "Incorrect data",
   });
   const [passwordFormErrorInput, setPasswordFormErrorInput] =
-    useState<ErrorInputProp>({
+    useState<ErrorInput>({
       styles: { visibility: "hidden", marginTop: 0 },
       message: "Incorrect data",
     });
   const [firstNameErrorInput, setFirstNameErrorInput] =
-    useState<ErrorInputProp>({
+    useState<ErrorInput>({
       styles: { display: "none" },
       message: "Enter a correct first name",
     });
-  const [userNameErrorInput, setUserNameErrorInput] = useState<ErrorInputProp>({
+  const [userNameErrorInput, setUserNameErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Enter a correct user name",
   });
-  const [emailErrorInput, setEmailErrorInput] = useState<ErrorInputProp>({
+  const [emailErrorInput, setEmailErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Enter a correct email",
   });
-  const [phoneErrorInput, setPhoneErrorInput] = useState<ErrorInputProp>({
+  const [phoneErrorInput, setPhoneErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Enter a correct phone number",
   });
   const [newPasswordErrorInput, setNewPasswordErrorInput] =
-    useState<ErrorInputProp>({
+    useState<ErrorInput>({
       styles: { display: "none" },
       message: "Enter a correct password",
     });
@@ -125,9 +125,9 @@ export default function EditUser() {
   };
 
   const handleEditUserDataClick = () => {
-    updateUser(userFormData, true)
+    updateUser(userFormData, authAxios)
       .then((updatedUser) => {
-        if (updatedUser !== null) {
+        if (updatedUser !== 400 && updatedUser !== 401 && updatedUser !== 404) {
           console.log(`User with ID: ${updatedUser.id} was updated`);
           navigate("/admin/users");
         } else {
@@ -141,7 +141,7 @@ export default function EditUser() {
   };
 
   const handleEditPasswordClick = () => {
-    updateCustomerPasswordAsAdmin(passwordFormData)
+    updateCustomerPasswordAsAdmin(passwordFormData, authAxios)
       .then((result) => {
         if (result === true) {
           console.log(`User password was updated`);

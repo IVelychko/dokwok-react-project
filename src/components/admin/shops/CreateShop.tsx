@@ -1,43 +1,45 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ErrorInputProp } from "../../../helpers/Interfaces";
+import { ErrorInput } from "../../../helpers/Interfaces";
 import {
   validateAddressCreate,
   validateClosingTime,
   validateOpeningTime,
 } from "../../../validation/shopValidation";
 import { addShop } from "../../../repositories/shopRepository";
+import useAuthAxios from "../../../hooks/useAuthAxios";
 
 export default function CreateShop() {
+  const authAxios = useAuthAxios();
   const [street, setStreet] = useState<string>("");
   const [building, setBuilding] = useState<string>("");
   const [openingTime, setOpeningTime] = useState<string>("");
   const [closingTime, setClosingTime] = useState<string>("");
-  const [formErrorInput, setFormErrorInput] = useState<ErrorInputProp>({
+  const [formErrorInput, setFormErrorInput] = useState<ErrorInput>({
     styles: { visibility: "hidden", marginTop: 0 },
     message: "Incorrect data",
   });
-  const [streetErrorInput, setStreetErrorInput] = useState<ErrorInputProp>({
+  const [streetErrorInput, setStreetErrorInput] = useState<ErrorInput>({
     styles: {
       display: "none",
     },
     message: "Enter a correct street",
   });
-  const [buildingErrorInput, setBuildingErrorInput] = useState<ErrorInputProp>({
+  const [buildingErrorInput, setBuildingErrorInput] = useState<ErrorInput>({
     styles: {
       display: "none",
     },
     message: "Enter a correct building",
   });
   const [openingTimeErrorInput, setOpeningTimeErrorInput] =
-    useState<ErrorInputProp>({
+    useState<ErrorInput>({
       styles: {
         display: "none",
       },
       message: "Enter a correct opening time",
     });
   const [closingTimeErrorInput, setClosingTimeErrorInput] =
-    useState<ErrorInputProp>({
+    useState<ErrorInput>({
       styles: {
         display: "none",
       },
@@ -92,9 +94,9 @@ export default function CreateShop() {
       building: building,
       openingTime: openingTime,
       closingTime: closingTime,
-    })
+    }, authAxios)
       .then((addedShop) => {
-        if (addedShop !== null) {
+        if (addedShop !== 400 && addedShop !== 401) {
           console.log(
             `Shop on ${addedShop.street} ${addedShop.building} was added with ID: ${addedShop.id}`
           );

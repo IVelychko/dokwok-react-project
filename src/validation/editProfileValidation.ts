@@ -2,15 +2,15 @@ import {
   isEmailTaken,
   isPhoneNumberTaken,
   isUserNameTaken,
-} from "../repositories/authRepository";
-import { ErrorInputProp } from "../helpers/Interfaces";
+} from "../repositories/userRepository";
+import { ErrorInput } from "../helpers/Interfaces";
 import { RegularExpressions } from "../helpers/constants";
 
 export async function validateUserName(
   currentUserName: string,
   userName: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): Promise<boolean> {
   let isValid = true;
   if (userName === null || userName === "") {
@@ -29,7 +29,9 @@ export async function validateUserName(
     try {
       if (currentUserName !== userName) {
         const checker = await isUserNameTaken(userName);
-        if (checker.isTaken) {
+        if (checker === 400) {
+          throw new Error("BadRequest");
+        } else if (checker.isTaken) {
           setErrorInput({
             styles: { display: "block" },
             message: "Введений логін вже зайнятий",
@@ -56,8 +58,8 @@ export async function validateUserName(
 
 export function validatePassword(
   password: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): boolean {
   let isValid = true;
   if (password === null || password === "") {
@@ -83,8 +85,8 @@ export function validatePassword(
 
 export function validateFirstName(
   firstName: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): boolean {
   let isValid = true;
   if (firstName === null || firstName === "") {
@@ -111,8 +113,8 @@ export function validateFirstName(
 export async function validatePhoneNumber(
   currentPhoneNumber: string,
   phoneNumber: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): Promise<boolean> {
   let isValid = true;
   if (phoneNumber === null || phoneNumber === "") {
@@ -131,7 +133,9 @@ export async function validatePhoneNumber(
     try {
       if (currentPhoneNumber !== phoneNumber) {
         const checker = await isPhoneNumberTaken(phoneNumber);
-        if (checker.isTaken) {
+        if (checker === 400) {
+          throw new Error("BadRequest");
+        } else if (checker.isTaken) {
           setErrorInput({
             styles: { display: "block" },
             message: "Введений номер телефону вже зайнятий",
@@ -159,8 +163,8 @@ export async function validatePhoneNumber(
 export async function validateEmail(
   currentEmail: string,
   email: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): Promise<boolean> {
   let isValid = true;
   if (email === null || email === "") {
@@ -179,7 +183,9 @@ export async function validateEmail(
     try {
       if (currentEmail !== email) {
         const checker = await isEmailTaken(email);
-        if (checker.isTaken) {
+        if (checker === 400) {
+          throw new Error("BadRequest");
+        } else if (checker.isTaken) {
           setErrorInput({
             styles: { display: "block" },
             message: "Введена електронна пошта вже зайнята",

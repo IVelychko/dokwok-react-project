@@ -1,12 +1,13 @@
 import { getShopById } from "../repositories/shopRepository";
 import { getCustomerById } from "../repositories/userRepository";
-import { ErrorInputProp } from "../helpers/Interfaces";
+import { ErrorInput } from "../helpers/Interfaces";
 import { RegularExpressions } from "../helpers/constants";
+import { AxiosInstance } from "axios";
 
 export function validateFirstName(
   firstName: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): boolean {
   let isValid = true;
   if (firstName === null || firstName === "") {
@@ -32,8 +33,8 @@ export function validateFirstName(
 
 export function validatePhoneNumber(
   phoneNumber: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): boolean {
   let isValid = true;
   if (phoneNumber === null || phoneNumber === "") {
@@ -59,8 +60,8 @@ export function validatePhoneNumber(
 
 export function validateEmail(
   email: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): boolean {
   let isValid = true;
   if (email === null || email === "") {
@@ -87,10 +88,10 @@ export function validateEmail(
 export async function validateDeliveryAddressAndShopId(
   deliveryAddress: string | null,
   shopId: string | null,
-  addressErrorInput: ErrorInputProp,
-  setAddressErrorInput: (errorInput: ErrorInputProp) => void,
-  shopIdErrorInput: ErrorInputProp,
-  setShopIdErrorInput: (errorInput: ErrorInputProp) => void
+  addressErrorInput: ErrorInput,
+  setAddressErrorInput: (errorInput: ErrorInput) => void,
+  shopIdErrorInput: ErrorInput,
+  setShopIdErrorInput: (errorInput: ErrorInput) => void
 ): Promise<boolean> {
   let isValid = true;
   if (
@@ -149,7 +150,7 @@ export async function validateDeliveryAddressAndShopId(
     } else {
       try {
         const shop = await getShopById(parseInt(shopId));
-        if (shop === null) {
+        if (shop === 404) {
           setShopIdErrorInput({
             styles: { display: "block" },
             message: "There is no shop with this ID",
@@ -192,8 +193,8 @@ export async function validateDeliveryAddressAndShopId(
 
 export async function validateShopId(
   shopId: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): Promise<boolean> {
   let isValid = true;
   if (parseInt(shopId) < 1) {
@@ -205,7 +206,7 @@ export async function validateShopId(
   } else {
     try {
       const shop = await getShopById(parseInt(shopId));
-      if (shop === null) {
+      if (shop === 404) {
         setErrorInput({
           styles: { display: "block" },
           message: "There is no shop with this ID",
@@ -226,8 +227,9 @@ export async function validateShopId(
 
 export async function validateUserId(
   userId: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void,
+  axiosInstance: AxiosInstance
 ): Promise<boolean> {
   let isValid = true;
   if (!RegularExpressions.Guid.test(userId)) {
@@ -238,8 +240,8 @@ export async function validateUserId(
     isValid = false;
   } else {
     try {
-      const user = await getCustomerById(userId, true);
-      if (user === null) {
+      const user = await getCustomerById(userId, axiosInstance);
+      if (user === 404) {
         setErrorInput({
           styles: { display: "block" },
           message: "There is no user with this ID",

@@ -1,4 +1,4 @@
-export const BASE_API_URL = "http://localhost:5000/api";
+export const BASE_API_URL = "https://localhost:5500/api";
 
 export const COMPLETED_ORDER_STATUS = "Виконано";
 
@@ -47,3 +47,5 @@ export const Roles = {
 export const AccessTokenKey = "accessToken";
 
 export const ShoppingCartKey = "shoppingCart";
+
+export const UserIdKey = "userId";

@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { addCategory } from "../../../repositories/productRepository";
-import { ErrorInputProp } from "../../../helpers/Interfaces";
+import { ErrorInput } from "../../../helpers/Interfaces";
 import { validateNameCreate } from "../../../validation/categoryValidation";
+import useAuthAxios from "../../../hooks/useAuthAxios";
+import { addCategory } from "../../../repositories/productCategoryRepository";
 
 export default function CreateCategory() {
+  const authAxios = useAuthAxios();
   const [name, setName] = useState<string>("");
-  const [formErrorInput, setFormErrorInput] = useState<ErrorInputProp>({
+  const [formErrorInput, setFormErrorInput] = useState<ErrorInput>({
     styles: { visibility: "hidden", marginTop: 0 },
     message: "Incorrect data",
   });
-  const [nameErrorInput, setNameErrorInput] = useState<ErrorInputProp>({
+  const [nameErrorInput, setNameErrorInput] = useState<ErrorInput>({
     styles: {
       display: "none",
     },
@@ -40,9 +42,9 @@ export default function CreateCategory() {
   const handleCreateClick = () => {
     addCategory({
       name: name,
-    })
+    }, authAxios)
       .then((addedCategory) => {
-        if (addedCategory !== null) {
+        if (addedCategory !== 400 && addedCategory !== 401) {
           console.log(
             `Category ${addedCategory.name} was added with ID: ${addedCategory.id}`
           );

@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { CartProp } from "../../helpers/Interfaces";
+import { Cart } from "../../models/dataTransferObjects";
 import CartItem from "./CartItem";
 import {
   addItemToCart,
@@ -8,8 +8,8 @@ import {
 } from "../../repositories/cartManagement";
 
 interface Props {
-  cart: CartProp;
-  setCart: (cartProp: CartProp) => void;
+  cart: Cart;
+  setCart: (cart: Cart) => void;
 }
 
 export default function CartContainer({ cart, setCart }: Readonly<Props>) {
@@ -35,7 +35,7 @@ export default function CartContainer({ cart, setCart }: Readonly<Props>) {
     removeLineFromCart(itemId)
       .then((cart) => {
         setCart(cart);
-        console.log("Line was removed from the cart in Cart.tsx");
+        console.log("Line was removed from the cart");
       })
       .catch((error) => console.error(error));
   };

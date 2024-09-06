@@ -1,10 +1,10 @@
-import { ErrorInputProp } from "../helpers/Interfaces";
+import { ErrorInput } from "../helpers/Interfaces";
 import { RegularExpressions } from "../helpers/constants";
 
 export function validateUserName(
   userName: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): boolean {
   let isValid = true;
   if (userName === null || userName === "") {
@@ -30,8 +30,8 @@ export function validateUserName(
 
 export function validatePassword(
   password: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): boolean {
   let isValid = true;
   if (password === null || password === "") {

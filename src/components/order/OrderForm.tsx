@@ -1,12 +1,11 @@
 import { ReactNode, useState } from "react";
-import { ContextState, useMyContext } from "../../hooks/hooks";
 import { Link } from "react-router-dom";
 import OrderProductsContainer from "./OrderProductsContainer";
 import {
   addDeliveryOrder,
   addTakeawayOrder,
 } from "../../repositories/orderRepository";
-import { ErrorInputProp, OrderProp } from "../../helpers/Interfaces";
+import { ErrorInput } from "../../helpers/Interfaces";
 import {
   validateDeliveryAddress,
   validateEmail,
@@ -14,6 +13,11 @@ import {
   validatePaymentType,
   validatePhoneNumber,
 } from "../../validation/orderFormValidation";
+import useAuth from "../../hooks/useAuth";
+import { Order } from "../../models/dataTransferObjects";
+import { AddOrderLineWithOrderRequest } from "../../models/requests";
+import { clearCart } from "../../repositories/cartManagement";
+import useRootContext from "../../hooks/useRootContext";
 
 interface ShopAddress {
   id: number;
@@ -21,10 +25,9 @@ interface ShopAddress {
 }
 
 export default function OrderForm() {
-  const contextState: ContextState = useMyContext();
-  const cart = contextState.cartProp;
-  const user = contextState.authUserProp;
-  const shops = contextState.shopsProp;
+  const { cart, setCart, shops } = useRootContext();
+  const { auth } = useAuth();
+  const user = auth?.user;
   const shopAddresses = shops.map((shop) => {
     const stringAddress = `${shop.street} ${shop.building}`;
     const shopAddress: ShopAddress = { id: shop.id, address: stringAddress };
@@ -34,36 +37,36 @@ export default function OrderForm() {
   const [isTakeawayActive, setIsTakeawayActive] = useState(true);
   const [isDeliveryActive, setIsDeliveryActive] = useState(false);
 
-  const [customerName, setCustomerName] = useState(user.firstName);
-  const [customerPhone, setCustomerPhone] = useState(user.phoneNumber);
-  const [customerEmail, setCustomerEmail] = useState(user.email);
+  const [customerName, setCustomerName] = useState(user?.firstName ?? "");
+  const [customerPhone, setCustomerPhone] = useState(user?.phoneNumber ?? "");
+  const [customerEmail, setCustomerEmail] = useState(user?.email ?? "");
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [shopAddress, setShopAddress] = useState("");
   const [paymentType, setPaymentType] = useState("");
   const [orderResult, setOrderResult] = useState<string | null>(null);
-  const [order, setOrder] = useState<OrderProp | null>(null);
-  const [formErrorInput, setFormErrorInput] = useState<ErrorInputProp>({
+  const [order, setOrder] = useState<Order | null>(null);
+  const [formErrorInput, setFormErrorInput] = useState<ErrorInput>({
     styles: { visibility: "hidden", marginTop: 0 },
     message: "Введені некоректні дані",
   });
   const [firstNameErrorInput, setFirstNameErrorInput] =
-    useState<ErrorInputProp>({
+    useState<ErrorInput>({
       styles: { display: "none" },
       message: "Введене некоректне ім'я",
     });
-  const [phoneErrorInput, setPhoneErrorInput] = useState<ErrorInputProp>({
+  const [phoneErrorInput, setPhoneErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Введений некоректний номер телефону",
   });
-  const [emailErrorInput, setEmailErrorInput] = useState<ErrorInputProp>({
+  const [emailErrorInput, setEmailErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Введена некоректна електронна пошта",
   });
-  const [addressErrorInput, setAddressErrorInput] = useState<ErrorInputProp>({
+  const [addressErrorInput, setAddressErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Введена некоректна адреса доставки",
   });
-  const [paymentErrorInput, setPaymentErrorInput] = useState<ErrorInputProp>({
+  const [paymentErrorInput, setPaymentErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Обраний некоректний тип оплати",
   });
@@ -121,19 +124,23 @@ export default function OrderForm() {
         }));
         return;
       }
+      const orderLines: AddOrderLineWithOrderRequest[] = [];
+      cart.lines.forEach(line => (orderLines.push({ productId: line.product.id, quantity: line.quantity })));
       addTakeawayOrder({
         customerName: customerName,
         phoneNumber: customerPhone,
         email: customerEmail,
         shopId: orderShop!.id,
         paymentType: paymentType,
-        userId: user.id !== "" ? user.id : null,
+        userId: user ? user.id : null,
+        orderLines: orderLines
       })
         .then((order) => {
-          if (order !== null) {
+          if (order !== 400) {
             setOrderResult("successful");
             setOrder(order);
-            contextState.setCartProp({ totalCartPrice: 0, lines: [] });
+            clearCart();
+            setCart({ totalCartPrice: 0, lines: [] });
           } else {
             setFormErrorInput((prevData) => ({
               ...prevData,
@@ -146,19 +153,23 @@ export default function OrderForm() {
           setOrderResult("unsuccessful");
         });
     } else {
+      const orderLines: AddOrderLineWithOrderRequest[] = [];
+      cart.lines.forEach(line => (orderLines.push({ productId: line.product.id, quantity: line.quantity })));
       addDeliveryOrder({
         customerName: customerName,
         phoneNumber: customerPhone,
         email: customerEmail,
         deliveryAddress: deliveryAddress,
         paymentType: paymentType,
-        userId: user.id !== "" ? user.id : null,
+        userId: user ? user.id : null,
+        orderLines: orderLines
       })
         .then((order) => {
-          if (order !== null) {
+          if (order !== 400) {
             setOrderResult("successful");
             setOrder(order);
-            contextState.setCartProp({ totalCartPrice: 0, lines: [] });
+            clearCart();
+            setCart({ totalCartPrice: 0, lines: [] });
           } else {
             setFormErrorInput((prevData) => ({
               ...prevData,

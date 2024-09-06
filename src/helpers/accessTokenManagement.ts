@@ -8,6 +8,6 @@ export function storeAccessToken(token: string) {
   localStorage.setItem(AccessTokenKey, token);
 }
 
-export function removeSecurityToken() {
+export function removeAccessToken() {
   localStorage.removeItem(AccessTokenKey);
 }

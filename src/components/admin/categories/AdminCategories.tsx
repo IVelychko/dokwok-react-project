@@ -1,21 +1,18 @@
 import { Link, useLoaderData } from "react-router-dom";
-import { ProductCategoryDataProp } from "../../../helpers/Interfaces";
+import { ProductCategory } from "../../../models/dataTransferObjects";
 import { ReactNode, useState } from "react";
-import {
-  deleteCategory,
-  fetchProductCategoryData,
-} from "../../../repositories/productRepository";
+import { deleteCategory, getAllProductCategories } from "../../../repositories/productCategoryRepository";
+import useAuthAxios from "../../../hooks/useAuthAxios";
 
 export default function AdminCategories() {
-  const categoryData: ProductCategoryDataProp[] =
-    useLoaderData() as ProductCategoryDataProp[];
-  const [categories, setCategories] =
-    useState<ProductCategoryDataProp[]>(categoryData);
+  const authAxios = useAuthAxios();
+  const categoryData: ProductCategory[] = useLoaderData() as ProductCategory[];
+  const [categories, setCategories] = useState<ProductCategory[]>(categoryData);
   const categoryRows: ReactNode[] = [];
   const handleDeleteClick = (id: number) => {
-    deleteCategory(id)
+    deleteCategory(id, authAxios)
       .then(() => {
-        fetchProductCategoryData()
+        getAllProductCategories()
           .then((freshCategories) => {
             setCategories(freshCategories);
           })

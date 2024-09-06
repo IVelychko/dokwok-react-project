@@ -1,9 +1,8 @@
 import { Link, useLoaderData } from "react-router-dom";
-import { ProductCategoryDataProp } from "../../../helpers/Interfaces";
+import { ProductCategory } from "../../../models/dataTransferObjects";
 
 export default function CategoryDetails() {
-  const category: ProductCategoryDataProp =
-    useLoaderData() as ProductCategoryDataProp;
+  const category: ProductCategory = useLoaderData() as ProductCategory;
   return (
     <div className="col">
       <h3 className="bg-info text-white text-center p-1">Details</h3>

@@ -1,14 +1,12 @@
-import {
-  fetchProductCategory,
-  isProductNameTaken,
-} from "../repositories/productRepository";
-import { ErrorInputProp } from "../helpers/Interfaces";
+import { isProductNameTaken } from "../repositories/productRepository";
+import { ErrorInput } from "../helpers/Interfaces";
 import { RegularExpressions } from "../helpers/constants";
+import { getProductCategory } from "../repositories/productCategoryRepository";
 
 export async function validateNameCreate(
   name: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): Promise<boolean> {
   let isValid = true;
   if (name === null || name === "") {
@@ -26,7 +24,9 @@ export async function validateNameCreate(
   } else {
     try {
       const checker = await isProductNameTaken(name);
-      if (checker.isTaken) {
+      if (checker === 400) {
+        throw new Error("Bad Request");
+      } else if (checker.isTaken) {
         setErrorInput({
           styles: { display: "block" },
           message: "The entered name is already taken",
@@ -48,8 +48,8 @@ export async function validateNameCreate(
 export async function validateNameEdit(
   currentProductName: string,
   name: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): Promise<boolean> {
   let isValid = true;
   if (name === null || name === "") {
@@ -68,7 +68,9 @@ export async function validateNameEdit(
     try {
       if (currentProductName !== name) {
         const checker = await isProductNameTaken(name);
-        if (checker.isTaken) {
+        if (checker === 400) {
+          throw new Error("Bad Request");
+        } else if (checker.isTaken) {
           setErrorInput({
             styles: { display: "block" },
             message: "The entered name is already taken",
@@ -95,8 +97,8 @@ export async function validateNameEdit(
 
 export function validateDescription(
   description: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): boolean {
   let isValid = true;
   if (description === null || description === "") {
@@ -122,8 +124,8 @@ export function validateDescription(
 
 export async function validateCategoryId(
   categoryId: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): Promise<boolean> {
   let isValid = true;
   if (isNaN(parseInt(categoryId))) {
@@ -140,8 +142,8 @@ export async function validateCategoryId(
     isValid = false;
   } else {
     try {
-      const category = await fetchProductCategory(parseInt(categoryId));
-      if (category === null) {
+      const category = await getProductCategory(parseInt(categoryId));
+      if (category === 404) {
         setErrorInput({
           styles: { display: "block" },
           message: "There is no category with this ID",
@@ -162,8 +164,8 @@ export async function validateCategoryId(
 
 export function validatePrice(
   price: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): boolean {
   let isValid = true;
   if (isNaN(parseFloat(price))) {
@@ -189,8 +191,8 @@ export function validatePrice(
 
 export function validateWeight(
   weight: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): boolean {
   let isValid = true;
   if (isNaN(parseFloat(weight))) {
@@ -216,8 +218,8 @@ export function validateWeight(
 
 export function validateMeasurementUnit(
   measurementUnit: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): boolean {
   let isValid = true;
   if (measurementUnit === null || measurementUnit === "") {

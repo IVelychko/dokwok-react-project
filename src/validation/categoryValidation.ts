@@ -1,11 +1,11 @@
-import { isCategoryNameTaken } from "../repositories/productRepository";
-import { ErrorInputProp } from "../helpers/Interfaces";
+import { isCategoryNameTaken } from "../repositories/productCategoryRepository";
+import { ErrorInput } from "../helpers/Interfaces";
 import { RegularExpressions } from "../helpers/constants";
 
 export async function validateNameCreate(
   name: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): Promise<boolean> {
   let isValid = true;
   if (name === null || name === "") {
@@ -23,7 +23,9 @@ export async function validateNameCreate(
   } else {
     try {
       const checker = await isCategoryNameTaken(name);
-      if (checker.isTaken) {
+      if (checker === 400) {
+        throw new Error("Bad Request");
+      } else if (checker.isTaken) {
         setErrorInput({
           styles: { display: "block" },
           message: "The entered name is already taken",
@@ -45,8 +47,8 @@ export async function validateNameCreate(
 export async function validateNameEdit(
   currentCategoryName: string,
   name: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): Promise<boolean> {
   let isValid = true;
   if (name === null || name === "") {
@@ -65,7 +67,9 @@ export async function validateNameEdit(
     try {
       if (currentCategoryName !== name) {
         const checker = await isCategoryNameTaken(name);
-        if (checker.isTaken) {
+        if (checker === 400) {
+          throw new Error("Bad Request");
+        } else if (checker.isTaken) {
           setErrorInput({
             styles: { display: "block" },
             message: "The entered name is already taken",

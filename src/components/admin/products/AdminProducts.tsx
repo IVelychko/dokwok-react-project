@@ -1,17 +1,19 @@
 import { Link, useLoaderData } from "react-router-dom";
-import { ProductDataProp } from "../../../helpers/Interfaces";
+import { Product } from "../../../models/dataTransferObjects";
 import { ReactNode, useState } from "react";
 import {
   deleteProduct,
   getAllProducts,
 } from "../../../repositories/productRepository";
+import useAuthAxios from "../../../hooks/useAuthAxios";
 
 export default function AdminProducts() {
-  const productData: ProductDataProp[] = useLoaderData() as ProductDataProp[];
-  const [products, setProducts] = useState<ProductDataProp[]>(productData);
+  const authAxios = useAuthAxios();
+  const productData: Product[] = useLoaderData() as Product[];
+  const [products, setProducts] = useState<Product[]>(productData);
   const productRows: ReactNode[] = [];
   const handleDeleteClick = (id: number) => {
-    deleteProduct(id)
+    deleteProduct(id, authAxios)
       .then(() => {
         getAllProducts(null)
           .then((freshProducts) => {

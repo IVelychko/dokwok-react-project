@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ErrorInputProp, RegisterUserProp } from "../../../helpers/Interfaces";
+import { ErrorInput } from "../../../helpers/Interfaces";
+import { AddUserRequest } from "../../../models/requests";
 import { addUser } from "../../../repositories/userRepository";
 import {
   validateEmailCreate,
@@ -9,37 +10,39 @@ import {
   validatePhoneNumberCreate,
   validateUserNameCreate,
 } from "../../../validation/userValidation";
+import useAuthAxios from "../../../hooks/useAuthAxios";
 
 export default function CreateUser() {
-  const [formData, setFormData] = useState<RegisterUserProp>({
+  const authAxios = useAuthAxios();
+  const [formData, setFormData] = useState<AddUserRequest>({
     firstName: "",
     userName: "",
     email: "",
     phoneNumber: "",
     password: "",
   });
-  const [formErrorInput, setFormErrorInput] = useState<ErrorInputProp>({
+  const [formErrorInput, setFormErrorInput] = useState<ErrorInput>({
     styles: { visibility: "hidden", marginTop: 0 },
     message: "Incorrect data",
   });
   const [firstNameErrorInput, setFirstNameErrorInput] =
-    useState<ErrorInputProp>({
+    useState<ErrorInput>({
       styles: { display: "none" },
       message: "Enter a correct first name",
     });
-  const [userNameErrorInput, setUserNameErrorInput] = useState<ErrorInputProp>({
+  const [userNameErrorInput, setUserNameErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Enter a correct user name",
   });
-  const [emailErrorInput, setEmailErrorInput] = useState<ErrorInputProp>({
+  const [emailErrorInput, setEmailErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Enter a correct email",
   });
-  const [phoneErrorInput, setPhoneErrorInput] = useState<ErrorInputProp>({
+  const [phoneErrorInput, setPhoneErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Enter a correct phone number",
   });
-  const [passwordErrorInput, setPasswordErrorInput] = useState<ErrorInputProp>({
+  const [passwordErrorInput, setPasswordErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Enter a correct password",
   });
@@ -97,9 +100,9 @@ export default function CreateUser() {
   };
 
   const handleCreateClick = () => {
-    addUser(formData)
+    addUser(formData, authAxios)
       .then((addedUser) => {
-        if (addedUser !== null) {
+        if (addedUser !== 400 && addedUser !== 401) {
           console.log(
             `User ${addedUser.userName} was added with ID: ${addedUser.id}`
           );

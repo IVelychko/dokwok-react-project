@@ -1,10 +1,10 @@
-import { ErrorInputProp } from "../helpers/Interfaces";
+import { ErrorInput } from "../helpers/Interfaces";
 import { RegularExpressions } from "../helpers/constants";
 
 export function validateFirstName(
   firstName: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): boolean {
   let isValid = true;
   if (firstName === null || firstName === "") {
@@ -30,8 +30,8 @@ export function validateFirstName(
 
 export function validatePhoneNumber(
   phoneNumber: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): boolean {
   let isValid = true;
   if (phoneNumber === null || phoneNumber === "") {
@@ -57,8 +57,8 @@ export function validatePhoneNumber(
 
 export function validateEmail(
   email: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): boolean {
   let isValid = true;
   if (email === null || email === "") {
@@ -84,8 +84,8 @@ export function validateEmail(
 
 export function validateDeliveryAddress(
   deliveryAddress: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): boolean {
   let isValid = true;
   if (deliveryAddress === null || deliveryAddress === "") {
@@ -111,8 +111,8 @@ export function validateDeliveryAddress(
 
 export function validatePaymentType(
   paymentType: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): boolean {
   let isValid = true;
   if (paymentType === null || paymentType === "") {

@@ -1,12 +1,14 @@
-import { fetchOrderLineByOrderAndProductIds } from "../repositories/orderRepository";
+import { getOrderLineByOrderAndProductIds } from "../repositories/orderLineRepository";
 import { getProduct } from "../repositories/productRepository";
-import { ErrorInputProp } from "../helpers/Interfaces";
+import { ErrorInput } from "../helpers/Interfaces";
+import { AxiosInstance } from "axios";
 
 export async function validateProductIdCreate(
   orderId: number,
   productId: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void,
+  axiosInstance: AxiosInstance
 ): Promise<boolean> {
   let isValid = true;
   if (isNaN(parseInt(productId))) {
@@ -24,18 +26,19 @@ export async function validateProductIdCreate(
   } else {
     try {
       const product = await getProduct(parseInt(productId));
-      if (product === null) {
+      if (product === 404) {
         setErrorInput({
           styles: { display: "block" },
           message: "There is no product with this ID",
         });
         return false;
       }
-      const orderLine = await fetchOrderLineByOrderAndProductIds(
+      const orderLine = await getOrderLineByOrderAndProductIds(
         orderId,
-        parseInt(productId)
+        parseInt(productId),
+        axiosInstance
       );
-      if (orderLine !== null) {
+      if (orderLine !== 404) {
         setErrorInput({
           styles: { display: "block" },
           message:
@@ -59,8 +62,9 @@ export async function validateProductIdEdit(
   orderId: number,
   currentProductId: number,
   productId: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void,
+  axiosInstance: AxiosInstance
 ): Promise<boolean> {
   let isValid = true;
   if (isNaN(parseInt(productId))) {
@@ -79,18 +83,19 @@ export async function validateProductIdEdit(
     try {
       if (currentProductId !== parseInt(productId)) {
         const product = await getProduct(parseInt(productId));
-        if (product === null) {
+        if (product === 404) {
           setErrorInput({
             styles: { display: "block" },
             message: "There is no product with this ID",
           });
           return false;
         }
-        const orderLine = await fetchOrderLineByOrderAndProductIds(
+        const orderLine = await getOrderLineByOrderAndProductIds(
           orderId,
-          parseInt(productId)
+          parseInt(productId),
+          axiosInstance
         );
-        if (orderLine !== null) {
+        if (orderLine !== 404) {
           setErrorInput({
             styles: { display: "block" },
             message:
@@ -118,8 +123,8 @@ export async function validateProductIdEdit(
 
 export function validateQuantity(
   quantity: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): boolean {
   let isValid = true;
   if (isNaN(parseInt(quantity))) {

@@ -1,26 +1,28 @@
 import { useState } from "react";
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
-import { addOrderLine } from "../../../repositories/orderRepository";
-import { ErrorInputProp } from "../../../helpers/Interfaces";
+import { ErrorInput } from "../../../helpers/Interfaces";
 import {
   validateProductIdCreate,
   validateQuantity,
 } from "../../../validation/orderLineValidation";
+import useAuthAxios from "../../../hooks/useAuthAxios";
+import { addOrderLine } from "../../../repositories/orderLineRepository";
 
 export default function CreateOrderLine() {
+  const authAxios = useAuthAxios();
   const loadedOrderId: number = useLoaderData() as number;
   const [productId, setProductId] = useState<string>("");
   const [quantity, setQuantity] = useState<string>("");
-  const [formErrorInput, setFormErrorInput] = useState<ErrorInputProp>({
+  const [formErrorInput, setFormErrorInput] = useState<ErrorInput>({
     styles: { visibility: "hidden", marginTop: 0 },
     message: "Incorrect data",
   });
   const [productIdErrorInput, setProductIdErrorInput] =
-    useState<ErrorInputProp>({
+    useState<ErrorInput>({
       styles: { display: "none" },
       message: "Enter a correct product ID",
     });
-  const [quantityErrorInput, setQuantityErrorInput] = useState<ErrorInputProp>({
+  const [quantityErrorInput, setQuantityErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Enter a correct quantity",
   });
@@ -37,7 +39,8 @@ export default function CreateOrderLine() {
         loadedOrderId,
         productId,
         productIdErrorInput,
-        setProductIdErrorInput
+        setProductIdErrorInput,
+        authAxios
       )
     );
     validationResults.push(
@@ -58,9 +61,9 @@ export default function CreateOrderLine() {
       orderId: loadedOrderId,
       productId: parseInt(productId),
       quantity: parseInt(quantity),
-    })
+    }, authAxios)
       .then((addedOrderLine) => {
-        if (addedOrderLine !== null) {
+        if (addedOrderLine !== 400 && addedOrderLine !== 401) {
           console.log(`Order line was added with ID: ${addedOrderLine.id}`);
           navigate(`/admin/orders/details/${loadedOrderId}`);
         } else {

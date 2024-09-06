@@ -1,10 +1,10 @@
 import { ReactNode } from "react";
-import { OrderProp, ShopProp } from "../../helpers/Interfaces";
+import { Order, Shop } from "../../models/dataTransferObjects";
 import OrderHistoryItem from "./OrderHistoryItem";
 
 interface Props {
-  userOrders: OrderProp[];
-  shops: ShopProp[];
+  userOrders: Order[];
+  shops: Shop[];
 }
 
 export default function OrderHistoryContainer({
@@ -13,7 +13,7 @@ export default function OrderHistoryContainer({
 }: Readonly<Props>) {
   const orderHistoryItems: ReactNode[] = [];
   userOrders.forEach((order) => {
-    let shop: ShopProp | null = null;
+    let shop: Shop | null = null;
     if (order.shopId !== null) {
       shop = shops.find((shop) => shop.id === order.shopId) ?? null;
     }

@@ -1,24 +1,23 @@
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
-import {
-  ErrorInputProp,
-  ProductCategoryDataProp,
-} from "../../../helpers/Interfaces";
+import { ErrorInput } from "../../../helpers/Interfaces";
 import { useState } from "react";
-import { updateCategory } from "../../../repositories/productRepository";
 import { validateNameEdit } from "../../../validation/categoryValidation";
+import { ProductCategory } from "../../../models/dataTransferObjects";
+import useAuthAxios from "../../../hooks/useAuthAxios";
+import { updateCategory } from "../../../repositories/productCategoryRepository";
 
 export default function EditCategory() {
-  const loadedCategory: ProductCategoryDataProp =
-    useLoaderData() as ProductCategoryDataProp;
+  const authAxios = useAuthAxios();
+  const loadedCategory: ProductCategory = useLoaderData() as ProductCategory;
   const [name, setName] = useState<string>(loadedCategory.name);
-  const [formErrorInput, setFormErrorInput] = useState<ErrorInputProp>({
+  const [formErrorInput, setFormErrorInput] = useState<ErrorInput>({
     styles: {
       visibility: "hidden",
       marginTop: 0,
     },
     message: "Incorrect data",
   });
-  const [nameErrorInput, setNameErrorInput] = useState<ErrorInputProp>({
+  const [nameErrorInput, setNameErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Enter a correct name",
   });
@@ -52,9 +51,9 @@ export default function EditCategory() {
     updateCategory({
       id: loadedCategory.id,
       name: name,
-    })
+    }, authAxios)
       .then((updatedCategory) => {
-        if (updatedCategory !== null) {
+        if (updatedCategory !== 400 && updatedCategory !== 401 && updatedCategory !== 404) {
           console.log(
             `Category ${updatedCategory.name} with ID: ${updatedCategory.id} was updated`
           );

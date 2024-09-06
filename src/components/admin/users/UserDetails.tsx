@@ -1,8 +1,8 @@
 import { Link, useLoaderData } from "react-router-dom";
-import { AuthUserProp } from "../../../helpers/Interfaces";
+import { User } from "../../../models/dataTransferObjects";
 
 export default function UserDetails() {
-  const user: AuthUserProp = useLoaderData() as AuthUserProp;
+  const user: User = useLoaderData() as User;
   return (
     <div className="col">
       <h3 className="bg-info text-white text-center p-1">Details</h3>

@@ -1,26 +1,31 @@
 import { useState } from "react";
-import { ErrorInputProp, LoginUserProp } from "../../helpers/Interfaces";
+import { LoginAdminRequest } from "../../models/requests";
+import { ErrorInput } from "../../helpers/Interfaces";
 import { useNavigate } from "react-router-dom";
 import { adminLogin } from "../../repositories/authRepository";
 import {
   validatePassword,
   validateUserName,
 } from "../../validation/userLoginValidation";
+import { storeAccessToken } from "../../helpers/accessTokenManagement";
+import useAuth from "../../hooks/useAuth";
+import { storeUserId } from "../../helpers/userIdManagement";
 
 export default function AdminLogin() {
-  const [formData, setFormData] = useState<LoginUserProp>({
+  const { setAuth } = useAuth();
+  const [formData, setFormData] = useState<LoginAdminRequest>({
     userName: "",
     password: "",
   });
-  const [formErrorInput, setFormErrorInput] = useState<ErrorInputProp>({
+  const [formErrorInput, setFormErrorInput] = useState<ErrorInput>({
     styles: { visibility: "hidden" },
     message: "Введені некоректні дані",
   });
-  const [userNameErrorInput, setUserNameErrorInput] = useState<ErrorInputProp>({
+  const [userNameErrorInput, setUserNameErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Введений некоректний логін",
   });
-  const [passwordErrorInput, setPasswordErrorInput] = useState<ErrorInputProp>({
+  const [passwordErrorInput, setPasswordErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Введений некоректний пароль",
   });
@@ -59,11 +64,14 @@ export default function AdminLogin() {
   const handleLoginClick = () => {
     adminLogin(formData)
       .then((user) => {
-        if (user !== null) {
+        if (user !== 400 && user !== 404) {
           setFormErrorInput((prevData) => ({
             ...prevData,
             styles: { visibility: "hidden" },
           }));
+          setAuth({ user: user });
+          storeAccessToken(user.token);
+          storeUserId(user.id);
           navigate("/admin", { replace: true });
         } else {
           setFormErrorInput((prevData) => ({

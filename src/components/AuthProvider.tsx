@@ -1,11 +1,11 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useMemo, useState } from "react";
 import { AuthData } from "../models/dataTransferObjects";
 
-export const AuthContext = createContext<AuthContextState>({ auth: null, setAuth: null });
+export const AuthContext = createContext<AuthContextState>({ auth: null, setAuth: _ => {} });
 
 export interface AuthContextState {
   auth: AuthData | null;
-  setAuth: ((auth: AuthData | null) => void) | null;
+  setAuth: ((auth: AuthData | null) => void);
 }
 
 interface Props {
@@ -14,8 +14,9 @@ interface Props {
 
 export default function AuthProvider({ children }: Readonly<Props>) {
     const [auth, setAuth] = useState<AuthData | null>(null);
+    const authContextStateMemo = useMemo(() => ({ auth: auth, setAuth: setAuth }), [auth, setAuth])
 
-    return <AuthContext.Provider value={{ auth: auth, setAuth: setAuth }}>
+    return <AuthContext.Provider value={authContextStateMemo}>
         {children}
     </AuthContext.Provider>
 }

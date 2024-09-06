@@ -1,7 +1,7 @@
-import { CartLineProp } from "../../helpers/Interfaces";
+import { CartLine } from "../../models/dataTransferObjects";
 
 interface Props {
-  cartLine: CartLineProp;
+  cartLine: CartLine;
   onRemoveLine: (itemId: number) => void;
   onRemoveProduct: (itemId: number, quantity: number) => void;
   onAddProduct: (itemId: number, quantity: number) => void;

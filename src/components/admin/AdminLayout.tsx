@@ -1,10 +1,22 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { logOut } from "../../repositories/authRepository";
+import { removeAccessToken } from "../../helpers/accessTokenManagement";
+import { removeUserId } from "../../helpers/userIdManagement";
+import useAuth from "../../hooks/useAuth";
 export default function AdminLayout() {
+  const { setAuth } = useAuth();
   const navigate = useNavigate();
   const handleLogOutClick = () => {
     logOut()
-      .then(() => navigate("/admin/login"))
+      .then((response) => {
+        if (response === 400) {
+          throw new Error("Bad Request");
+        }
+        removeAccessToken();
+        removeUserId();
+        setAuth(null);
+        navigate("/admin/login");
+      })
       .catch((error) => console.error(error));
   };
 

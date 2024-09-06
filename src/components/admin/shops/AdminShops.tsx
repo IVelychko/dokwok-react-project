@@ -1,14 +1,16 @@
 import { Link, useLoaderData } from "react-router-dom";
-import { ShopProp } from "../../../helpers/Interfaces";
+import { Shop } from "../../../models/dataTransferObjects";
 import { ReactNode, useState } from "react";
 import { deleteShop, getAllShops } from "../../../repositories/shopRepository";
+import useAuthAxios from "../../../hooks/useAuthAxios";
 
 export default function AdminShops() {
-  const shopData: ShopProp[] = useLoaderData() as ShopProp[];
-  const [shops, setShops] = useState<ShopProp[]>(shopData);
+  const authAxios = useAuthAxios();
+  const shopData: Shop[] = useLoaderData() as Shop[];
+  const [shops, setShops] = useState<Shop[]>(shopData);
   const shopRows: ReactNode[] = [];
   const handleDeleteClick = (id: number) => {
-    deleteShop(id)
+    deleteShop(id, authAxios)
       .then(() => {
         getAllShops()
           .then((freshShops) => {

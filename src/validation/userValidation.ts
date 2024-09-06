@@ -2,14 +2,14 @@ import {
   isEmailTaken,
   isPhoneNumberTaken,
   isUserNameTaken,
-} from "../repositories/authRepository";
-import { ErrorInputProp } from "../helpers/Interfaces";
+} from "../repositories/userRepository";
+import { ErrorInput } from "../helpers/Interfaces";
 import { RegularExpressions } from "../helpers/constants";
 
 export async function validateUserNameCreate(
   userName: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): Promise<boolean> {
   let isValid = true;
   if (userName === null || userName === "") {
@@ -27,7 +27,9 @@ export async function validateUserNameCreate(
   } else {
     try {
       const checker = await isUserNameTaken(userName);
-      if (checker.isTaken) {
+      if (checker === 400) {
+        throw new Error("Bad Request");
+      } else if (checker.isTaken) {
         setErrorInput({
           styles: { display: "block" },
           message: "The entered user name is already taken",
@@ -49,8 +51,8 @@ export async function validateUserNameCreate(
 export async function validateUserNameEdit(
   currentUserName: string,
   userName: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): Promise<boolean> {
   let isValid = true;
   if (userName === null || userName === "") {
@@ -69,7 +71,9 @@ export async function validateUserNameEdit(
     try {
       if (currentUserName !== userName) {
         const checker = await isUserNameTaken(userName);
-        if (checker.isTaken) {
+        if (checker === 400) {
+          throw new Error("Bad Request");
+        } else if (checker.isTaken) {
           setErrorInput({
             styles: { display: "block" },
             message: "The entered user name is already taken",
@@ -96,8 +100,8 @@ export async function validateUserNameEdit(
 
 export function validatePassword(
   password: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): boolean {
   let isValid = true;
   if (password === null || password === "") {
@@ -123,8 +127,8 @@ export function validatePassword(
 
 export function validateFirstName(
   firstName: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): boolean {
   let isValid = true;
   if (firstName === null || firstName === "") {
@@ -150,8 +154,8 @@ export function validateFirstName(
 
 export async function validatePhoneNumberCreate(
   phoneNumber: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): Promise<boolean> {
   let isValid = true;
   if (phoneNumber === null || phoneNumber === "") {
@@ -169,7 +173,9 @@ export async function validatePhoneNumberCreate(
   } else {
     try {
       const checker = await isPhoneNumberTaken(phoneNumber);
-      if (checker.isTaken) {
+      if (checker === 400) {
+        throw new Error("Bad Request");
+      } else if (checker.isTaken) {
         setErrorInput({
           styles: { display: "block" },
           message: "The entered phone number is already taken",
@@ -191,8 +197,8 @@ export async function validatePhoneNumberCreate(
 export async function validatePhoneNumberEdit(
   currentPhoneNumber: string,
   phoneNumber: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): Promise<boolean> {
   let isValid = true;
   if (phoneNumber === null || phoneNumber === "") {
@@ -211,7 +217,9 @@ export async function validatePhoneNumberEdit(
     try {
       if (currentPhoneNumber !== phoneNumber) {
         const checker = await isPhoneNumberTaken(phoneNumber);
-        if (checker.isTaken) {
+        if (checker === 400) {
+          throw new Error("Bad Request");
+        } else if (checker.isTaken) {
           setErrorInput({
             styles: { display: "block" },
             message: "The entered phone number is already taken",
@@ -238,8 +246,8 @@ export async function validatePhoneNumberEdit(
 
 export async function validateEmailCreate(
   email: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): Promise<boolean> {
   let isValid = true;
   if (email === null || email === "") {
@@ -257,7 +265,9 @@ export async function validateEmailCreate(
   } else {
     try {
       const checker = await isEmailTaken(email);
-      if (checker.isTaken) {
+      if (checker === 400) {
+        throw new Error("Bad Request");
+      } else if (checker.isTaken) {
         setErrorInput({
           styles: { display: "block" },
           message: "The entered email is already taken",
@@ -279,8 +289,8 @@ export async function validateEmailCreate(
 export async function validateEmailEdit(
   currentEmail: string,
   email: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): Promise<boolean> {
   let isValid = true;
   if (email === null || email === "") {
@@ -299,7 +309,9 @@ export async function validateEmailEdit(
     try {
       if (currentEmail !== email) {
         const checker = await isEmailTaken(email);
-        if (checker.isTaken) {
+        if (checker === 400) {
+          throw new Error("Bad Request");
+        } else if (checker.isTaken) {
           setErrorInput({
             styles: { display: "block" },
             message: "The entered email is already taken",

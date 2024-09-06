@@ -1,7 +1,7 @@
-import { CartLineProp } from "../../helpers/Interfaces";
+import { CartLine } from "../../models/dataTransferObjects";
 
 interface Props {
-  cartLine: CartLineProp;
+  cartLine: CartLine;
 }
 
 export default function OrderProductItem({ cartLine }: Readonly<Props>) {

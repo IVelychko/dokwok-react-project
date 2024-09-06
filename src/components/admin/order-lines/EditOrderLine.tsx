@@ -1,30 +1,33 @@
 import { useState } from "react";
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
-import { updateOrderLine } from "../../../repositories/orderRepository";
-import { ErrorInputProp, OrderLineProp } from "../../../helpers/Interfaces";
+import { ErrorInput } from "../../../helpers/Interfaces";
 import {
   validateProductIdEdit,
   validateQuantity,
 } from "../../../validation/orderLineValidation";
+import { OrderLine } from "../../../models/dataTransferObjects";
+import useAuthAxios from "../../../hooks/useAuthAxios";
+import { updateOrderLine } from "../../../repositories/orderLineRepository";
 
 export default function EditOrderLine() {
-  const loadedOrderLine: OrderLineProp = useLoaderData() as OrderLineProp;
+  const authAxios = useAuthAxios();
+  const loadedOrderLine: OrderLine = useLoaderData() as OrderLine;
   const [productId, setProductId] = useState<string>(
     loadedOrderLine.productId.toString()
   );
   const [quantity, setQuantity] = useState<string>(
     loadedOrderLine.quantity.toString()
   );
-  const [formErrorInput, setFormErrorInput] = useState<ErrorInputProp>({
+  const [formErrorInput, setFormErrorInput] = useState<ErrorInput>({
     styles: { visibility: "hidden", marginTop: 0 },
     message: "Incorrect data",
   });
   const [productIdErrorInput, setProductIdErrorInput] =
-    useState<ErrorInputProp>({
+    useState<ErrorInput>({
       styles: { display: "none" },
       message: "Enter a correct product ID",
     });
-  const [quantityErrorInput, setQuantityErrorInput] = useState<ErrorInputProp>({
+  const [quantityErrorInput, setQuantityErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Enter a correct quantity",
   });
@@ -42,7 +45,8 @@ export default function EditOrderLine() {
         loadedOrderLine.productId,
         productId,
         productIdErrorInput,
-        setProductIdErrorInput
+        setProductIdErrorInput,
+        authAxios
       )
     );
     validationResults.push(
@@ -64,9 +68,9 @@ export default function EditOrderLine() {
       orderId: loadedOrderLine.orderId,
       productId: parseInt(productId),
       quantity: parseInt(quantity),
-    })
+    }, authAxios)
       .then((updatedOrderLine) => {
-        if (updatedOrderLine !== null) {
+        if (updatedOrderLine !== 400 && updatedOrderLine !== 401 && updatedOrderLine !== 404) {
           console.log(`Order line was updated with ID: ${updatedOrderLine.id}`);
           navigate(`/admin/orders/details/${loadedOrderLine.orderId}`);
         } else {

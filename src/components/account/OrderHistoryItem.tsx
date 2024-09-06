@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react";
-import { OrderProp, ShopProp } from "../../helpers/Interfaces";
+import { Order, Shop } from "../../models/dataTransferObjects";
 import {
   BEINGPROCESSED_ORDER_STATUS,
   CANCELLED_ORDER_STATUS,
@@ -7,9 +7,9 @@ import {
 } from "../../helpers/constants";
 
 interface Props {
-  userOrder: OrderProp;
+  userOrder: Order;
   orderQuantity: number;
-  shop: ShopProp | null;
+  shop: Shop | null;
 }
 
 export default function OrderHistoryItem({

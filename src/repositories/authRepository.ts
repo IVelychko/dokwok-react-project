@@ -6,13 +6,12 @@ import {
   RegisterUserRequest,
 } from "../models/requests";
 import { ErrorMessages } from "../helpers/constants";
-import useRegularAxios from "../hooks/useRegularAxios";
 import { getAxiosInstance } from "./axiosConfig";
 
 export async function customerLogin(
   loginCustomerRequest: LoginCustomerRequest
 ): Promise<AuthorizedUser | 400 | 404> {
-  const axiosInstance = useRegularAxios();
+  const axiosInstance = getAxiosInstance(true);
   try {
     const response = await axiosInstance.post(
       "users/authorization/customers/login",
@@ -41,7 +40,7 @@ export async function customerLogin(
 export async function adminLogin(
   loginAdminRequest: LoginAdminRequest
 ): Promise<AuthorizedUser | 400 | 404> {
-  const axiosInstance = useRegularAxios();
+  const axiosInstance = getAxiosInstance(true);
   try {
     const response = await axiosInstance.post(
       "users/authorization/admins/login",
@@ -70,7 +69,7 @@ export async function adminLogin(
 export async function register(
   registerUserRequest: RegisterUserRequest
 ): Promise<AuthorizedUser | 400> {
-  const axiosInstance = useRegularAxios();
+  const axiosInstance = getAxiosInstance(true);
   try {
     const response = await axiosInstance.post(
       "users/authorization/register",
@@ -130,6 +129,7 @@ export async function logOut(): Promise<200 | 400> {
     if (axios.isAxiosError(error)) {
       if (error.response) {
         if (error.response.status === 400) {
+          console.log("Bad Request while logging out");
           return 400;
         } else {
           throw new Error("There was a server-side error.");

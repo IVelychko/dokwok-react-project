@@ -64,11 +64,11 @@ export interface AuthorizedUser {
   email: string;
   phoneNumber: string;
   token: string;
+  roles: string[];
 }
 
 export interface AuthData {
   user: AuthorizedUser;
-  roles: string[];
 }
 
 export interface CheckIfTaken {

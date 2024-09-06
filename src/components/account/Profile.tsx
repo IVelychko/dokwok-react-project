@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import { ContextState, useMyContext } from "../../hooks/hooks";
+import useAuth from "../../hooks/useAuth";
 
 export default function Profile() {
-  const contextState: ContextState = useMyContext();
-  const authUser = contextState.authUserProp;
+  const { auth } = useAuth();
+  const user = auth!.user;
   const navigate = useNavigate();
 
   const handleEditClick = () => {
@@ -20,13 +20,13 @@ export default function Profile() {
             <div className="profile-line-info-item">
               <div className="name-value-pair">
                 <div className="profile-line-name">Логін</div>
-                <div className="profile-line-value">{authUser.userName}</div>
+                <div className="profile-line-value">{user.userName}</div>
               </div>
             </div>
             <div style={{ marginTop: 15 }} className="profile-line-info-item">
               <div className="name-value-pair">
                 <div className="profile-line-name">Ім'я</div>
-                <div className="profile-line-value">{authUser.firstName}</div>
+                <div className="profile-line-value">{user.firstName}</div>
               </div>
             </div>
           </div>
@@ -37,7 +37,7 @@ export default function Profile() {
             <div className="profile-line-info-item">
               <div className="name-value-pair">
                 <div className="profile-line-name">Електронна пошта</div>
-                <div className="profile-line-value">{authUser.email}</div>
+                <div className="profile-line-value">{user.email}</div>
               </div>
             </div>
           </div>
@@ -48,7 +48,7 @@ export default function Profile() {
             <div className="profile-line-info-item">
               <div className="name-value-pair">
                 <div className="profile-line-name">Номер телефону</div>
-                <div className="profile-line-value">{authUser.phoneNumber}</div>
+                <div className="profile-line-value">{user.phoneNumber}</div>
               </div>
             </div>
           </div>

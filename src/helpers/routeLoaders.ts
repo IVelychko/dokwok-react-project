@@ -1,44 +1,107 @@
 import { Params, redirect } from "react-router-dom";
-import { Cart } from "../models/dataTransferObjects";
 import { Categories } from "./constants";
+import { getAllShops, getShopById } from "../repositories/shopRepository";
+import { getAllProducts, getProduct } from "../repositories/productRepository";
+import {
+  getAllProductCategories,
+  getProductCategory,
+} from "../repositories/productCategoryRepository";
+import { axiosLoader } from "../repositories/axiosConfig";
+import { getAccessToken, storeAccessToken } from "./accessTokenManagement";
+import { jwtDecode } from "jwt-decode";
+import { refreshToken } from "../repositories/authRepository";
+import { getUserId, storeUserId } from "./userIdManagement";
+import { AxiosInstance } from "axios";
+import {
+  getAllOrders,
+  getAllUserOrders,
+  getOrder,
+} from "../repositories/orderRepository";
+import {
+  getAllCustomers,
+  getCustomerById,
+} from "../repositories/userRepository";
+import { getOrderLine } from "../repositories/orderLineRepository";
 
 interface PathParameters {
   params: Params<string>;
 }
 
-export async function rootRouteLoader() {
-  let cart: Cart;
-  try {
-    cart = await fetchCart();
-  } catch (error) {
-    console.error(error);
-    return redirect("/error");
-  }
-  let user: AuthUserProp | null = null;
-  try {
-    user = await isCustomerLoggedIn();
-  } catch (error) {
-    console.error(error);
-  }
-  let shops: ShopProp[];
-  try {
-    shops = await getAllShops();
-  } catch (error) {
-    console.error(error);
-    return redirect("/error");
-  }
-  const rootLoaderData: RootLoaderData = { cart, user, shops };
-  return rootLoaderData;
+function setAxiosRequestInterceptor(axiosInstance: AxiosInstance) {
+  return axiosInstance.interceptors.request.use(
+    async (config) => {
+      if (!config.headers["Authorization"]) {
+        const jwtAccessToken = getAccessToken();
+        if (jwtAccessToken === null) {
+          throw new Error("The access token is not stored");
+        }
+        const decodedJwt = jwtDecode(jwtAccessToken);
+        const jwtExpirySecondsUnixEpoch = decodedJwt.exp ?? 0;
+        const currentSecondsUnixEpoch = Math.floor(Date.now() / 1000);
+        console.log(`Decoded exp: ${decodedJwt.exp}`);
+        console.log(`Current: ${currentSecondsUnixEpoch}`);
+        if (currentSecondsUnixEpoch > jwtExpirySecondsUnixEpoch) {
+          console.log("jwt expired");
+          const user = await refreshToken(jwtAccessToken);
+          if (user === 400) {
+            throw new Error("Bad Request");
+          }
+          storeAccessToken(user.token);
+          storeUserId(user.id);
+          config.headers["Authorization"] = `Bearer ${user.token}`;
+        } else {
+          console.log("jwt has not expired yet");
+          config.headers["Authorization"] = `Bearer ${jwtAccessToken}`;
+        }
+      }
+      return config;
+    },
+    (error) => Promise.reject(error)
+  );
 }
 
-export async function editProfileRouteLoader() {
-  try {
-    const user = await isAdminLoggedIn();
-    if (user !== null) {
-      return true;
-    } else {
-      return false;
+function setAxiosResponseInterceptor(axiosInstance: AxiosInstance) {
+  return axiosInstance.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      const prevRequest = error?.config;
+      if (error?.response?.status === 401 && !prevRequest?.sent) {
+        prevRequest.sent = true;
+        const jwtAccessToken = getAccessToken();
+        if (jwtAccessToken === null) {
+          throw new Error("The access token is not stored");
+        }
+        const user = await refreshToken(jwtAccessToken);
+        if (user === 400) {
+          throw new Error("Bad Request");
+        }
+        storeAccessToken(user.token);
+        storeUserId(user.id);
+        prevRequest.headers["Authorization"] = `Bearer ${user.token}`;
+        return axiosLoader(prevRequest);
+      }
+      return Promise.reject(error);
     }
+  );
+}
+
+function ejectAxiosRequestInterceptor(
+  axiosInstance: AxiosInstance,
+  id: number
+) {
+  axiosInstance.interceptors.request.eject(id);
+}
+
+function ejectAxiosResponseInterceptor(
+  axiosInstance: AxiosInstance,
+  id: number
+) {
+  axiosInstance.interceptors.response.eject(id);
+}
+
+export async function rootRouteLoader() {
+  try {
+    return await getAllShops();
   } catch (error) {
     console.error(error);
     return redirect("/error");
@@ -46,81 +109,48 @@ export async function editProfileRouteLoader() {
 }
 
 export async function orderHistoryRouteLoader() {
+  let requestIntercept: number | null = null;
+  let responseIntercept: number | null = null;
   try {
-    const user = await isCustomerLoggedIn();
-    if (user == null) {
-      return redirect("/login");
+    const userId = getUserId();
+    if (userId === null) {
+      throw new Error("User is not authorized");
     }
-    const userOrders = await getAllUserOrders(user.id);
+    requestIntercept = setAxiosRequestInterceptor(axiosLoader);
+    responseIntercept = setAxiosResponseInterceptor(axiosLoader);
+    const userOrders = await getAllUserOrders(userId, axiosLoader);
+    if (userOrders === 401) {
+      throw new Error("User is not authorized");
+    }
     return userOrders;
   } catch (error) {
     console.error(error);
     return redirect("/error");
-  }
-}
-
-export async function accountLayoutRouteLoader() {
-  try {
-    const user = await isCustomerLoggedIn();
-    if (user == null) {
-      return redirect("/login");
+  } finally {
+    if (requestIntercept !== null) {
+      ejectAxiosRequestInterceptor(axiosLoader, requestIntercept);
     }
-    return user;
-  } catch (error) {
-    console.error(error);
-    return redirect("/error");
+    if (responseIntercept !== null) {
+      ejectAxiosResponseInterceptor(axiosLoader, responseIntercept);
+    }
   }
 }
 
-export async function allMenuRouteLoader() {
+export async function productsRouteLoader(categoryId: number | null) {
   try {
-    const data = await getAllProducts(null);
-    console.log("Items were fetched for the main page.");
-    return data;
+    return await getAllProducts(categoryId);
   } catch (error) {
     console.error(error);
-    const emptyArray: ProductDataProp[] = [];
-    return emptyArray;
+    return [];
   }
 }
 
-export async function foodSetMenuRouteLoader() {
-  return await getAllProducts(Categories.foodSet);
-}
-
-export async function noodlesMenuRouteLoader() {
-  return await getAllProducts(Categories.noodles);
-}
-
-export async function rollsMenuRouteLoader() {
-  return await getAllProducts(Categories.roll);
-}
-
-export async function pizzaMenuRouteLoader() {
-  return await getAllProducts(Categories.pizza);
-}
-
-export async function coldBeverageMenuRouteLoader() {
-  return await getAllProducts(Categories.coldBeverage);
-}
-
-export async function adminProductsRouteLoader() {
+export async function adminProductDetailsRouteLoader({
+  params,
+}: PathParameters) {
   try {
-    const data = await getAllProducts(null);
-    console.log("Items were fetched for the admin products page.");
-    return data;
-  } catch (error) {
-    console.error(error);
-    const emptyArray: ProductDataProp[] = [];
-    return emptyArray;
-  }
-}
-
-export async function adminProductDetailsRouteLoader() {
-  try {
-    const id = params.id;
-    const data = await getProduct(parseInt(id ?? "0"));
-    if (data === null) {
+    const data = await getProduct(parseInt(params.id ?? "0"));
+    if (data === 404) {
       return redirect("/admin/error");
     }
     console.log("Items were fetched for the admin products page.");
@@ -131,12 +161,10 @@ export async function adminProductDetailsRouteLoader() {
   }
 }
 
-export async function adminEditProductRouteLoader(
-  pathParameters: PathParameters
-) {
+export async function adminEditProductRouteLoader({ params }: PathParameters) {
   try {
-    const data = await getProduct(parseInt(pathParameters.params.id ?? "0"));
-    if (data === null) {
+    const data = await getProduct(parseInt(params.id ?? "0"));
+    if (data === 404) {
       return redirect("/admin/error");
     }
     return data;
@@ -148,23 +176,21 @@ export async function adminEditProductRouteLoader(
 
 export async function adminCategoriesRouteLoader() {
   try {
-    const data = await fetchProductCategoryData();
+    const data = await getAllProductCategories();
     console.log("Items were fetched for the admin categories page.");
     return data;
   } catch (error) {
     console.error(error);
-    const emptyArray: ProductCategoryDataProp[] = [];
-    return emptyArray;
+    return [];
   }
 }
 
-export async function adminCategoryDetailsRouteLoader(
-  pathParameters: PathParameters
-) {
+export async function adminCategoryDetailsRouteLoader({
+  params,
+}: PathParameters) {
   try {
-    const id = pathParameters.params.id;
-    const data = await fetchProductCategory(parseInt(id ?? "0"));
-    if (data === null) {
+    const data = await getProductCategory(parseInt(params.id ?? "0"));
+    if (data === 404) {
       return redirect("/admin/error");
     }
     console.log("Items were fetched for the admin categories page.");
@@ -175,14 +201,10 @@ export async function adminCategoryDetailsRouteLoader(
   }
 }
 
-export async function adminEditCategoryRouteLoader(
-  pathParameters: PathParameters
-) {
+export async function adminEditCategoryRouteLoader({ params }: PathParameters) {
   try {
-    const data = await fetchProductCategory(
-      parseInt(pathParameters.params.id ?? "0")
-    );
-    if (data === null) {
+    const data = await getProductCategory(parseInt(params.id ?? "0"));
+    if (data === 404) {
       return redirect("/admin/error");
     }
     return data;
@@ -193,24 +215,38 @@ export async function adminEditCategoryRouteLoader(
 }
 
 export async function adminOrdersRouteLoader() {
+  let requestIntercept: number | null = null;
+  let responseIntercept: number | null = null;
   try {
-    const data = await getAllOrders();
+    requestIntercept = setAxiosRequestInterceptor(axiosLoader);
+    responseIntercept = setAxiosResponseInterceptor(axiosLoader);
+    const data = await getAllOrders(axiosLoader);
+    if (data === 401) {
+      throw new Error("User is not authorized");
+    }
     console.log("Items were fetched for the admin orders page.");
     return data;
   } catch (error) {
     console.error(error);
-    const emptyArray: OrderProp[] = [];
-    return emptyArray;
+    return [];
+  } finally {
+    if (requestIntercept !== null) {
+      ejectAxiosRequestInterceptor(axiosLoader, requestIntercept);
+    }
+    if (responseIntercept !== null) {
+      ejectAxiosResponseInterceptor(axiosLoader, responseIntercept);
+    }
   }
 }
 
-export async function adminOrderDetailsRouteLoader(
-  pathParameters: PathParameters
-) {
+export async function adminOrderDetailsRouteLoader({ params }: PathParameters) {
+  let requestIntercept: number | null = null;
+  let responseIntercept: number | null = null;
   try {
-    const id = pathParameters.params.id;
-    const data = await getOrder(parseInt(id ?? "0"));
-    if (data === null) {
+    requestIntercept = setAxiosRequestInterceptor(axiosLoader);
+    responseIntercept = setAxiosResponseInterceptor(axiosLoader);
+    const data = await getOrder(parseInt(params.id ?? "0"), axiosLoader);
+    if (data === 401 || data === 404) {
       return redirect("/admin/error");
     }
     console.log("Items were fetched for the admin orders page.");
@@ -218,31 +254,50 @@ export async function adminOrderDetailsRouteLoader(
   } catch (error) {
     console.error(error);
     return redirect("/admin/error");
+  } finally {
+    if (requestIntercept !== null) {
+      ejectAxiosRequestInterceptor(axiosLoader, requestIntercept);
+    }
+    if (responseIntercept !== null) {
+      ejectAxiosResponseInterceptor(axiosLoader, responseIntercept);
+    }
   }
 }
 
-export async function adminEditOrderRouteLoader(
-  pathParameters: PathParameters
-) {
+export async function adminEditOrderRouteLoader({ params }: PathParameters) {
+  let requestIntercept: number | null = null;
+  let responseIntercept: number | null = null;
   try {
-    const data = await getOrder(parseInt(params.id ?? "0"));
-    if (data === null) {
+    requestIntercept = setAxiosRequestInterceptor(axiosLoader);
+    responseIntercept = setAxiosResponseInterceptor(axiosLoader);
+    const data = await getOrder(parseInt(params.id ?? "0"), axiosLoader);
+    if (data === 401 || data === 404) {
       return redirect("/admin/error");
     }
     return data;
   } catch (error) {
     console.error(error);
     return redirect("/admin/error");
+  } finally {
+    if (requestIntercept !== null) {
+      ejectAxiosRequestInterceptor(axiosLoader, requestIntercept);
+    }
+    if (responseIntercept !== null) {
+      ejectAxiosResponseInterceptor(axiosLoader, responseIntercept);
+    }
   }
 }
 
-export async function adminOrderLineDetailsRouteLoader(
-  pathParameters: PathParameters
-) {
+export async function adminOrderLineDetailsRouteLoader({
+  params,
+}: PathParameters) {
+  let requestIntercept: number | null = null;
+  let responseIntercept: number | null = null;
   try {
-    const id = pathParameters.params.id;
-    const data = await fetchOrderLine(parseInt(id ?? "0"));
-    if (data === null) {
+    requestIntercept = setAxiosRequestInterceptor(axiosLoader);
+    responseIntercept = setAxiosResponseInterceptor(axiosLoader);
+    const data = await getOrderLine(parseInt(params.id ?? "0"), axiosLoader);
+    if (data === 401 || data === 404) {
       return redirect("/admin/error");
     }
     console.log("Items were fetched for the admin order lines page.");
@@ -250,55 +305,85 @@ export async function adminOrderLineDetailsRouteLoader(
   } catch (error) {
     console.error(error);
     return redirect("/admin/error");
+  } finally {
+    if (requestIntercept !== null) {
+      ejectAxiosRequestInterceptor(axiosLoader, requestIntercept);
+    }
+    if (responseIntercept !== null) {
+      ejectAxiosResponseInterceptor(axiosLoader, responseIntercept);
+    }
   }
 }
 
-export async function adminCreateOrderLineRouteLoader(
-  pathParameters: PathParameters
-) {
+export async function adminCreateOrderLineRouteLoader({
+  params,
+}: PathParameters) {
   const parsedId = parseInt(params.orderId ?? "0");
   if (parsedId === 0) {
     return redirect("/admin/error");
   }
-  return pathParameters.params.orderId;
+  return params.orderId;
 }
 
-export async function adminEditOrderLineRouteLoader(
-  pathParameters: PathParameters
-) {
+export async function adminEditOrderLineRouteLoader({
+  params,
+}: PathParameters) {
+  let requestIntercept: number | null = null;
+  let responseIntercept: number | null = null;
   try {
-    const data = await fetchOrderLine(
-      parseInt(pathParameters.params.id ?? "0")
-    );
-    if (data === null) {
+    requestIntercept = setAxiosRequestInterceptor(axiosLoader);
+    responseIntercept = setAxiosResponseInterceptor(axiosLoader);
+    const data = await getOrderLine(parseInt(params.id ?? "0"), axiosLoader);
+    if (data === 401 || data === 404) {
       return redirect("/admin/error");
     }
     return data;
   } catch (error) {
     console.error(error);
     return redirect("/admin/error");
+  } finally {
+    if (requestIntercept !== null) {
+      ejectAxiosRequestInterceptor(axiosLoader, requestIntercept);
+    }
+    if (responseIntercept !== null) {
+      ejectAxiosResponseInterceptor(axiosLoader, responseIntercept);
+    }
   }
 }
 
 export async function adminUsersRouteLoader() {
+  let requestIntercept: number | null = null;
+  let responseIntercept: number | null = null;
   try {
-    const data = await getAllCustomers();
+    requestIntercept = setAxiosRequestInterceptor(axiosLoader);
+    responseIntercept = setAxiosResponseInterceptor(axiosLoader);
+    const data = await getAllCustomers(axiosLoader);
+    if (data === 401) {
+      return redirect("/admin/error");
+    }
     console.log("Items were fetched for the admin users page.");
     return data;
   } catch (error) {
     console.error(error);
-    const emptyArray: AuthUserProp[] = [];
-    return emptyArray;
+    return [];
+  } finally {
+    if (requestIntercept !== null) {
+      ejectAxiosRequestInterceptor(axiosLoader, requestIntercept);
+    }
+    if (responseIntercept !== null) {
+      ejectAxiosResponseInterceptor(axiosLoader, responseIntercept);
+    }
   }
 }
 
-export async function adminUserDetailsRouteLoader(
-  pathParameters: PathParameters
-) {
+export async function adminUserDetailsRouteLoader({ params }: PathParameters) {
+  let requestIntercept: number | null = null;
+  let responseIntercept: number | null = null;
   try {
-    const id = pathParameters.params.id;
-    const data = await getCustomerById(id ?? "", true);
-    if (data === null) {
+    requestIntercept = setAxiosRequestInterceptor(axiosLoader);
+    responseIntercept = setAxiosResponseInterceptor(axiosLoader);
+    const data = await getCustomerById(params.id ?? "", axiosLoader);
+    if (data === 401 || data === 404) {
       return redirect("/admin/error");
     }
     console.log("Items were fetched for the admin users page.");
@@ -306,19 +391,37 @@ export async function adminUserDetailsRouteLoader(
   } catch (error) {
     console.error(error);
     return redirect("/admin/error");
+  } finally {
+    if (requestIntercept !== null) {
+      ejectAxiosRequestInterceptor(axiosLoader, requestIntercept);
+    }
+    if (responseIntercept !== null) {
+      ejectAxiosResponseInterceptor(axiosLoader, responseIntercept);
+    }
   }
 }
 
-export async function adminEditUserRouteLoader(pathParameters: PathParameters) {
+export async function adminEditUserRouteLoader({ params }: PathParameters) {
+  let requestIntercept: number | null = null;
+  let responseIntercept: number | null = null;
   try {
-    const data = await getCustomerById(pathParameters.params.id ?? "", true);
-    if (data === null) {
+    requestIntercept = setAxiosRequestInterceptor(axiosLoader);
+    responseIntercept = setAxiosResponseInterceptor(axiosLoader);
+    const data = await getCustomerById(params.id ?? "", axiosLoader);
+    if (data === 401 || data === 404) {
       return redirect("/admin/error");
     }
     return data;
   } catch (error) {
     console.error(error);
     return redirect("/admin/error");
+  } finally {
+    if (requestIntercept !== null) {
+      ejectAxiosRequestInterceptor(axiosLoader, requestIntercept);
+    }
+    if (responseIntercept !== null) {
+      ejectAxiosResponseInterceptor(axiosLoader, responseIntercept);
+    }
   }
 }
 
@@ -329,17 +432,14 @@ export async function adminShopsRouteLoader() {
     return data;
   } catch (error) {
     console.error(error);
-    const emptyArray: ShopProp[] = [];
-    return emptyArray;
+    return [];
   }
 }
 
-export async function adminShopDetailsRouteLoader(
-  pathParameters: PathParameters
-) {
+export async function adminShopDetailsRouteLoader({ params }: PathParameters) {
   try {
-    const data = await getShopById(parseInt(pathParameters.params.id ?? "0"));
-    if (data === null) {
+    const data = await getShopById(parseInt(params.id ?? "0"));
+    if (data === 404) {
       return redirect("/admin/error");
     }
     console.log("Items were fetched for the admin shops page.");
@@ -350,26 +450,13 @@ export async function adminShopDetailsRouteLoader(
   }
 }
 
-export async function adminEditShopRouteLoader(pathParameters: PathParameters) {
+export async function adminEditShopRouteLoader({ params }: PathParameters) {
   try {
-    const data = await getShopById(parseInt(pathParameters.params.id ?? "0"));
-    if (data === null) {
+    const data = await getShopById(parseInt(params.id ?? "0"));
+    if (data === 404) {
       return redirect("/admin/error");
     }
     return data;
-  } catch (error) {
-    console.error(error);
-    return redirect("/admin/error");
-  }
-}
-
-export async function adminRootRouteLoader() {
-  try {
-    const user = await isAdminLoggedIn();
-    if (user == null) {
-      return redirect("/admin/login");
-    }
-    return user;
   } catch (error) {
     console.error(error);
     return redirect("/admin/error");

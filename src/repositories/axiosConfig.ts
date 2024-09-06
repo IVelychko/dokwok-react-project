@@ -14,3 +14,8 @@ export const axiosCredentials = axios.create({
   baseURL: BASE_API_URL,
   withCredentials: true,
 });
+
+export const axiosLoader = axios.create({
+  baseURL: BASE_API_URL,
+  withCredentials: true,
+});

@@ -1,5 +1,5 @@
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
-import { ErrorInputProp, ProductDataProp } from "../../../helpers/Interfaces";
+import { ErrorInput } from "../../../helpers/Interfaces";
 import { useState } from "react";
 import { updateProduct } from "../../../repositories/productRepository";
 import {
@@ -10,9 +10,12 @@ import {
   validatePrice,
   validateWeight,
 } from "../../../validation/productValidation";
+import useAuthAxios from "../../../hooks/useAuthAxios";
+import { Product } from "../../../models/dataTransferObjects";
 
 export default function EditProduct() {
-  const loadedProduct: ProductDataProp = useLoaderData() as ProductDataProp;
+  const authAxios = useAuthAxios();
+  const loadedProduct: Product = useLoaderData() as Product;
   const [name, setName] = useState<string>(loadedProduct.name);
   const [categoryId, setCategoryId] = useState<string>(
     loadedProduct.categoryId.toString()
@@ -25,34 +28,34 @@ export default function EditProduct() {
   const [measurementUnit, setMeasurementUnit] = useState<string>(
     loadedProduct.measurementUnit
   );
-  const [formErrorInput, setFormErrorInput] = useState<ErrorInputProp>({
+  const [formErrorInput, setFormErrorInput] = useState<ErrorInput>({
     styles: { visibility: "hidden", marginTop: 0 },
     message: "Incorrect data",
   });
-  const [nameErrorInput, setNameErrorInput] = useState<ErrorInputProp>({
+  const [nameErrorInput, setNameErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Enter a correct name",
   });
   const [descriptionErrorInput, setDescriptionErrorInput] =
-    useState<ErrorInputProp>({
+    useState<ErrorInput>({
       styles: { display: "none" },
       message: "Enter a correct description",
     });
   const [categoryIdErrorInput, setCategoryIdErrorInput] =
-    useState<ErrorInputProp>({
+    useState<ErrorInput>({
       styles: { display: "none" },
       message: "Enter a correct category ID",
     });
-  const [priceErrorInput, setPriceErrorInput] = useState<ErrorInputProp>({
+  const [priceErrorInput, setPriceErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Enter a correct price",
   });
-  const [weightErrorInput, setWeightErrorInput] = useState<ErrorInputProp>({
+  const [weightErrorInput, setWeightErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Enter a correct weight",
   });
   const [measurementUnitErrorInput, setMeasurementUnitErrorInput] =
-    useState<ErrorInputProp>({
+    useState<ErrorInput>({
       styles: { display: "none" },
       message: "Enter a correct measurement unit",
     });
@@ -118,9 +121,9 @@ export default function EditProduct() {
       price: parseFloat(price),
       weight: parseFloat(weight),
       measurementUnit: measurementUnit,
-    })
+    }, authAxios)
       .then((updatedProduct) => {
-        if (updatedProduct !== null) {
+        if (updatedProduct !== 400 && updatedProduct !== 401 && updatedProduct !== 404) {
           console.log(
             `Product ${updatedProduct.name} with ID: ${updatedProduct.id} was updated`
           );

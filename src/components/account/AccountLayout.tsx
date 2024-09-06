@@ -1,30 +1,22 @@
-import { Link, Outlet, useLoaderData, useNavigate } from "react-router-dom";
-import { ContextState, useMyContext } from "../../hooks/hooks";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { logOut } from "../../repositories/authRepository";
-import { AuthUserProp } from "../../helpers/Interfaces";
-import { useEffect } from "react";
+import useAuth from "../../hooks/useAuth";
+import { removeAccessToken } from "../../helpers/accessTokenManagement";
+import { removeUserId } from "../../helpers/userIdManagement";
 
 export default function AccountLayout() {
-  const user: AuthUserProp = useLoaderData() as AuthUserProp;
-  const contextState: ContextState = useMyContext();
-  const handleUserChange = contextState.setAuthUserProp;
+  const { setAuth } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    handleUserChange(user);
-    console.log("AccountLayout effect");
-  }, [handleUserChange, user]);
 
   const handleLogOutClick = () => {
     logOut()
-      .then(() => {
-        handleUserChange({
-          id: "",
-          firstName: "",
-          userName: "",
-          email: "",
-          phoneNumber: "",
-        });
+      .then(response => {
+        if (response === 400) {
+          throw new Error("Bad Request");
+        }
+        removeAccessToken();
+        removeUserId();
+        setAuth(null);
         navigate("/");
       })
       .catch((error) => console.error(error));
@@ -62,7 +54,7 @@ export default function AccountLayout() {
           </button>
         </div>
         <div className="account-content">
-          <Outlet context={contextState satisfies ContextState} />
+          <Outlet />
         </div>
       </div>
     </main>

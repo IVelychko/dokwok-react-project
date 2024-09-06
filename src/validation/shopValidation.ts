@@ -1,14 +1,14 @@
 import { isAddressTaken } from "../repositories/shopRepository";
-import { ErrorInputProp } from "../helpers/Interfaces";
+import { ErrorInput } from "../helpers/Interfaces";
 import { RegularExpressions } from "../helpers/constants";
 
 export async function validateAddressCreate(
   street: string,
   building: string,
-  streetErrorInput: ErrorInputProp,
-  setStreetErrorInput: (errorInput: ErrorInputProp) => void,
-  buildingErrorInput: ErrorInputProp,
-  setBuildingErrorInput: (errorInput: ErrorInputProp) => void
+  streetErrorInput: ErrorInput,
+  setStreetErrorInput: (errorInput: ErrorInput) => void,
+  buildingErrorInput: ErrorInput,
+  setBuildingErrorInput: (errorInput: ErrorInput) => void
 ): Promise<boolean> {
   setStreetErrorInput({
     message: streetErrorInput.message,
@@ -53,7 +53,9 @@ export async function validateAddressCreate(
   if (isValid) {
     try {
       const checker = await isAddressTaken(street, building);
-      if (checker.isTaken) {
+      if (checker === 400) {
+        throw new Error("Bad Request");
+      } else if (checker.isTaken) {
         setStreetErrorInput({
           styles: { display: "block" },
           message: "The entered street and building are already taken",
@@ -85,10 +87,10 @@ export async function validateAddressEdit(
   currentBuilding: string,
   street: string,
   building: string,
-  streetErrorInput: ErrorInputProp,
-  setStreetErrorInput: (errorInput: ErrorInputProp) => void,
-  buildingErrorInput: ErrorInputProp,
-  setBuildingErrorInput: (errorInput: ErrorInputProp) => void
+  streetErrorInput: ErrorInput,
+  setStreetErrorInput: (errorInput: ErrorInput) => void,
+  buildingErrorInput: ErrorInput,
+  setBuildingErrorInput: (errorInput: ErrorInput) => void
 ): Promise<boolean> {
   setStreetErrorInput({
     message: streetErrorInput.message,
@@ -132,7 +134,9 @@ export async function validateAddressEdit(
     try {
       if (currentStreet !== street || currentBuilding !== building) {
         const checker = await isAddressTaken(street, building);
-        if (checker.isTaken) {
+        if (checker === 400) {
+          throw new Error("Bad Request");
+        } else if (checker.isTaken) {
           setStreetErrorInput({
             styles: { display: "block" },
             message: "The entered street and building are already taken",
@@ -171,8 +175,8 @@ export async function validateAddressEdit(
 
 export function validateOpeningTime(
   time: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): boolean {
   let isValid = true;
   if (time === null || time === "") {
@@ -198,8 +202,8 @@ export function validateOpeningTime(
 
 export function validateClosingTime(
   time: string,
-  errorInput: ErrorInputProp,
-  setErrorInput: (errorInput: ErrorInputProp) => void
+  errorInput: ErrorInput,
+  setErrorInput: (errorInput: ErrorInput) => void
 ): boolean {
   let isValid = true;
   if (time === null || time === "") {

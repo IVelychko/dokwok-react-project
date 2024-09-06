@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { addProduct } from "../../../repositories/productRepository";
-import { ErrorInputProp } from "../../../helpers/Interfaces";
+import { ErrorInput } from "../../../helpers/Interfaces";
 import {
   validateCategoryId,
   validateDescription,
@@ -10,42 +10,44 @@ import {
   validatePrice,
   validateWeight,
 } from "../../../validation/productValidation";
+import useAuthAxios from "../../../hooks/useAuthAxios";
 
 export default function CreateProduct() {
+  const authAxios = useAuthAxios();
   const [name, setName] = useState<string>("");
   const [categoryId, setCategoryId] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [price, setPrice] = useState<string>("");
   const [weight, setWeight] = useState<string>("");
   const [measurementUnit, setMeasurementUnit] = useState<string>("");
-  const [formErrorInput, setFormErrorInput] = useState<ErrorInputProp>({
+  const [formErrorInput, setFormErrorInput] = useState<ErrorInput>({
     styles: { visibility: "hidden", marginTop: 0 },
     message: "Incorrect data",
   });
-  const [nameErrorInput, setNameErrorInput] = useState<ErrorInputProp>({
+  const [nameErrorInput, setNameErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Enter a correct name",
   });
   const [descriptionErrorInput, setDescriptionErrorInput] =
-    useState<ErrorInputProp>({
+    useState<ErrorInput>({
       styles: { display: "none" },
       message: "Enter a correct description",
     });
   const [categoryIdErrorInput, setCategoryIdErrorInput] =
-    useState<ErrorInputProp>({
+    useState<ErrorInput>({
       styles: { display: "none" },
       message: "Enter a correct category ID",
     });
-  const [priceErrorInput, setPriceErrorInput] = useState<ErrorInputProp>({
+  const [priceErrorInput, setPriceErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Enter a correct price",
   });
-  const [weightErrorInput, setWeightErrorInput] = useState<ErrorInputProp>({
+  const [weightErrorInput, setWeightErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Enter a correct weight",
   });
   const [measurementUnitErrorInput, setMeasurementUnitErrorInput] =
-    useState<ErrorInputProp>({
+    useState<ErrorInput>({
       styles: { display: "none" },
       message: "Enter a correct measurement unit",
     });
@@ -105,9 +107,9 @@ export default function CreateProduct() {
       price: parseFloat(price),
       weight: parseFloat(weight),
       measurementUnit: measurementUnit,
-    })
+    }, authAxios)
       .then((addedProduct) => {
-        if (addedProduct !== null) {
+        if (addedProduct !== 400 && addedProduct !== 401) {
           console.log(
             `Product ${addedProduct.name} was added with ID: ${addedProduct.id}`
           );

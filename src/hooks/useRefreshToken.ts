@@ -2,6 +2,7 @@ import {
   getAccessToken,
   storeAccessToken,
 } from "../helpers/accessTokenManagement";
+import { storeUserId } from "../helpers/userIdManagement";
 import { refreshToken } from "../repositories/authRepository";
 import useAuth from "./useAuth";
 
@@ -20,6 +21,7 @@ export default function useRefreshToken() {
       auth.user = response;
       setAuth(auth);
       storeAccessToken(response.token);
+      storeUserId(response.id);
     }
     return response.token;
   };

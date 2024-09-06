@@ -1,5 +1,4 @@
 import { Link, useNavigate } from "react-router-dom";
-import { CartProp } from "../helpers/Interfaces";
 import { useEffect, useState } from "react";
 import Badge from "@mui/material/Badge";
 import Button from "@mui/material/Button";
@@ -12,22 +11,23 @@ import {
   ListItemButton,
   ListItemText,
 } from "@mui/material";
+import useAuth from "../hooks/useAuth";
+import useRootContext from "../hooks/useRootContext";
 
-interface Props {
-  cartProp: CartProp;
-  isUserLoggedIn: boolean;
-}
-
-export default function Header({ cartProp, isUserLoggedIn }: Readonly<Props>) {
+export default function Header() {
+  const { auth } = useAuth();
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const { cart } = useRootContext();
   const [cartSize, setCartSize] = useState<number>();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   useEffect(() => {
+    setIsUserLoggedIn(auth !== null);
     let cartSizeTemp: number = 0;
-    cartProp.lines.forEach((cartLine) => (cartSizeTemp += cartLine.quantity));
+    cart.lines.forEach((cartLine) => (cartSizeTemp += cartLine.quantity));
     setCartSize(cartSizeTemp);
     console.log("Header effect was called");
-  }, [cartProp.lines]);
+  }, [cart.lines, auth]);
 
   const badgeStyle = {
     "& .MuiBadge-badge": {
