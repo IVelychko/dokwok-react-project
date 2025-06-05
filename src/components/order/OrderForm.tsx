@@ -117,7 +117,7 @@ export default function OrderForm() {
       const orderShop = shopAddresses.find(
         (shop) => shop.address === shopAddress
       );
-      if (orderShop === null) {
+      if (!orderShop || orderShop === null) {
         setFormErrorInput((prevData) => ({
           ...prevData,
           styles: { visibility: "visible", marginTop: 0 },

@@ -8,7 +8,7 @@ import { ErrorMessages } from "../helpers/constants";
 
 export async function getAllOrderLines(authAxios: AxiosInstance) {
   try {
-    const response = await authAxios.get<OrderLine[]>("orders/lines");
+    const response = await authAxios.get<OrderLine[]>("order-lines");
     return response.data;
   } catch (error) {
     throw new Error("An error occured while getting all order lines");
@@ -21,7 +21,7 @@ export async function getAllOrderLinesByOrderId(
 ): Promise<OrderLine[] | 401> {
   try {
     const response = await authAxios.get<OrderLine[]>(
-      `orders/lines?orderId=${orderId}`
+      `orders/${orderId}/order-lines`
     );
     return response.data;
   } catch (error) {
@@ -46,7 +46,7 @@ export async function getOrderLine(
   authAxios: AxiosInstance
 ): Promise<OrderLine | 404 | 401> {
   try {
-    const response = await authAxios.get<OrderLine>(`orders/lines/${id}`);
+    const response = await authAxios.get<OrderLine>(`order-lines/${id}`);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -74,7 +74,7 @@ export async function getOrderLineByOrderAndProductIds(
 ): Promise<OrderLine | 404 | 401> {
   try {
     const response = await authAxios.get<OrderLine>(
-      `orders/lines/${orderId}/${productId}`
+      `order-lines/${orderId}/${productId}`
     );
     return response.data;
   } catch (error) {
@@ -101,7 +101,7 @@ export async function addOrderLine(
   authAxios: AxiosInstance
 ): Promise<OrderLine | 400 | 401> {
   try {
-    const response = await authAxios.post<OrderLine>("orders/lines", orderLine);
+    const response = await authAxios.post<OrderLine>("order-lines", orderLine);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -127,7 +127,7 @@ export async function updateOrderLine(
   authAxios: AxiosInstance
 ): Promise<OrderLine | 400 | 401 | 404> {
   try {
-    const response = await authAxios.put<OrderLine>("orders/lines", orderLine);
+    const response = await authAxios.put<OrderLine>("order-lines", orderLine);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -155,7 +155,7 @@ export async function deleteOrderLine(
   authAxios: AxiosInstance
 ): Promise<200 | 401 | 404> {
   try {
-    await authAxios.delete(`orders/lines/${id}`);
+    await authAxios.delete(`order-lines/${id}`);
     return 200;
   } catch (error) {
     if (axios.isAxiosError(error)) {

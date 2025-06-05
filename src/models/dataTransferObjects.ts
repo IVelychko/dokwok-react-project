@@ -44,27 +44,30 @@ export interface Order {
   totalOrderPrice: number;
   creationDate: string;
   status: string;
-  userId: string | null;
+  userId: number | null;
   shopId: number | null;
   orderLines: OrderLine[];
 }
 
 export interface User {
-  id: string;
+  id: number;
   firstName: string;
   userName: string;
   email: string;
   phoneNumber: string;
+  userRoleId: number;
+  userRole: string;
 }
 
 export interface AuthorizedUser {
-  id: string;
+  id: number;
   firstName: string;
   userName: string;
   email: string;
   phoneNumber: string;
   token: string;
-  roles: string[];
+  userRoleId: number;
+  userRole: string;
 }
 
 export interface AuthData {

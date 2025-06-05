@@ -8,8 +8,10 @@ export default function useAuthAxios() {
   const refresh = useRefreshToken();
 
   useEffect(() => {
+    console.log("In effect of 'useAuthAxios'");
     const requestIntercept = axiosCredentials.interceptors.request.use(
       async (config) => {
+        console.log("In use request intercept");
         if (!config.headers["Authorization"]) {
           const jwtAccessToken = getAccessToken();
           if (jwtAccessToken === null) {

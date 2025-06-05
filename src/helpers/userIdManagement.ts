@@ -1,11 +1,12 @@
 import { UserIdKey } from "./constants";
 
 export function getUserId() {
-  return localStorage.getItem(UserIdKey);
+  const userId = localStorage.getItem(UserIdKey);
+  return userId !== null ? parseInt(userId) : null;
 }
 
-export function storeUserId(id: string) {
-  localStorage.setItem(UserIdKey, id);
+export function storeUserId(id: number) {
+  localStorage.setItem(UserIdKey, id.toString());
 }
 
 export function removeUserId() {

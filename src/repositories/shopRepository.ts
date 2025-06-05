@@ -131,7 +131,7 @@ export async function isAddressTaken(
   const axiosInstance = useRegularAxios();
   try {
     const response = await axiosInstance.get(
-      `shops/isAddressTaken/${street}/${building}`
+      `shops/address/${street}/${building}`
     );
     return response.data;
   } catch (error) {

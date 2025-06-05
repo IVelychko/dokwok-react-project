@@ -32,7 +32,7 @@ export default function EditOrder() {
   const [email, setEmail] = useState(loadedOrder.email);
   const [paymentType, setPaymentType] = useState(loadedOrder.paymentType);
   const [phoneNumber, setPhoneNumber] = useState(loadedOrder.phoneNumber);
-  const [userId, setUserId] = useState(loadedOrder.userId);
+  const [userId, setUserId] = useState(loadedOrder.userId?.toString() ?? null);
   const [shopId, setShopId] = useState(loadedOrder.shopId?.toString() ?? null);
   const navigate = useNavigate();
 
@@ -131,7 +131,7 @@ export default function EditOrder() {
       email: email,
       paymentType: paymentType,
       phoneNumber: phoneNumber,
-      userId: newUserId,
+      userId: newUserId === null ? null : parseInt(newUserId),
       shopId: newShopId === null ? null : parseInt(newShopId),
     }, authAxios)
       .then((updatedOrder) => {

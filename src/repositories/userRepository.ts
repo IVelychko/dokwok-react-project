@@ -6,7 +6,7 @@ import {
   UserPasswordChangeAsAdminRequest,
   UserPasswordChangeRequest,
 } from "../models/requests";
-import { ErrorMessages } from "../helpers/constants";
+import { ErrorMessages, Roles } from "../helpers/constants";
 import useRegularAxios from "../hooks/useRegularAxios";
 
 export async function getAllUsers(
@@ -36,7 +36,9 @@ export async function getAllCustomers(
   authAxios: AxiosInstance
 ): Promise<User[] | 401> {
   try {
-    const response = await authAxios.get<User[]>("users/customers");
+    const response = await authAxios.get<User[]>(
+      `roles/${Roles.customer}/users`
+    );
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -56,11 +58,11 @@ export async function getAllCustomers(
 }
 
 export async function getUserById(
-  id: string,
+  id: number,
   authAxios: AxiosInstance
 ): Promise<User | 401 | 404> {
   try {
-    const response = await authAxios.get<User>(`users/id/${id}`);
+    const response = await authAxios.get<User>(`users/${id}`);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -82,11 +84,13 @@ export async function getUserById(
 }
 
 export async function getCustomerById(
-  id: string,
+  id: number,
   authAxios: AxiosInstance
 ): Promise<User | 401 | 404> {
   try {
-    const response = await authAxios.get<User>(`users/customers/id/${id}`);
+    const response = await authAxios.get<User>(
+      `roles/${Roles.customer}/users/${id}`
+    );
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -194,7 +198,7 @@ export async function updateCustomerPasswordAsAdmin(
   authAxios: AxiosInstance
 ): Promise<boolean | 400 | 401 | 404> {
   try {
-    await authAxios.put("users/password/asAdmin", changePasswordRequest);
+    await authAxios.put("users/password/as-admin", changePasswordRequest);
     return true;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -218,7 +222,7 @@ export async function updateCustomerPasswordAsAdmin(
 }
 
 export async function deleteUserById(
-  id: string,
+  id: number,
   authAxios: AxiosInstance
 ): Promise<200 | 401 | 404> {
   try {
@@ -248,9 +252,7 @@ export async function isUserNameTaken(
 ): Promise<CheckIfTaken | 400> {
   const axiosInstance = useRegularAxios();
   try {
-    const response = await axiosInstance.get(
-      `users/customers/isUserNameTaken/${userName}`
-    );
+    const response = await axiosInstance.get(`users/username/${userName}`);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -272,9 +274,7 @@ export async function isUserNameTaken(
 export async function isEmailTaken(email: string): Promise<CheckIfTaken | 400> {
   const axiosInstance = useRegularAxios();
   try {
-    const response = await axiosInstance.get(
-      `users/customers/isEmailTaken/${email}`
-    );
+    const response = await axiosInstance.get(`users/email/${email}`);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -298,9 +298,7 @@ export async function isPhoneNumberTaken(
 ): Promise<CheckIfTaken | 400> {
   const axiosInstance = useRegularAxios();
   try {
-    const response = await axiosInstance.get(
-      `users/customers/isPhoneTaken/${phoneNumber}`
-    );
+    const response = await axiosInstance.get(`users/phone/${phoneNumber}`);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

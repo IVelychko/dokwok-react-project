@@ -32,7 +32,7 @@ export interface AddDeliveryOrderRequest {
   email: string;
   deliveryAddress: string;
   paymentType: string;
-  userId: string | null;
+  userId: number | null;
   orderLines: AddOrderLineWithOrderRequest[];
 }
 
@@ -41,7 +41,7 @@ export interface AddTakeawayOrderRequest {
   phoneNumber: string;
   email: string;
   paymentType: string;
-  userId: string | null;
+  userId: number | null;
   shopId: number;
   orderLines: AddOrderLineWithOrderRequest[];
 }
@@ -74,7 +74,7 @@ export interface UpdateOrderRequest {
   totalOrderPrice: number;
   creationDate: string;
   status: string;
-  userId: string | null;
+  userId: number | null;
   shopId: number | null;
 }
 
@@ -105,7 +105,7 @@ export interface AddUserRequest {
 }
 
 export interface UpdateUserRequest {
-  id: string;
+  id: number;
   firstName: string;
   userName: string;
   email: string;
@@ -117,13 +117,13 @@ export interface RefreshTokenRequest {
 }
 
 export interface UserPasswordChangeRequest {
-  userId: string;
+  userId: number;
   oldPassword: string;
   newPassword: string;
 }
 
 export interface UserPasswordChangeAsAdminRequest {
-  userId: string;
+  userId: number;
   newPassword: string;
 }
 

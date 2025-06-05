@@ -10,7 +10,7 @@ export async function getAllProducts(
   const axiosInstance = useRegularAxios();
   try {
     const apiUrl = productCategoryId
-      ? `products?categoryId=${productCategoryId}`
+      ? `categories/${productCategoryId}/products`
       : "products";
     const response = await axiosInstance.get<Product[]>(apiUrl);
     return response.data;
@@ -134,7 +134,7 @@ export async function isProductNameTaken(
 ): Promise<CheckIfTaken | 400> {
   const axiosInstance = useRegularAxios();
   try {
-    const response = await axiosInstance.get(`products/isNameTaken/${name}`);
+    const response = await axiosInstance.get(`products/name/${name}`);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

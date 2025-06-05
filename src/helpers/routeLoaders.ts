@@ -1,5 +1,4 @@
 import { Params, redirect } from "react-router-dom";
-import { Categories } from "./constants";
 import { getAllShops, getShopById } from "../repositories/shopRepository";
 import { getAllProducts, getProduct } from "../repositories/productRepository";
 import {
@@ -382,7 +381,7 @@ export async function adminUserDetailsRouteLoader({ params }: PathParameters) {
   try {
     requestIntercept = setAxiosRequestInterceptor(axiosLoader);
     responseIntercept = setAxiosResponseInterceptor(axiosLoader);
-    const data = await getCustomerById(params.id ?? "", axiosLoader);
+    const data = await getCustomerById(parseInt(params.id ?? "0"), axiosLoader);
     if (data === 401 || data === 404) {
       return redirect("/admin/error");
     }
@@ -407,7 +406,7 @@ export async function adminEditUserRouteLoader({ params }: PathParameters) {
   try {
     requestIntercept = setAxiosRequestInterceptor(axiosLoader);
     responseIntercept = setAxiosResponseInterceptor(axiosLoader);
-    const data = await getCustomerById(params.id ?? "", axiosLoader);
+    const data = await getCustomerById(parseInt(params.id ?? "0"), axiosLoader);
     if (data === 401 || data === 404) {
       return redirect("/admin/error");
     }
@@ -462,3 +461,42 @@ export async function adminEditShopRouteLoader({ params }: PathParameters) {
     return redirect("/admin/error");
   }
 }
+
+// export async function currentAuthUserRouteLoader() {
+//   let requestIntercept: number | null = null;
+//   let responseIntercept: number | null = null;
+//   try {
+//     const userId = getUserId();
+//     const accessToken = getAccessToken();
+//     requestIntercept = setAxiosRequestInterceptor(axiosLoader);
+//     responseIntercept = setAxiosResponseInterceptor(axiosLoader);
+//     if (userId !== null && accessToken !== null) {
+//       const user = await getUserById(userId, axiosLoader);
+//       if (user !== 401 && user !== 404) {
+//         console.log(`Retrieved user by id ${user.id} in current user loader`);
+//         const authUser: AuthorizedUser = {
+//           id: user.id,
+//           firstName: user.firstName,
+//           userName: user.userName,
+//           email: user.email,
+//           phoneNumber: user.phoneNumber,
+//           token: accessToken,
+//           userRoleId: user.userRoleId,
+//           userRole: user.userRole,
+//         };
+//         return authUser;
+//       }
+//     }
+//     return null;
+//   } catch (error) {
+//     console.error(error);
+//     return null;
+//   } finally {
+//     if (requestIntercept !== null) {
+//       ejectAxiosRequestInterceptor(axiosLoader, requestIntercept);
+//     }
+//     if (responseIntercept !== null) {
+//       ejectAxiosResponseInterceptor(axiosLoader, responseIntercept);
+//     }
+//   }
+// }

@@ -22,7 +22,7 @@ import useAuthAxios from "../../hooks/useAuthAxios";
 export default function EditProfile() {
   const { auth, setAuth } = useAuth();
   const user = auth!.user;
-  const isAdmin = user.roles.includes(Roles.admin);
+  const isAdmin = user.userRole === Roles.admin;
   const navigate = useNavigate();
   const authAxios = useAuthAxios();
   const [userFormData, setUserFormData] = useState<UpdateUserRequest>({

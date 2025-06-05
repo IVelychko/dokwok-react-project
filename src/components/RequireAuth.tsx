@@ -15,13 +15,8 @@ export default function RequireAuth({ allowedRoles, fallbackPath }: Readonly<Pro
         return <Navigate to={fallbackPath} state={{from: location }} replace />
     }
 
-    let userAllowed: boolean = false;
-    auth.user.roles.forEach(userRole => {
-        if (allowedRoles.find(allowedRole => allowedRole === userRole)) {
-            userAllowed = true;
-        }
-    });
-    console.log(`User with roles ${auth.user.roles} allowed: ${userAllowed}`);
+    const userAllowed = allowedRoles.includes(auth.user.userRole);
+    console.log(`User with role ${auth.user.userRole} allowed: ${userAllowed}`);
     return userAllowed ? 
         <Outlet /> :
         <Navigate to={fallbackPath} state={{from: location }} replace />

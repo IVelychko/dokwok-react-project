@@ -12,7 +12,7 @@ export default function AdminUsers() {
   const loadedUsers: User[] = useLoaderData() as User[];
   const [users, setUsers] = useState<User[]>(loadedUsers);
   const userRows: ReactNode[] = [];
-  const handleDeleteClick = (id: string) => {
+  const handleDeleteClick = (id: number) => {
     deleteUserById(id, authAxios)
       .then(() => {
         getAllCustomers(authAxios)

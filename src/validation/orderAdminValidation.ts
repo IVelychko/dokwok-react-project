@@ -232,7 +232,7 @@ export async function validateUserId(
   axiosInstance: AxiosInstance
 ): Promise<boolean> {
   let isValid = true;
-  if (!RegularExpressions.Guid.test(userId)) {
+  if (parseInt(userId) < 1) {
     setErrorInput({
       styles: { display: "block" },
       message: "Enter a correct user ID",
@@ -240,7 +240,7 @@ export async function validateUserId(
     isValid = false;
   } else {
     try {
-      const user = await getCustomerById(userId, axiosInstance);
+      const user = await getCustomerById(parseInt(userId), axiosInstance);
       if (user === 404) {
         setErrorInput({
           styles: { display: "block" },

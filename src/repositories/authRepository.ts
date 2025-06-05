@@ -14,7 +14,7 @@ export async function customerLogin(
   const axiosInstance = getAxiosInstance(true);
   try {
     const response = await axiosInstance.post(
-      "users/authorization/customers/login",
+      "auth/login",
       loginCustomerRequest
     );
     return response.data;
@@ -43,7 +43,7 @@ export async function adminLogin(
   const axiosInstance = getAxiosInstance(true);
   try {
     const response = await axiosInstance.post(
-      "users/authorization/admins/login",
+      "auth/login?admin=true",
       loginAdminRequest
     );
     return response.data;
@@ -72,7 +72,7 @@ export async function register(
   const axiosInstance = getAxiosInstance(true);
   try {
     const response = await axiosInstance.post(
-      "users/authorization/register",
+      "auth/register",
       registerUserRequest
     );
     return response.data;
@@ -98,10 +98,9 @@ export async function refreshToken(
 ): Promise<AuthorizedUser | 400> {
   const axiosInstance = getAxiosInstance(true);
   try {
-    const response = await axiosInstance.post(
-      "users/authorization/refreshToken",
-      { token: token }
-    );
+    const response = await axiosInstance.post("auth/refresh-token", {
+      token: token,
+    });
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -123,7 +122,7 @@ export async function refreshToken(
 export async function logOut(): Promise<200 | 400> {
   const axiosInstance = getAxiosInstance(true);
   try {
-    await axiosInstance.get("users/authorization/logout");
+    await axiosInstance.post("auth/logout");
     return 200;
   } catch (error) {
     if (axios.isAxiosError(error)) {

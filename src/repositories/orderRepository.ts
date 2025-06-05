@@ -32,11 +32,11 @@ export async function getAllOrders(
 }
 
 export async function getAllUserOrders(
-  userId: string,
+  userId: number,
   authAxios: AxiosInstance
 ): Promise<Order[] | 401> {
   try {
-    const response = await authAxios.get<Order[]>(`orders?userId=${userId}`);
+    const response = await authAxios.get<Order[]>(`users/${userId}/orders`);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
