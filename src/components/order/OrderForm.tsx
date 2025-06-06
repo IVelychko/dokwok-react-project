@@ -27,7 +27,7 @@ interface ShopAddress {
 export default function OrderForm() {
   const { cart, setCart, shops } = useRootContext();
   const { auth } = useAuth();
-  const user = auth?.user;
+  const user = auth === null ? null : auth.user;
   const shopAddresses = shops.map((shop) => {
     const stringAddress = `${shop.street} ${shop.building}`;
     const shopAddress: ShopAddress = { id: shop.id, address: stringAddress };
@@ -41,7 +41,9 @@ export default function OrderForm() {
   const [customerPhone, setCustomerPhone] = useState(user?.phoneNumber ?? "");
   const [customerEmail, setCustomerEmail] = useState(user?.email ?? "");
   const [deliveryAddress, setDeliveryAddress] = useState("");
-  const [shopAddress, setShopAddress] = useState("");
+  const [shopAddress, setShopAddress] = useState(
+    shopAddresses.length > 0 ? shopAddresses[0].address : ""
+  );
   const [paymentType, setPaymentType] = useState("");
   const [orderResult, setOrderResult] = useState<string | null>(null);
   const [order, setOrder] = useState<Order | null>(null);
@@ -49,11 +51,10 @@ export default function OrderForm() {
     styles: { visibility: "hidden", marginTop: 0 },
     message: "Введені некоректні дані",
   });
-  const [firstNameErrorInput, setFirstNameErrorInput] =
-    useState<ErrorInput>({
-      styles: { display: "none" },
-      message: "Введене некоректне ім'я",
-    });
+  const [firstNameErrorInput, setFirstNameErrorInput] = useState<ErrorInput>({
+    styles: { display: "none" },
+    message: "Введене некоректне ім'я",
+  });
   const [phoneErrorInput, setPhoneErrorInput] = useState<ErrorInput>({
     styles: { display: "none" },
     message: "Введений некоректний номер телефону",
@@ -117,6 +118,7 @@ export default function OrderForm() {
       const orderShop = shopAddresses.find(
         (shop) => shop.address === shopAddress
       );
+      console.log(orderShop?.address);
       if (!orderShop || orderShop === null) {
         setFormErrorInput((prevData) => ({
           ...prevData,
@@ -125,15 +127,17 @@ export default function OrderForm() {
         return;
       }
       const orderLines: AddOrderLineWithOrderRequest[] = [];
-      cart.lines.forEach(line => (orderLines.push({ productId: line.product.id, quantity: line.quantity })));
+      cart.lines.forEach((line) =>
+        orderLines.push({ productId: line.product.id, quantity: line.quantity })
+      );
       addTakeawayOrder({
         customerName: customerName,
         phoneNumber: customerPhone,
         email: customerEmail,
-        shopId: orderShop!.id,
+        shopId: orderShop.id,
         paymentType: paymentType,
-        userId: user ? user.id : null,
-        orderLines: orderLines
+        userId: user !== null ? user.id : null,
+        orderLines: orderLines,
       })
         .then((order) => {
           if (order !== 400) {
@@ -154,15 +158,17 @@ export default function OrderForm() {
         });
     } else {
       const orderLines: AddOrderLineWithOrderRequest[] = [];
-      cart.lines.forEach(line => (orderLines.push({ productId: line.product.id, quantity: line.quantity })));
+      cart.lines.forEach((line) =>
+        orderLines.push({ productId: line.product.id, quantity: line.quantity })
+      );
       addDeliveryOrder({
         customerName: customerName,
         phoneNumber: customerPhone,
         email: customerEmail,
         deliveryAddress: deliveryAddress,
         paymentType: paymentType,
-        userId: user ? user.id : null,
-        orderLines: orderLines
+        userId: user !== null ? user.id : null,
+        orderLines: orderLines,
       })
         .then((order) => {
           if (order !== 400) {
